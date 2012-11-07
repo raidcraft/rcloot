@@ -1,0 +1,46 @@
+package de.raidcraft.de.loot.object;
+
+import de.raidcraft.rcrpg.api.database.Database;
+import de.raidcraft.rcrpg.loot.LootFactory;
+import de.raidcraft.rcrpg.loot.database.tables.LootPlayersTable;
+import de.raidcraft.rcrpg.loot.table.LootTableEntry;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Author: Philip
+ * Date: 17.10.12 - 21:05
+ * Description:
+ */
+public class SimpleTimedLootObject extends SimpleLootObject implements CooldownLootObject {
+    int cooldown;
+
+    @Override
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    @Override
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    @Override
+    public List<ItemStack> loot(String player) {
+        List<ItemStack> loot = new ArrayList<>();
+
+        if((Database.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown*1000) < System.currentTimeMillis()) {
+            for(LootTableEntry entry : getLootTable().loot()) {
+                loot.add(entry.getItem());
+            }
+
+            // remember loot if not infinite dispenser
+            if(cooldown != 0 || player != LootFactory.ANY) {
+                Database.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis());
+            }
+        }
+        return loot;
+    }
+}

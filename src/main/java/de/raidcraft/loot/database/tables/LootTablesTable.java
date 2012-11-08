@@ -1,11 +1,11 @@
-package de.raidcraft.de.loot.database.tables;
+package de.raidcraft.loot.database.tables;
 
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.rcrpg.api.database.Database;
-import de.raidcraft.rcrpg.api.database.Table;
-import de.raidcraft.rcrpg.loot.database.LootDatabase;
-import de.raidcraft.rcrpg.loot.table.LootTable;
-import de.raidcraft.rcrpg.loot.table.SimpleLootTable;
+import de.raidcraft.componentutils.database.Database;
+import de.raidcraft.componentutils.database.Table;
+import de.raidcraft.loot.database.LootDatabase;
+import de.raidcraft.loot.table.LootTable;
+import de.raidcraft.loot.table.SimpleLootTable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

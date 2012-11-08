@@ -1,11 +1,11 @@
-package de.raidcraft.de.loot.commands;
+package de.raidcraft.loot.commands;
 
 import com.sk89q.minecraft.util.commands.*;
-import de.raidcraft.rcrpg.loot.LootFactory;
-import de.raidcraft.rcrpg.loot.LootModule;
-import de.raidcraft.rcrpg.loot.SettingStorage;
-import de.raidcraft.rcrpg.loot.listener.PlayerListener;
-import de.raidcraft.rcrpg.loot.util.LootChat;
+import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootModule;
+import de.raidcraft.loot.SettingStorage;
+import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.loot.util.LootChat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

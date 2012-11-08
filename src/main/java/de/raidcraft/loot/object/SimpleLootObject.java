@@ -1,9 +1,9 @@
-package de.raidcraft.de.loot.object;
+package de.raidcraft.loot.object;
 
-import de.raidcraft.rcrpg.api.database.Database;
-import de.raidcraft.rcrpg.loot.database.tables.LootPlayersTable;
-import de.raidcraft.rcrpg.loot.table.LootTable;
-import de.raidcraft.rcrpg.loot.table.LootTableEntry;
+import de.raidcraft.componentutils.database.Database;
+import de.raidcraft.loot.database.tables.LootPlayersTable;
+import de.raidcraft.loot.table.LootTable;
+import de.raidcraft.loot.table.LootTableEntry;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,4 +1,4 @@
-package de.raidcraft.de.loot.util;
+package de.raidcraft.loot.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

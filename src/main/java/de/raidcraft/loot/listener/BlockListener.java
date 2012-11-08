@@ -1,7 +1,7 @@
-package de.raidcraft.de.loot.listener;
+package de.raidcraft.loot.listener;
 
-import de.raidcraft.rcrpg.loot.LootFactory;
-import de.raidcraft.rcrpg.loot.util.LootChat;
+import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.util.LootChat;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;

@@ -1,4 +1,4 @@
-package de.raidcraft.de.loot.object;
+package de.raidcraft.loot.object;
 
 /**
  * Author: Philip

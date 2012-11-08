@@ -1,12 +1,12 @@
-package de.raidcraft.de.loot.listener;
+package de.raidcraft.loot.listener;
 
-import de.raidcraft.rcrpg.loot.LootFactory;
-import de.raidcraft.rcrpg.loot.SettingStorage;
-import de.raidcraft.rcrpg.loot.object.LootObject;
-import de.raidcraft.rcrpg.loot.object.SimpleLootObject;
-import de.raidcraft.rcrpg.loot.object.SimpleTimedLootObject;
-import de.raidcraft.rcrpg.loot.table.LootTableEntry;
-import de.raidcraft.rcrpg.loot.util.LootChat;
+import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.SettingStorage;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.table.LootTableEntry;
+import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.rcrpg.util.DateUtil;
 import org.bukkit.Material;
 import org.bukkit.block.*;

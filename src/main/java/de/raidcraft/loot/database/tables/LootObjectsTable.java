@@ -1,12 +1,12 @@
-package de.raidcraft.de.loot.database.tables;
+package de.raidcraft.loot.database.tables;
 
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.rcrpg.api.database.Database;
-import de.raidcraft.rcrpg.api.database.Table;
-import de.raidcraft.rcrpg.loot.database.LootDatabase;
-import de.raidcraft.rcrpg.loot.object.LootObject;
-import de.raidcraft.rcrpg.loot.object.SimpleLootObject;
-import de.raidcraft.rcrpg.loot.object.SimpleTimedLootObject;
+import de.raidcraft.componentutils.database.Database;
+import de.raidcraft.componentutils.database.Table;
+import de.raidcraft.loot.database.LootDatabase;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 

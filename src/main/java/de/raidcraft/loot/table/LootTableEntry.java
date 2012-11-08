@@ -1,4 +1,4 @@
-package de.raidcraft.de.loot.table;
+package de.raidcraft.loot.table;
 
 import org.bukkit.inventory.ItemStack;
 

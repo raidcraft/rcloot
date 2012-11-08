@@ -6,6 +6,7 @@ package de.raidcraft.loot;
  * Description:
  */
 public class SettingStorage {
+
     public final static int ALL = -1;
     private SETTING_TYPE type;
     private int cooldown = 0;

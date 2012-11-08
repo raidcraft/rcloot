@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 public class LootCommands {
 
     public LootCommands(LootModule module) {
+
     }
 
     @Command(
@@ -34,7 +35,8 @@ public class LootCommands {
     )
     @CommandPermissions("loot.create")
     public void infinite(CommandContext context, CommandSender sender) throws CommandException {
-        if(!PlayerListener.createMode.containsKey(sender.getName())) {
+
+        if (!PlayerListener.createMode.containsKey(sender.getName())) {
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(0).setDrops(SettingStorage.ALL));
         }
         LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
@@ -45,6 +47,7 @@ public class LootCommands {
         private final LootModule module;
 
         public NestedLootCommands(LootModule module) {
+
             this.module = module;
         }
 
@@ -54,8 +57,9 @@ public class LootCommands {
         )
         @CommandPermissions("loot.reload")
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
+
             LootFactory.inst.loadLootObjects();
-            LootChat.success((Player)sender, "Es wurden alle Loot-Objekte neu geladen!");
+            LootChat.success((Player) sender, "Es wurden alle Loot-Objekte neu geladen!");
         }
 
         @Command(
@@ -64,6 +68,7 @@ public class LootCommands {
         )
         @CommandPermissions("loot.delete")
         public void delete(CommandContext context, CommandSender sender) throws CommandException {
+
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.REMOVE));
             LootChat.info((Player) sender, "Klicke nun das Loot Objekt an das gelöscht werden soll!");
         }
@@ -75,13 +80,14 @@ public class LootCommands {
         )
         @CommandPermissions("loot.create")
         public void timed(CommandContext context, CommandSender sender) throws CommandException {
+
             int cooldown = context.getInteger(0);
-            if(cooldown < 0) {
-                LootChat.warn((Player)sender, "Der Cooldown muss größer 0 sein!");
+            if (cooldown < 0) {
+                LootChat.warn((Player) sender, "Der Cooldown muss größer 0 sein!");
                 return;
             }
             int drops = SettingStorage.ALL;
-            if(context.argsLength() > 1 && context.getInteger(1) > 0) {
+            if (context.argsLength() > 1 && context.getInteger(1) > 0) {
                 drops = context.getInteger(1);
             }
 
@@ -95,8 +101,9 @@ public class LootCommands {
         )
         @CommandPermissions("loot.create")
         public void normal(CommandContext context, CommandSender sender) throws CommandException {
+
             int drops = SettingStorage.ALL;
-            if(context.argsLength() > 0 && context.getInteger(0) > 0) {
+            if (context.argsLength() > 0 && context.getInteger(0) > 0) {
                 drops = context.getInteger(0);
             }
 

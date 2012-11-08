@@ -15,29 +15,33 @@ import java.util.List;
  * Description:
  */
 public class SimpleTimedLootObject extends SimpleLootObject implements CooldownLootObject {
+
     int cooldown;
 
     @Override
     public void setCooldown(int cooldown) {
+
         this.cooldown = cooldown;
     }
 
     @Override
     public int getCooldown() {
+
         return cooldown;
     }
 
     @Override
     public List<ItemStack> loot(String player) {
+
         List<ItemStack> loot = new ArrayList<>();
 
-        if((Database.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown*1000) < System.currentTimeMillis()) {
-            for(LootTableEntry entry : getLootTable().loot()) {
+        if ((Database.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown * 1000) < System.currentTimeMillis()) {
+            for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem());
             }
 
             // remember loot if not infinite dispenser
-            if(cooldown != 0 || player != LootFactory.ANY) {
+            if (cooldown != 0 || player != LootFactory.ANY) {
                 Database.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis());
             }
         }

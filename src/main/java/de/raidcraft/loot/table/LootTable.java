@@ -10,11 +10,11 @@ import java.util.List;
 public interface LootTable {
 
     public void setId(int id);
-    
+
     public int getId();
-    
+
     public void setEntries(List<LootTableEntry> entries);
-    
+
     public void addEntry(LootTableEntry entry);
 
     public void removeEntry(LootTableEntry entry);
@@ -24,12 +24,12 @@ public interface LootTable {
     public void setMinMaxLootItems(int min, int max);
 
     public void setMinLootItems(int min);
-    
+
     public int getMinLootItems();
-    
+
     public void setMaxLootItems(int max);
-    
+
     public int getMaxLootItems();
-    
+
     public List<LootTableEntry> loot();
 }

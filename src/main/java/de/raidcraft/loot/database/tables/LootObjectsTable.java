@@ -24,11 +24,13 @@ import java.util.List;
 public class LootObjectsTable extends Table {
 
     public LootObjectsTable() {
+
         super("objects", LootDatabase.tablePrefix);
     }
 
     @Override
     public void createTable() {
+
         try {
             getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
@@ -48,8 +50,9 @@ public class LootObjectsTable extends Table {
             CommandBook.logger().warning(e.getMessage());
         }
     }
-    
+
     public List<LootObject> getAllObjects() {
+
         List<LootObject> lootObjects = new ArrayList<>();
         try {
             ResultSet resultSet = getConnection().prepareStatement(
@@ -59,11 +62,10 @@ public class LootObjectsTable extends Table {
                 int cooldown = resultSet.getInt("cooldown");
 
                 LootObject lootObject;
-                if(cooldown != -1) {
+                if (cooldown != -1) {
                     lootObject = new SimpleTimedLootObject();
-                    ((SimpleTimedLootObject)lootObject).setCooldown(cooldown);
-                }
-                else {
+                    ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
+                } else {
                     lootObject = new SimpleLootObject();
                 }
                 lootObject.setId(resultSet.getInt("id"));
@@ -77,28 +79,27 @@ public class LootObjectsTable extends Table {
 
                 lootObjects.add(lootObject);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return lootObjects;
     }
-    
+
     public void addObject(LootObject object) {
 
         // return if object already saved
-        if(object.getId() != 0) {
+        if (object.getId() != 0) {
             return;
         }
 
         // save table if not done yes
-        if(object.getLootTable().getId() == 0) {
+        if (object.getLootTable().getId() == 0) {
             Database.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
         }
 
         int cooldown = -1;
-        if(object instanceof SimpleTimedLootObject) {
-            cooldown = ((SimpleTimedLootObject)object).getCooldown();
+        if (object instanceof SimpleTimedLootObject) {
+            cooldown = ((SimpleTimedLootObject) object).getCooldown();
         }
         try {
             String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled) " +
@@ -127,6 +128,7 @@ public class LootObjectsTable extends Table {
     }
 
     public void deleteObject(LootObject object) {
+
         try {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
@@ -137,7 +139,8 @@ public class LootObjectsTable extends Table {
     }
 
     public void updateObject(LootObject object) {
-        if(object.getId() == 0) {
+
+        if (object.getId() == 0) {
             return;
         }
     }

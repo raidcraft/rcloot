@@ -26,11 +26,13 @@ import java.util.Map;
 public class LootTableEntriesTable extends Table {
 
     public LootTableEntriesTable() {
+
         super("entries", LootDatabase.tablePrefix);
     }
 
     @Override
     public void createTable() {
+
         try {
             getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
@@ -49,10 +51,11 @@ public class LootTableEntriesTable extends Table {
     }
 
     public void addEntries(LootTable table) {
-        for(LootTableEntry entry : table.getEntries()) {
+
+        for (LootTableEntry entry : table.getEntries()) {
             String enchantments = getEnchantmentString(entry.getItem().getEnchantments());
             // save entry if doesn't save yet
-            if(entry.getId() == 0) {
+            if (entry.getId() == 0) {
                 try {
                     String query = "INSERT INTO " + getTableName() + " (item, loot_table_id, durability, amount, enchantments, chance) " +
                             "VALUES (" +
@@ -79,6 +82,7 @@ public class LootTableEntriesTable extends Table {
     }
 
     public List<LootTableEntry> getEntries(LootTable lootTable) {
+
         List<LootTableEntry> entries = new ArrayList<>();
         try {
             ResultSet resultSet = getConnection().prepareStatement(
@@ -99,14 +103,14 @@ public class LootTableEntriesTable extends Table {
                 entry.setItem(itemStack);
                 entries.add(entry);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return entries;
     }
 
     public void deleteEntries(LootTable table) {
+
         try {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';").execute();
@@ -115,23 +119,26 @@ public class LootTableEntriesTable extends Table {
             e.printStackTrace();
         }
     }
-    
+
     private String getEnchantmentString(Map<Enchantment, Integer> enchantments) {
+
         String enchantmentString = "";
-        for(Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
+        for (Map.Entry<Enchantment, Integer> enchantment : enchantments.entrySet()) {
             enchantmentString += enchantment.getKey().getName() + ":" + enchantment.getValue() + "|";
         }
         return enchantmentString;
     }
-    
+
     private Map<Enchantment, Integer> getEnchantmentsByString(String enchantmentString) {
+
         Map<Enchantment, Integer> enchantments = new HashMap<>();
         String[] enchantmentPairs = enchantmentString.split("|");
-        for(String enchantmentPair : enchantmentPairs) {
+        for (String enchantmentPair : enchantmentPairs) {
             String[] enchantmentPairSplit = enchantmentPair.split(":");
             try {
                 enchantments.put(Enchantment.getByName(enchantmentPairSplit[0]), Integer.parseInt(enchantmentPairSplit[1]));
-            } catch(Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return enchantments;
     }

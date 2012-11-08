@@ -13,9 +13,10 @@ import org.bukkit.event.block.BlockBreakEvent;
  */
 public class BlockListener implements Listener {
 
-    @EventHandler( ignoreCancelled = true )
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if(LootFactory.inst.getLootObject(event.getBlock()) != null) {
+
+        if (LootFactory.inst.getLootObject(event.getBlock()) != null) {
             event.setCancelled(true);
             LootChat.warn(event.getPlayer(), "Loot Objekte können nicht zerstört werden!");
         }

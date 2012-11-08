@@ -6,5 +6,6 @@ package de.raidcraft.loot.database;
  * Description:
  */
 public class LootDatabase {
+
     public final static String tablePrefix = "loot_";
 }

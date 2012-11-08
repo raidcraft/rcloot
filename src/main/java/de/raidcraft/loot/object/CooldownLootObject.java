@@ -6,8 +6,8 @@ package de.raidcraft.loot.object;
  * Description:
  */
 public interface CooldownLootObject extends LootObject {
-    
+
     public void setCooldown(int cooldown);
-    
+
     public int getCooldown();
 }

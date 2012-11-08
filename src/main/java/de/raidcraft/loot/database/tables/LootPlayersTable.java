@@ -15,11 +15,13 @@ import java.sql.SQLException;
 public class LootPlayersTable extends Table {
 
     public LootPlayersTable() {
+
         super("players", LootDatabase.tablePrefix);
     }
 
     @Override
     public void createTable() {
+
         try {
             getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
@@ -33,8 +35,9 @@ public class LootPlayersTable extends Table {
             CommandBook.logger().warning(e.getMessage());
         }
     }
-    
+
     public void addEntry(String player, int objectId, long timestamp) {
+
         try {
             getConnection().prepareStatement(
                     "INSERT INTO " + getTableName() + " (object_id, player, timestamp) " +
@@ -50,6 +53,7 @@ public class LootPlayersTable extends Table {
     }
 
     public boolean hasLooted(String player, int objectId) {
+
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';").executeQuery();
@@ -57,23 +61,22 @@ public class LootPlayersTable extends Table {
             while (resultSet.next()) {
                 return true;
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return false;
     }
-    
+
     public long getLastLooted(String player, int objectId) {
+
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;").executeQuery();
 
             while (resultSet.next()) {
-                    return resultSet.getLong("timestamp");
+                return resultSet.getLong("timestamp");
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return 0;

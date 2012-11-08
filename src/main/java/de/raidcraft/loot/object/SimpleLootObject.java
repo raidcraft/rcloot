@@ -16,6 +16,7 @@ import java.util.List;
  * Description:
  */
 public class SimpleLootObject implements LootObject {
+
     private int id = 0;
     private LootTable lootTable;
     private Block host;
@@ -25,71 +26,84 @@ public class SimpleLootObject implements LootObject {
 
     @Override
     public void setId(int id) {
+
         this.id = id;
     }
 
     @Override
     public int getId() {
+
         return id;
     }
 
     @Override
     public void setCreator(String creator) {
+
         this.creator = creator;
     }
 
     @Override
     public String getCreator() {
+
         return creator;
     }
 
     @Override
     public void setCreated(long created) {
+
         this.creationDate = created;
     }
 
     @Override
     public long getCreated() {
+
         return creationDate;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
+
         this.enabled = enabled;
     }
 
     @Override
     public boolean isEnabled() {
+
         return enabled;
     }
 
     @Override
     public LootTable getLootTable() {
+
         return lootTable;
     }
 
     @Override
     public void assignLootTable(LootTable lootTable) {
+
         this.lootTable = lootTable;
     }
 
     @Override
     public Block getHost() {
+
         return host;
     }
 
     @Override
     public void setHost(Block block) {
+
         this.host = block;
     }
 
     @Override
     public List<ItemStack> loot(String player) {
+
         List<ItemStack> loot = new ArrayList<>();
-        
+
         // player not yet looted
-        if(id != 0 && !Database.getTable(LootPlayersTable.class).hasLooted(player, id)) {
-            for(LootTableEntry entry : getLootTable().loot()) {
+        if (id != 0 && !Database.getTable(LootPlayersTable.class).hasLooted(player, id)) {
+            for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem());
             }
 

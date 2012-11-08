@@ -21,11 +21,13 @@ import java.util.List;
 public class LootTablesTable extends Table {
 
     public LootTablesTable() {
+
         super("tables", LootDatabase.tablePrefix);
     }
 
     @Override
     public void createTable() {
+
         try {
             getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
@@ -42,16 +44,16 @@ public class LootTablesTable extends Table {
     // add new loot table and save entries
     public void addLootTable(LootTable table) {
         // return if table already saved
-        if(table.getId() != 0) {
+        if (table.getId() != 0) {
             return;
         }
 
         try {
             String query = "INSERT INTO " + getTableName() + " (min_loot, max_loot) " +
-                "VALUES (" +
-                "'" + table.getMinLootItems() + "'" + "," +
-                "'" + table.getMaxLootItems() + "'" +
-                ");";
+                    "VALUES (" +
+                    "'" + table.getMinLootItems() + "'" + "," +
+                    "'" + table.getMaxLootItems() + "'" +
+                    ");";
             Statement statement = getConnection().createStatement();
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.getGeneratedKeys();
@@ -65,8 +67,9 @@ public class LootTablesTable extends Table {
             e.printStackTrace();
         }
     }
-    
+
     public LootTable getLootTable(int id) {
+
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';").executeQuery();
@@ -79,14 +82,14 @@ public class LootTablesTable extends Table {
                 table.setEntries(Database.getTable(LootTableEntriesTable.class).getEntries(table));
                 return table;
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return null;
     }
 
     public List<LootTable> getAllLootTables() {
+
         List<LootTable> tables = new ArrayList<>();
         try {
             ResultSet resultSet = getConnection().prepareStatement(
@@ -100,14 +103,14 @@ public class LootTablesTable extends Table {
                 table.setEntries(Database.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
         return tables;
     }
 
     public void deleteTable(LootTable table) {
+
         try {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';").execute();

@@ -14,11 +14,11 @@ import java.util.List;
 public interface LootObject {
 
     public void setId(int id);
-    
+
     public int getId();
-    
+
     public void setCreator(String player);
-    
+
     public String getCreator();
 
     public void setCreated(long created);
@@ -28,14 +28,14 @@ public interface LootObject {
     public void setEnabled(boolean enabled);
 
     public boolean isEnabled();
-    
+
     public LootTable getLootTable();
 
     public void assignLootTable(LootTable lootTable);
 
     public Block getHost();
-    
+
     public void setHost(Block block);
-    
+
     public List<ItemStack> loot(String player);
 }

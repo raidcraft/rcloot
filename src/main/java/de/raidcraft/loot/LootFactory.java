@@ -25,45 +25,48 @@ import java.util.Map;
  * Description:
  */
 public class LootFactory {
+
     public final static String ANY = "ANY";
     public final static LootFactory inst = new LootFactory();
     private static Map<Block, LootObject> lootObjects = new HashMap<>();
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
-        
+
         Database.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
-        if(andTable) {
+        if (andTable) {
             Database.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
         }
-        
+
         unregisterLootObject(lootObject);
     }
 
     public LootObject getLootObject(Block block) {
-        if(lootObjects.containsKey(block)) {
+
+        if (lootObjects.containsKey(block)) {
             return lootObjects.get(block);
         }
         return lootObjects.get(block);
     }
-    
+
     private LootTable createLootTable(ItemStack[] items, int minLoot, int maxLoot) {
+
         List<LootTableEntry> tableEntries = new ArrayList<>();
         // at first, count total items
         int itemCount = 0;
-        for(ItemStack item : items) {
-            if(item != null) {
+        for (ItemStack item : items) {
+            if (item != null) {
                 itemCount++;
             }
         }
         // then create and add loot entries
-        for(ItemStack item : items) {
-            if(item == null) {
+        for (ItemStack item : items) {
+            if (item == null) {
                 continue;
             }
             LootTableEntry tableEntry = new SimpleLootTableEntry();
             tableEntry.setItem(item);
-            tableEntry.setChance((int)((1./(double)itemCount)*100.));
+            tableEntry.setChance((int) ((1. / (double) itemCount) * 100.));
             tableEntries.add(tableEntry);
         }
         LootTable lootTable = new SimpleLootTable();
@@ -71,15 +74,16 @@ public class LootFactory {
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
         return lootTable;
     }
-    
+
     public void createTimedLootObject(String creator, Block block, ItemStack[] items, int cooldown, int drops) {
+
         int itemCount = 0;
-        for(ItemStack item : items) {
-            if(item != null) {
+        for (ItemStack item : items) {
+            if (item != null) {
                 itemCount++;
             }
         }
-        if(drops != SettingStorage.ALL) {
+        if (drops != SettingStorage.ALL) {
             itemCount = drops;
         }
         LootTable lootTable = createLootTable(items, itemCount, itemCount);
@@ -100,13 +104,14 @@ public class LootFactory {
     }
 
     public void createDefaultLootObject(String creator, Block block, ItemStack[] items, int drops) {
+
         int itemCount = 0;
-        for(ItemStack item : items) {
-            if(item != null) {
+        for (ItemStack item : items) {
+            if (item != null) {
                 itemCount++;
             }
         }
-        if(drops != SettingStorage.ALL) {
+        if (drops != SettingStorage.ALL) {
             itemCount = drops;
         }
         LootTable lootTable = createLootTable(items, itemCount, itemCount);
@@ -126,28 +131,39 @@ public class LootFactory {
     }
 
     public void addLootObject(LootObject lootObject) {
-        if(lootObject.getHost().getType() == Material.CHEST) {
-            if(lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST) lootObjects.put(lootObject.getHost().getRelative(1, 0, 0), lootObject);
-            if(lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST) lootObjects.put(lootObject.getHost().getRelative(-1, 0, 0), lootObject);
-            if(lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST) lootObjects.put(lootObject.getHost().getRelative(0, 0, 1), lootObject);
-            if(lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST) lootObjects.put(lootObject.getHost().getRelative(0, 0, -1), lootObject);
+
+        if (lootObject.getHost().getType() == Material.CHEST) {
+            if (lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST)
+                lootObjects.put(lootObject.getHost().getRelative(1, 0, 0), lootObject);
+            if (lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST)
+                lootObjects.put(lootObject.getHost().getRelative(-1, 0, 0), lootObject);
+            if (lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST)
+                lootObjects.put(lootObject.getHost().getRelative(0, 0, 1), lootObject);
+            if (lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST)
+                lootObjects.put(lootObject.getHost().getRelative(0, 0, -1), lootObject);
         }
         lootObjects.put(lootObject.getHost(), lootObject);
     }
 
     public void unregisterLootObject(LootObject lootObject) {
-        if(lootObject.getHost().getType() == Material.CHEST) {
-            if(lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST) lootObjects.remove(lootObject.getHost().getRelative(1, 0, 0));
-            if(lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST) lootObjects.remove(lootObject.getHost().getRelative(-1, 0, 0));
-            if(lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST) lootObjects.remove(lootObject.getHost().getRelative(0, 0, 1));
-            if(lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST) lootObjects.remove(lootObject.getHost().getRelative(0, 0, -1));
+
+        if (lootObject.getHost().getType() == Material.CHEST) {
+            if (lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST)
+                lootObjects.remove(lootObject.getHost().getRelative(1, 0, 0));
+            if (lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST)
+                lootObjects.remove(lootObject.getHost().getRelative(-1, 0, 0));
+            if (lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST)
+                lootObjects.remove(lootObject.getHost().getRelative(0, 0, 1));
+            if (lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST)
+                lootObjects.remove(lootObject.getHost().getRelative(0, 0, -1));
         }
         lootObjects.remove(lootObject.getHost());
     }
 
     public void loadLootObjects() {
+
         lootObjects.clear();
-        for(LootObject lootObject : Database.getTable(LootObjectsTable.class).getAllObjects()) {
+        for (LootObject lootObject : Database.getTable(LootObjectsTable.class).getAllObjects()) {
             addLootObject(lootObject);
         }
     }

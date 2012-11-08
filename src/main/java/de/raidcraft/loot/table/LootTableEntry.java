@@ -14,10 +14,10 @@ public interface LootTableEntry {
     public int getId();
 
     public ItemStack getItem();
-    
+
     public void setItem(ItemStack item);
-    
+
     public int getChance();
-    
+
     public void setChance(int chance);
 }

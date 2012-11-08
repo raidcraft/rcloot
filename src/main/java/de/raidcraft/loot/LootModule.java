@@ -28,7 +28,7 @@ public class LootModule extends BukkitComponent {
 
     @InjectComponent
     private Database database;
-    
+
     @Override
     public void enable() {
 

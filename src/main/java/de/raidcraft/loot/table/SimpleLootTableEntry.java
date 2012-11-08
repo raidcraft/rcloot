@@ -8,41 +8,48 @@ import org.bukkit.inventory.ItemStack;
  * Description:
  */
 public class SimpleLootTableEntry implements LootTableEntry {
+
     private int id = 0;
     private ItemStack item;
     private int chance;
 
     @Override
     public void setId(int id) {
+
         this.id = id;
     }
 
     @Override
     public int getId() {
+
         return id;
     }
 
     @Override
     public ItemStack getItem() {
+
         return item;
     }
 
     @Override
     public void setItem(ItemStack item) {
+
         this.item = item;
     }
 
     @Override
     public int getChance() {
+
         return chance;
     }
 
     @Override
     public void setChance(int chance) {
-        if(chance > 100) {
+
+        if (chance > 100) {
             chance = 100;
         }
-        if(chance < 0) {
+        if (chance < 0) {
             chance = 0;
         }
         this.chance = chance;

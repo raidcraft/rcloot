@@ -13,6 +13,7 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.rcrpg.RaidCraft;
 
 /**
  * Author: Philip
@@ -23,11 +24,13 @@ import de.raidcraft.loot.listener.PlayerListener;
         friendlyName = "Loot Module",
         desc = "Provides loot chests and more."
 )
-@Depend(components = Database.class)
+@Depend(components = {Database.class, RaidCraft.class})
 public class LootModule extends BukkitComponent {
 
     @InjectComponent
     private Database database;
+    @InjectComponent
+    private RaidCraft raidCraft;
 
     @Override
     public void enable() {

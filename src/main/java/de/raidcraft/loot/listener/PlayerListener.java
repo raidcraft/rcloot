@@ -1,5 +1,6 @@
 package de.raidcraft.loot.listener;
 
+import de.raidcraft.componentutils.DateUtil;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.object.LootObject;
@@ -7,7 +8,6 @@ import de.raidcraft.loot.object.SimpleLootObject;
 import de.raidcraft.loot.object.SimpleTimedLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.rcrpg.util.DateUtil;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.HumanEntity;

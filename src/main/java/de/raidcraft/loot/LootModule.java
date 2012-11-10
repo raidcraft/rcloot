@@ -14,7 +14,6 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
-import de.raidcraft.rcrpg.RaidCraft;
 
 /**
  * Author: Philip

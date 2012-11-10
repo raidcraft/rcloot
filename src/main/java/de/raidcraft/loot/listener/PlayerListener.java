@@ -1,6 +1,6 @@
 package de.raidcraft.loot.listener;
 
-import de.raidcraft.componentutils.DateUtil;
+import com.silthus.raidcraft.util.component.DateUtil;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.object.LootObject;

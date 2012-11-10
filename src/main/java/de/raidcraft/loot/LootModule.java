@@ -6,7 +6,6 @@ import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.Depend;
 import com.zachsthings.libcomponents.InjectComponent;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
-import de.raidcraft.componentutils.database.Database;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootPlayersTable;

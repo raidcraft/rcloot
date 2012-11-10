@@ -1,7 +1,6 @@
 package de.raidcraft.loot;
 
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
-import de.raidcraft.componentutils.database.Database;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.object.LootObject;

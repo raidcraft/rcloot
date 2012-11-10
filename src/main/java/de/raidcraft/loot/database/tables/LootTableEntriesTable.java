@@ -1,7 +1,7 @@
 package de.raidcraft.loot.database.tables;
 
+import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;

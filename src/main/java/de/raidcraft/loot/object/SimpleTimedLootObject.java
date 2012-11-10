@@ -1,5 +1,6 @@
 package de.raidcraft.loot.object;
 
+import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import de.raidcraft.componentutils.database.Database;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
@@ -35,14 +36,14 @@ public class SimpleTimedLootObject extends SimpleLootObject implements CooldownL
 
         List<ItemStack> loot = new ArrayList<>();
 
-        if ((Database.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown * 1000) < System.currentTimeMillis()) {
+        if ((ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown * 1000) < System.currentTimeMillis()) {
             for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem());
             }
 
             // remember loot if not infinite dispenser
             if (cooldown != 0 || player != LootFactory.ANY) {
-                Database.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis());
+                ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis());
             }
         }
         return loot;

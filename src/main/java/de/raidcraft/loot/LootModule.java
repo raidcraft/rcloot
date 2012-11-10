@@ -1,5 +1,6 @@
 package de.raidcraft.loot;
 
+import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.Depend;
@@ -24,21 +25,14 @@ import de.raidcraft.rcrpg.RaidCraft;
         friendlyName = "Loot Module",
         desc = "Provides loot chests and more."
 )
-@Depend(components = {Database.class, RaidCraft.class})
 public class LootModule extends BukkitComponent {
-
-    @InjectComponent
-    private Database database;
-    @InjectComponent
-    private RaidCraft raidCraft;
 
     @Override
     public void enable() {
-
-        database.registerTable(LootObjectsTable.class, new LootObjectsTable());
-        database.registerTable(LootPlayersTable.class, new LootPlayersTable());
-        database.registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
-        database.registerTable(LootTablesTable.class, new LootTablesTable());
+        ComponentDatabase.INSTANCE.registerTable(LootObjectsTable.class, new LootObjectsTable());
+        ComponentDatabase.INSTANCE.registerTable(LootPlayersTable.class, new LootPlayersTable());
+        ComponentDatabase.INSTANCE.registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
+        ComponentDatabase.INSTANCE.registerTable(LootTablesTable.class, new LootTablesTable());
 
         // do some command init
         registerCommands(LootCommands.class);

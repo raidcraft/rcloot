@@ -1,5 +1,6 @@
 package de.raidcraft.loot;
 
+import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import de.raidcraft.componentutils.database.Database;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
@@ -32,10 +33,10 @@ public class LootFactory {
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
 
-        Database.getTable(LootObjectsTable.class).deleteObject(lootObject);
+        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
         if (andTable) {
-            Database.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
+            ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
         }
 
         unregisterLootObject(lootObject);
@@ -97,7 +98,7 @@ public class LootFactory {
         timedLootObject.setEnabled(true);
 
         // save loot object in database
-        Database.getTable(LootObjectsTable.class).addObject(timedLootObject);
+        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(timedLootObject);
 
         // register loot object in cache
         addLootObject(timedLootObject);
@@ -124,7 +125,7 @@ public class LootFactory {
         lootObject.setEnabled(true);
 
         // save loot object in database
-        Database.getTable(LootObjectsTable.class).addObject(lootObject);
+        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(lootObject);
 
         // register loot object in cache
         addLootObject(lootObject);
@@ -163,7 +164,7 @@ public class LootFactory {
     public void loadLootObjects() {
 
         lootObjects.clear();
-        for (LootObject lootObject : Database.getTable(LootObjectsTable.class).getAllObjects()) {
+        for (LootObject lootObject : ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).getAllObjects()) {
             addLootObject(lootObject);
         }
     }

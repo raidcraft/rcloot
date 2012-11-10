@@ -1,8 +1,8 @@
 package de.raidcraft.loot.database.tables;
 
+import com.silthus.raidcraft.util.component.database.ComponentDatabase;
+import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.componentutils.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.SimpleLootObject;
@@ -75,7 +75,7 @@ public class LootObjectsTable extends Table {
                 Block host = Bukkit.getWorld(resultSet.getString("world")).getBlockAt(resultSet.getInt("x")
                         , resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHost(host);
-                lootObject.assignLootTable(Database.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
 
                 lootObjects.add(lootObject);
             }
@@ -94,7 +94,7 @@ public class LootObjectsTable extends Table {
 
         // save table if not done yes
         if (object.getLootTable().getId() == 0) {
-            Database.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
+            ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
         }
 
         int cooldown = -1;

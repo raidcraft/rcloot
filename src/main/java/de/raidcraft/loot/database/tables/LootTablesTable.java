@@ -1,8 +1,8 @@
 package de.raidcraft.loot.database.tables;
 
+import com.silthus.raidcraft.util.component.database.ComponentDatabase;
+import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.componentutils.database.Database;
-import de.raidcraft.componentutils.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -60,7 +60,7 @@ public class LootTablesTable extends Table {
             if (rs != null && rs.next()) {
                 table.setId(rs.getInt(1));
             }
-            Database.getTable(LootTableEntriesTable.class).addEntries(table);
+            ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).addEntries(table);
 
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
@@ -79,7 +79,7 @@ public class LootTablesTable extends Table {
                 table.setId(resultSet.getInt("id"));
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
-                table.setEntries(Database.getTable(LootTableEntriesTable.class).getEntries(table));
+                table.setEntries(ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).getEntries(table));
                 return table;
             }
         } catch (SQLException e) {
@@ -100,7 +100,7 @@ public class LootTablesTable extends Table {
                 table.setId(resultSet.getInt("id"));
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
-                table.setEntries(Database.getTable(LootTableEntriesTable.class).getEntries(table));
+                table.setEntries(ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
             }
         } catch (SQLException e) {
@@ -114,7 +114,7 @@ public class LootTablesTable extends Table {
         try {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';").execute();
-            Database.getTable(LootTableEntriesTable.class).deleteEntries(table);
+            ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).deleteEntries(table);
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
             e.printStackTrace();

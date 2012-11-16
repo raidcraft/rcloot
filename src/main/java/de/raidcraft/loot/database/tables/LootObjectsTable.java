@@ -8,6 +8,7 @@ import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.SimpleLootObject;
 import de.raidcraft.loot.object.SimpleTimedLootObject;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import java.sql.ResultSet;
@@ -72,7 +73,11 @@ public class LootObjectsTable extends Table {
                 lootObject.setCreator(resultSet.getString("creator"));
                 lootObject.setEnabled(resultSet.getBoolean("enabled"));
 
-                Block host = Bukkit.getWorld(resultSet.getString("world")).getBlockAt(resultSet.getInt("x")
+                World world = Bukkit.getWorld(resultSet.getString("world"));
+                if (world == null) {
+                    continue;
+                }
+                Block host = world.getBlockAt(resultSet.getInt("x")
                         , resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHost(host);
                 lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));

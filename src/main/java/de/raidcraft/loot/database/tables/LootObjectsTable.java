@@ -3,7 +3,9 @@ package de.raidcraft.loot.database.tables;
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.loot.TreasureRewardLevel;
 import de.raidcraft.loot.database.LootDatabase;
+import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -85,8 +87,18 @@ public class LootObjectsTable extends Table {
                 Block host = world.getBlockAt(resultSet.getInt("x")
                         , resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHost(host);
-                lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
-
+                if(lootObject instanceof TreasureLootObject) {
+                    try {
+                        lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class)
+                                .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
+                    } catch (NoLinkedRewardTableException e) {
+                        CommandBook.logger().warning("[Loot] Try to load treasure object: " + e.getMessage());
+                        continue;
+                    }
+                }
+                else {
+                    lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                }
                 lootObjects.add(lootObject);
             }
         } catch (SQLException e) {

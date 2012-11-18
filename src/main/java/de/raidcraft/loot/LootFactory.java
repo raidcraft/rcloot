@@ -1,11 +1,14 @@
 package de.raidcraft.loot;
 
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
+import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
+import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.SimpleLootObject;
 import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.SimpleTreasureLootObject;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -73,6 +76,30 @@ public class LootFactory {
         lootTable.setEntries(tableEntries);
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
         return lootTable;
+    }
+    
+    public void createTreasureLootObject(String creator, Block block, int drops, int rewardLevel) {
+
+        SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
+
+        try {
+            treasureLootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
+        } catch (NoLinkedRewardTableException e) {
+            CommandBook.logger().warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
+            return;
+        }
+
+        treasureLootObject.setHost(block);
+        treasureLootObject.setCreator(creator);
+        treasureLootObject.setCreated(System.currentTimeMillis() / 1000);
+        treasureLootObject.setRewardLevel(rewardLevel);
+        treasureLootObject.setEnabled(true);
+
+        // save loot object in database
+        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(treasureLootObject);
+
+        // register loot object in cache
+        addLootObject(treasureLootObject);
     }
 
     public void createTimedLootObject(String creator, Block block, ItemStack[] items, int cooldown, int drops) {

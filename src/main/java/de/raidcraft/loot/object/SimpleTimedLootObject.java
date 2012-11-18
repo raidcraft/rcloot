@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class SimpleTimedLootObject extends SimpleLootObject implements CooldownLootObject {
 
-    int cooldown;
+    int cooldown = 0;
 
     @Override
     public void setCooldown(int cooldown) {

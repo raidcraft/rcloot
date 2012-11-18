@@ -34,7 +34,7 @@ public class LootFactory {
 
         ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
-        if (andTable) {
+        if (andTable && !(lootObject instanceof TreasureRewardLevel)) {
             ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
         }
 

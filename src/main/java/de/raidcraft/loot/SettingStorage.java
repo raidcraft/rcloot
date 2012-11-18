@@ -11,6 +11,7 @@ public class SettingStorage {
     private SETTING_TYPE type;
     private int cooldown = 0;
     private int drops = ALL;
+    private int rewardLevel = 0;
 
     public SettingStorage(SETTING_TYPE type) {
 
@@ -39,6 +40,11 @@ public class SettingStorage {
         return this;
     }
 
+    public SettingStorage setRewardLevel(int level) {
+        this.rewardLevel = level;
+        return this;
+    }
+
     public SETTING_TYPE getType() {
 
         return type;
@@ -47,6 +53,7 @@ public class SettingStorage {
     public enum SETTING_TYPE {
         TIMED,
         DEFAULT,
+        TREASURE,
         REMOVE
     }
 }

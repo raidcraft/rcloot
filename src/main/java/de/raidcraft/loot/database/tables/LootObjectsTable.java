@@ -4,9 +4,7 @@ import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.loot.database.LootDatabase;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.SimpleLootObject;
-import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -45,6 +43,7 @@ public class LootObjectsTable extends Table {
                             "`creator` VARCHAR ( 32 ) NOT NULL ,\n" +
                             "`created` BIGINT( 20 ) NOT NULL , \n" +
                             "`enabled` TINYINT( 1 ) DEFAULT 1,\n" +
+                            "`reward_level` TINYINT( 1 ) DEFAULT 0,\n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
@@ -61,6 +60,7 @@ public class LootObjectsTable extends Table {
 
             while (resultSet.next()) {
                 int cooldown = resultSet.getInt("cooldown");
+                int rewardLevel = resultSet.getInt("reward_level");
 
                 LootObject lootObject;
                 if (cooldown != -1) {
@@ -68,6 +68,10 @@ public class LootObjectsTable extends Table {
                     ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
                 } else {
                     lootObject = new SimpleLootObject();
+                }
+                if(rewardLevel > 0) {
+                    lootObject = new SimpleTreasureLootObject();
+                    ((TreasureLootObject) lootObject).setRewardLevel(rewardLevel);
                 }
                 lootObject.setId(resultSet.getInt("id"));
                 lootObject.setCreator(resultSet.getString("creator"));
@@ -104,11 +108,16 @@ public class LootObjectsTable extends Table {
         }
 
         int cooldown = -1;
+        int rewardLevel = 0;
+
         if (object instanceof SimpleTimedLootObject) {
             cooldown = ((SimpleTimedLootObject) object).getCooldown();
         }
+        if(object instanceof TreasureLootObject) {
+            rewardLevel = ((TreasureLootObject) object).getRewardLevel();
+        }
         try {
-            String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled) " +
+            String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled, reward_level) " +
                     "VALUES (" +
                     "'" + object.getLootTable().getId() + "'" + "," +
                     "'" + object.getHost().getLocation().getWorld().getName() + "'" + "," +
@@ -118,7 +127,8 @@ public class LootObjectsTable extends Table {
                     "'" + cooldown + "'" + "," +
                     "'" + object.getCreator() + "'" + "," +
                     "'" + object.getCreated() + "'" + "," +
-                    "'" + ((object.isEnabled()) ? 1 : 0) + "'" +
+                    "'" + ((object.isEnabled()) ? 1 : 0) + "'" + "," +
+                    "'" + rewardLevel + "'" +
                     ");";
 
             Statement statement = getConnection().createStatement();

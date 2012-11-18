@@ -110,5 +110,25 @@ public class LootCommands {
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
+
+        @Command(
+                aliases = {"treasure"},
+                desc = "Creates an treasure loot object"
+        )
+        @CommandPermissions("loot.create")
+        public void treasure(CommandContext context, CommandSender sender) throws CommandException {
+
+            int drops = SettingStorage.ALL;
+            int rewardLevel = context.getInteger(0);
+
+
+
+            if (context.argsLength() > 1 && context.getInteger(1) > 0) {
+                drops = context.getInteger(1);
+            }
+
+            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
+            LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+        }
     }
 }

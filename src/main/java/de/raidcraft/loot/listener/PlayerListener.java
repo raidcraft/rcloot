@@ -8,6 +8,7 @@ import de.raidcraft.loot.object.SimpleLootObject;
 import de.raidcraft.loot.object.SimpleTimedLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.HumanEntity;
@@ -57,7 +58,7 @@ public class PlayerListener implements Listener {
                                 + ((SimpleTimedLootObject) existingLootObject).getCooldown()
                                 + "s, Drops: " + existingLootObject.getLootTable().getMinLootItems()
                                 + ", Ersteller: " + existingLootObject.getCreator()
-                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated()));
+                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000));
                     } else if (existingLootObject instanceof SimpleLootObject) {
                         LootChat.info(event.getPlayer(), "Default-Loot-Objekt, Drops: "
                                 + existingLootObject.getLootTable().getMinLootItems()
@@ -131,7 +132,8 @@ public class PlayerListener implements Listener {
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
 
         if (loot.size() > 0) {
-            event.setItem(loot.get(0));
+            // insert the item twice to prevent an empty dispenser
+            ((Dispenser) event.getBlock().getState()).getInventory().setContents(new ItemStack[]{loot.get(0).clone(), loot.get(0).clone()});
         } else {
             event.setCancelled(true);
         }

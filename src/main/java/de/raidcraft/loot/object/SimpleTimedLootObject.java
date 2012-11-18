@@ -35,14 +35,14 @@ public class SimpleTimedLootObject extends SimpleLootObject implements CooldownL
 
         List<ItemStack> loot = new ArrayList<>();
 
-        if ((ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).getLastLooted(player, getId()) + cooldown * 1000) < System.currentTimeMillis()) {
+        if ((ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).getLastLooted(player, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
             for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem());
             }
 
             // remember loot if not infinite dispenser
             if (cooldown != 0 || player != LootFactory.ANY) {
-                ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis());
+                ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis() / 1000);
             }
         }
         return loot;

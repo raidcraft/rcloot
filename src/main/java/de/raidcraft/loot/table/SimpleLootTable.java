@@ -105,7 +105,7 @@ public class SimpleLootTable implements LootTable {
         }
 
         // limit items and shuffle list
-        int numItems = (int) (Math.random() * ((double) maxLootItems - (double) minLootItems) + (double) minLootItems);
+        int numItems = (int) (Math.random() * (maxLootItems - minLootItems) + minLootItems);
         for (i = 0; i < numItems; i++) {
             loot.add(lootSelected.get((int) (Math.random() * (double) lootSelected.size())));
         }

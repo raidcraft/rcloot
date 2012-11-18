@@ -93,7 +93,7 @@ public class LootFactory {
         timedLootObject.setHost(block);
         timedLootObject.assignLootTable(lootTable);
         timedLootObject.setCreator(creator);
-        timedLootObject.setCreated(System.currentTimeMillis());
+        timedLootObject.setCreated(System.currentTimeMillis() / 1000);
         timedLootObject.setEnabled(true);
 
         // save loot object in database
@@ -120,7 +120,7 @@ public class LootFactory {
         lootObject.setHost(block);
         lootObject.assignLootTable(lootTable);
         lootObject.setCreator(creator);
-        lootObject.setCreated(System.currentTimeMillis());
+        lootObject.setCreated(System.currentTimeMillis() / 1000);
         lootObject.setEnabled(true);
 
         // save loot object in database

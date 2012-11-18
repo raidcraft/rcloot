@@ -108,7 +108,7 @@ public class SimpleLootObject implements LootObject {
             }
 
             // remember loot
-            ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis());
+            ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis() / 1000);
         }
         return loot;
     }

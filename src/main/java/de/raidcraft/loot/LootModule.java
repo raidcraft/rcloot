@@ -2,6 +2,7 @@ package de.raidcraft.loot;
 
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
+import com.sk89q.worldedit.LocalConfiguration;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.Depend;
 import com.zachsthings.libcomponents.InjectComponent;
@@ -15,6 +16,7 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +30,16 @@ import java.util.List;
         friendlyName = "Loot Module",
         desc = "Provides loot chests and more."
 )
+@Depend( plugins = { "RaidCraftCore"})
 public class LootModule extends BukkitComponent {
 
     public LocalConfiguration config;
 
     @Override
     public void enable() {
-        config = configure(new LocalConfiguration());
+
+        loadConfig();
+
         ComponentDatabase.INSTANCE.registerTable(LootObjectsTable.class, new LootObjectsTable());
         ComponentDatabase.INSTANCE.registerTable(LootPlayersTable.class, new LootPlayersTable());
         ComponentDatabase.INSTANCE.registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
@@ -45,17 +50,23 @@ public class LootModule extends BukkitComponent {
         // and of course we need some event handlers
         CommandBook.registerEvents(new PlayerListener());
         CommandBook.registerEvents(new BlockListener());
+        
+        LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
+    }
+
+    public void loadConfig() {
+
+        config = configure(new LocalConfiguration());
 
         TreasureRewardLevel.addRewardLevel(1, config.rewardLevel1);
         TreasureRewardLevel.addRewardLevel(2, config.rewardLevel2);
         TreasureRewardLevel.addRewardLevel(3, config.rewardLevel3);
         TreasureRewardLevel.addRewardLevel(4, config.rewardLevel4);
         TreasureRewardLevel.addRewardLevel(5, config.rewardLevel5);
-        
-        LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
     }
 
     public class LocalConfiguration extends ConfigurationBase {
+
         @Setting("reward-level-table-1") public int rewardLevel1 = 0;
         @Setting("reward-level-table-2") public int rewardLevel2 = 0;
         @Setting("reward-level-table-3") public int rewardLevel3 = 0;

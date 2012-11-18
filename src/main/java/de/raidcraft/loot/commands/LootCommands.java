@@ -55,13 +55,14 @@ public class LootCommands {
 
         @Command(
                 aliases = {"reload"},
-                desc = "Reloads all loot objects from database"
+                desc = "Reloads the loot module"
         )
         @CommandPermissions("loot.reload")
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
-
+            module.reload();
+            module.loadConfig();
             LootFactory.inst.loadLootObjects();
-            LootChat.success((Player) sender, "Es wurden alle Loot-Objekte neu geladen!");
+            LootChat.success((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
 
         @Command(
@@ -120,6 +121,11 @@ public class LootCommands {
         @CommandPermissions("loot.create")
         public void treasure(CommandContext context, CommandSender sender) throws CommandException {
 
+            if(context.argsLength() < 1) {
+                LootChat.warn((Player)sender, "Du musst als Parameter eine Belohnungsstufe angeben!");
+                return;
+            }
+
             int drops = SettingStorage.ALL;
             int rewardLevel = context.getInteger(0);
 
@@ -128,6 +134,7 @@ public class LootCommands {
             }
             catch(NoLinkedRewardTableException e) {
                 LootChat.warn((Player) sender, "Die angegebene Belohungsstufe existiert nicht!");
+                return;
             }
 
             if (context.argsLength() > 1 && context.getInteger(1) > 0) {

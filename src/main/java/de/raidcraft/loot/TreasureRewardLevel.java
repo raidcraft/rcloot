@@ -14,7 +14,9 @@ public class TreasureRewardLevel {
     private static Map<Integer, Integer> linkedTables = new HashMap<>();
 
     public static void addRewardLevel(int rewardLevel, int tableId) {
-        linkedTables.put(rewardLevel, tableId);
+        if(tableId > 0) {
+            linkedTables.put(rewardLevel, tableId);
+        }
     }
     
     public static int getLinkedTable(int rewardLevel) throws NoLinkedRewardTableException {

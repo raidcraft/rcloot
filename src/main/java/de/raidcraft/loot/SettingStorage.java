@@ -45,6 +45,11 @@ public class SettingStorage {
         return this;
     }
 
+    public int getRewardLevel() {
+
+        return rewardLevel;
+    }
+
     public SETTING_TYPE getType() {
 
         return type;

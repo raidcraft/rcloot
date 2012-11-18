@@ -4,6 +4,8 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.SettingStorage;
+import de.raidcraft.loot.TreasureRewardLevel;
+import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.command.CommandSender;
@@ -121,13 +123,18 @@ public class LootCommands {
             int drops = SettingStorage.ALL;
             int rewardLevel = context.getInteger(0);
 
-
+            try {
+                TreasureRewardLevel.getLinkedTable(rewardLevel);
+            }
+            catch(NoLinkedRewardTableException e) {
+                LootChat.warn((Player) sender, "Die angegebene Belohungsstufe existiert nicht!");
+            }
 
             if (context.argsLength() > 1 && context.getInteger(1) > 0) {
                 drops = context.getInteger(1);
             }
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
+            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setDrops(drops).setRewardLevel(rewardLevel));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
     }

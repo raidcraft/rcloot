@@ -3,9 +3,7 @@ package de.raidcraft.loot.listener;
 import com.silthus.raidcraft.util.component.DateUtil;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.SimpleLootObject;
-import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Bukkit;
@@ -53,18 +51,22 @@ public class PlayerListener implements Listener {
             if (!createMode.containsKey(event.getPlayer().getName())) {
                 // show infos about loot object
                 if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                    if (existingLootObject instanceof SimpleTimedLootObject) {
-                        LootChat.info(event.getPlayer(), "Timed-Loot-Objekt, Cooldown: "
+
+                    String info = "Typ: ";
+                    if (existingLootObject instanceof CooldownLootObject) {
+                        info += "Timed-Loot-Objekt, Cooldown: "
                                 + ((SimpleTimedLootObject) existingLootObject).getCooldown()
-                                + "s, Drops: " + existingLootObject.getLootTable().getMinLootItems()
-                                + ", Ersteller: " + existingLootObject.getCreator()
-                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000));
+                                + "s";
                     } else if (existingLootObject instanceof SimpleLootObject) {
-                        LootChat.info(event.getPlayer(), "Default-Loot-Objekt, Drops: "
-                                + existingLootObject.getLootTable().getMinLootItems()
-                                + ", Ersteller: " + existingLootObject.getCreator()
-                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000));
+                        info += "Default-Loot-Objekt";
                     }
+                    else if (existingLootObject instanceof TreasureLootObject) {
+                        info += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) existingLootObject).getRewardLevel();
+                    }
+
+                    info += ", Drops: " + existingLootObject.getLootTable().getMinLootItems() + ", Ersteller: " + existingLootObject.getCreator()
+                            + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000);
+                    LootChat.info(event.getPlayer(), info);
                 }
             }
             // player has a setting storage
@@ -107,6 +109,13 @@ public class PlayerListener implements Listener {
                     LootFactory.inst.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getDrops());
+                }
+
+                if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
+                    // create treasure loot object
+                    LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                            , settingStorage.getDrops()
+                            , settingStorage.getRewardLevel());
                 }
 
                 LootChat.success(event.getPlayer(), "Es wurde erfolgreich ein Loot-Objekt erstellt!");

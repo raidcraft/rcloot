@@ -36,6 +36,7 @@ import java.util.Map;
 public class PlayerListener implements Listener {
 
     public static Map<String, SettingStorage> createMode = new HashMap<>();
+    public static List<String> editorMode = new ArrayList<>();
     private Map<String, LootObject> inventoryLocks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)

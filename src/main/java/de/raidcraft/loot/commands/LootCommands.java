@@ -54,18 +54,6 @@ public class LootCommands {
         }
 
         @Command(
-                aliases = {"reload"},
-                desc = "Reloads the loot module"
-        )
-        @CommandPermissions("loot.reload")
-        public void reload(CommandContext context, CommandSender sender) throws CommandException {
-            module.reload();
-            module.loadConfig();
-            LootFactory.inst.loadLootObjects();
-            LootChat.success((Player) sender, "Das Loot-Plugin wurde neugeladen!");
-        }
-
-        @Command(
                 aliases = {"remove", "delete"},
                 desc = "Delete a loot objekt"
         )
@@ -74,6 +62,23 @@ public class LootCommands {
 
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.REMOVE));
             LootChat.info((Player) sender, "Klicke nun das Loot Objekt an das gelöscht werden soll!");
+        }
+
+        @Command(
+                aliases = {"editor", "ed"},
+                desc = "Toggle editor mode"
+        )
+        @CommandPermissions("loot.delete")
+        public void editor(CommandContext context, CommandSender sender) throws CommandException {
+
+            if(PlayerListener.editorMode.contains(sender.getName())) {
+                PlayerListener.editorMode.remove(sender.getName());
+                LootChat.info((Player) sender, "Du hast den Editor-Modus verlassen!");
+            }
+            else {
+                PlayerListener.editorMode.add(sender.getName());
+                LootChat.success((Player) sender, "Du hast den Editor-Modus betreten!");
+            }
         }
 
         @Command(

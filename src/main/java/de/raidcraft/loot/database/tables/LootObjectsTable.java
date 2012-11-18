@@ -71,6 +71,7 @@ public class LootObjectsTable extends Table {
                 }
                 lootObject.setId(resultSet.getInt("id"));
                 lootObject.setCreator(resultSet.getString("creator"));
+                lootObject.setCreated(resultSet.getLong("created"));
                 lootObject.setEnabled(resultSet.getBoolean("enabled"));
 
                 World world = Bukkit.getWorld(resultSet.getString("world"));

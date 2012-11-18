@@ -63,7 +63,7 @@ public class PlayerListener implements Listener {
                         LootChat.info(event.getPlayer(), "Default-Loot-Objekt, Drops: "
                                 + existingLootObject.getLootTable().getMinLootItems()
                                 + ", Ersteller: " + existingLootObject.getCreator()
-                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated()));
+                                + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000));
                     }
                 }
             }

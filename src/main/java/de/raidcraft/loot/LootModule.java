@@ -32,26 +32,35 @@ import java.util.List;
 )
 @Depend( plugins = { "RaidCraftCore"})
 public class LootModule extends BukkitComponent {
-
+    public static LootModule inst;
     public LocalConfiguration config;
+    private int reloadTaskId;
 
     @Override
     public void enable() {
+        inst = this;
+        reloadTaskId = CommandBook.inst().getServer().getScheduler().scheduleSyncRepeatingTask(CommandBook.inst(), new Runnable() {
+            public void run() {
+                if(ComponentDatabase.INSTANCE.getConnection() != null) {
+                    loadConfig();
 
-        loadConfig();
+                    ComponentDatabase.INSTANCE.registerTable(LootObjectsTable.class, new LootObjectsTable());
+                    ComponentDatabase.INSTANCE.registerTable(LootPlayersTable.class, new LootPlayersTable());
+                    ComponentDatabase.INSTANCE.registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
+                    ComponentDatabase.INSTANCE.registerTable(LootTablesTable.class, new LootTablesTable());
 
-        ComponentDatabase.INSTANCE.registerTable(LootObjectsTable.class, new LootObjectsTable());
-        ComponentDatabase.INSTANCE.registerTable(LootPlayersTable.class, new LootPlayersTable());
-        ComponentDatabase.INSTANCE.registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
-        ComponentDatabase.INSTANCE.registerTable(LootTablesTable.class, new LootTablesTable());
+                    // do some command init
+                    registerCommands(LootCommands.class);
+                    // and of course we need some event handlers
+                    CommandBook.registerEvents(new PlayerListener());
+                    CommandBook.registerEvents(new BlockListener());
 
-        // do some command init
-        registerCommands(LootCommands.class);
-        // and of course we need some event handlers
-        CommandBook.registerEvents(new PlayerListener());
-        CommandBook.registerEvents(new BlockListener());
-        
-        LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
+                    LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
+                    CommandBook.logger().info("[Loot] Found DB connection, init loot module...");
+                    CommandBook.server().getScheduler().cancelTask(reloadTaskId);
+                }
+            }
+        }, 0, 2*20);
     }
 
     public void loadConfig() {

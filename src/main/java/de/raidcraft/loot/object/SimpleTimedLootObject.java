@@ -14,7 +14,7 @@ import java.util.List;
  * Date: 17.10.12 - 21:05
  * Description:
  */
-public class SimpleTimedLootObject extends SimpleLootObject implements CooldownLootObject {
+public class SimpleTimedLootObject extends SimpleLootObject implements TimedLootObject {
 
     int cooldown = 0;
 

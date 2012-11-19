@@ -6,7 +6,6 @@ import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.HumanEntity;
@@ -207,9 +206,15 @@ public class PlayerListener implements Listener {
         if (inventoryLocks.containsKey(event.getPlayer().getName())) {
             inventoryLocks.remove(event.getPlayer().getName());
 
-            // drop not cleared items
+            // drop not cleared items if loot object isn't infinite
+            LootObject lootObject = inventoryLocks.get(event.getPlayer().getName());
+            if((lootObject instanceof TimedLootObject) && (((TimedLootObject)lootObject).getCooldown() == 0)) {
+                return;
+            }
             for(ItemStack itemStack : event.getInventory().getContents()) {
-                event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                if(itemStack != null) {
+                    event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                }
             }
         }
     }
@@ -228,7 +233,7 @@ public class PlayerListener implements Listener {
     
     private void printObjectInfo(Player player, LootObject lootObject) {
         String info = "Typ: ";
-        if (lootObject instanceof CooldownLootObject) {
+        if (lootObject instanceof TimedLootObject) {
             info += "Timed-Loot-Objekt, Cooldown: "
                     + ((SimpleTimedLootObject) lootObject).getCooldown()
                     + "s";

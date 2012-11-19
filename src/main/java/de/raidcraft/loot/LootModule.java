@@ -2,10 +2,8 @@ package de.raidcraft.loot;
 
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
-import com.sk89q.worldedit.LocalConfiguration;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.Depend;
-import com.zachsthings.libcomponents.InjectComponent;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
@@ -16,10 +14,7 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
-import org.bukkit.plugin.Plugin;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.raidcraft.loot.util.TreasureRewardLevel;
 
 /**
  * Author: Philip

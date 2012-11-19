@@ -13,6 +13,7 @@ import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
+import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;

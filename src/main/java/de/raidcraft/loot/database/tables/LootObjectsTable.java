@@ -3,7 +3,7 @@ package de.raidcraft.loot.database.tables;
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.loot.TreasureRewardLevel;
+import de.raidcraft.loot.util.TreasureRewardLevel;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.*;

@@ -1,4 +1,4 @@
-package de.raidcraft.loot;
+package de.raidcraft.loot.util;
 
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 

@@ -6,6 +6,7 @@ import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
+import de.raidcraft.loot.util.editormode.EditorModeFactory;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.HumanEntity;
@@ -41,6 +42,17 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
+
+        // editor mode
+        if(editorMode.contains(event.getPlayer().getName())
+                && event.getItem() != null
+                && event.getClickedBlock() != null
+                && EditorModeFactory.INSTANCE.isEditorBlock(event.getItem())) {
+            EditorModeFactory.INSTANCE.getEditorItem(event.getItem()).run(event);
+            event.setCancelled(true);
+            return;
+        }
+
         // if dispenser or chest clicked
         if (event.getClickedBlock() != null
                 && (event.getClickedBlock().getType() == Material.DISPENSER

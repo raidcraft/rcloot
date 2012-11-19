@@ -68,8 +68,8 @@ public class LootCommands {
                 aliases = {"editor", "ed"},
                 desc = "Toggle editor mode"
         )
-        @CommandPermissions("loot.delete")
-        public void editor(CommandContext context, CommandSender sender) throws CommandException {
+        @CommandPermissions("loot.mode.editor")
+        public void editorMode(CommandContext context, CommandSender sender) throws CommandException {
 
             if(PlayerListener.editorMode.contains(sender.getName())) {
                 PlayerListener.editorMode.remove(sender.getName());
@@ -78,6 +78,23 @@ public class LootCommands {
             else {
                 PlayerListener.editorMode.add(sender.getName());
                 LootChat.success((Player) sender, "Du hast den Editor-Modus betreten!");
+            }
+        }
+
+        @Command(
+                aliases = {"admin", "ad"},
+                desc = "Toggle admin mode"
+        )
+        @CommandPermissions("loot.mode.admin")
+        public void adminMode(CommandContext context, CommandSender sender) throws CommandException {
+
+            if(PlayerListener.adminMode.contains(sender.getName())) {
+                PlayerListener.adminMode.remove(sender.getName());
+                LootChat.info((Player) sender, "Du hast den Admin-Modus verlassen!");
+            }
+            else {
+                PlayerListener.adminMode.add(sender.getName());
+                LootChat.success((Player) sender, "Du hast den Admin-Modus betreten!");
             }
         }
 

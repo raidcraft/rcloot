@@ -37,6 +37,7 @@ public class PlayerListener implements Listener {
 
     public static Map<String, SettingStorage> createMode = new HashMap<>();
     public static List<String> editorMode = new ArrayList<>();
+    public static List<String> adminMode = new ArrayList<>();
     private Map<String, LootObject> inventoryLocks = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -52,22 +53,7 @@ public class PlayerListener implements Listener {
             if (!createMode.containsKey(event.getPlayer().getName())) {
                 // show infos about loot object
                 if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-
-                    String info = "Typ: ";
-                    if (existingLootObject instanceof CooldownLootObject) {
-                        info += "Timed-Loot-Objekt, Cooldown: "
-                                + ((SimpleTimedLootObject) existingLootObject).getCooldown()
-                                + "s";
-                    } else if (existingLootObject instanceof SimpleLootObject) {
-                        info += "Default-Loot-Objekt";
-                    }
-                    else if (existingLootObject instanceof TreasureLootObject) {
-                        info += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) existingLootObject).getRewardLevel();
-                    }
-
-                    info += ", Drops: " + existingLootObject.getLootTable().getMinLootItems() + ", Ersteller: " + existingLootObject.getCreator()
-                            + ", Erstelldatum: " + DateUtil.getDateString(existingLootObject.getCreated() * 1000);
-                    LootChat.info(event.getPlayer(), info);
+                    printObjectInfo(event.getPlayer(), existingLootObject);
                 }
             }
             // player has a setting storage
@@ -198,7 +184,8 @@ public class PlayerListener implements Listener {
         // lock loot object
         inventoryLocks.put(entity.getName(), lootObject);
 
-        if (entity.hasPermission("loot.admin")) {
+        if (adminMode.contains(entity.getName())) {
+            LootChat.info((Player) entity, "Du befindest dich im Admin-Modus!");
             // fill loot object with all table entries
             List<LootTableEntry> entries = lootObject.getLootTable().getEntries();
             loot = new ArrayList<>();
@@ -219,6 +206,11 @@ public class PlayerListener implements Listener {
 
         if (inventoryLocks.containsKey(event.getPlayer().getName())) {
             inventoryLocks.remove(event.getPlayer().getName());
+
+            // drop not cleared items
+            for(ItemStack itemStack : event.getInventory().getContents()) {
+                event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+            }
         }
     }
 
@@ -228,5 +220,27 @@ public class PlayerListener implements Listener {
         if (inventoryLocks.containsKey(event.getPlayer().getName())) {
             inventoryLocks.remove(event.getPlayer().getName());
         }
+        editorMode.remove(event.getPlayer().getName());
+        adminMode.remove(event.getPlayer().getName());
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    
+    private void printObjectInfo(Player player, LootObject lootObject) {
+        String info = "Typ: ";
+        if (lootObject instanceof CooldownLootObject) {
+            info += "Timed-Loot-Objekt, Cooldown: "
+                    + ((SimpleTimedLootObject) lootObject).getCooldown()
+                    + "s";
+        } else if (lootObject instanceof TreasureLootObject) {
+            info += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) lootObject).getRewardLevel();
+        }
+        else if (lootObject instanceof SimpleLootObject) {
+            info += "Default-Loot-Objekt";
+        }
+
+        info += ", Drops: " + lootObject.getLootTable().getMinLootItems() + "-" + lootObject.getLootTable().getMaxLootItems() + ", Ersteller: " + lootObject.getCreator()
+                + ", Erstelldatum: " + DateUtil.getDateString(lootObject.getCreated() * 1000);
+        LootChat.info(player, info);
     }
 }

@@ -84,30 +84,19 @@ public class SimpleLootTable implements LootTable {
 
     @Override
     public List<LootTableEntry> loot() {
-
-        List<LootTableEntry> lootSelected = new ArrayList<>();
         List<LootTableEntry> loot = new ArrayList<>();
-        int rnd = (int) (Math.random() * (100.));
-        int i = 0;
+        int lootAmount = (int) (Math.random() * (maxLootItems - minLootItems) + minLootItems);
 
-        // if all items should be loot
-        if (minLootItems == getEntries().size()) {
-            lootSelected = getEntries();
-        } else {
-            while (lootSelected.size() < minLootItems) {
-                for (LootTableEntry entry : getEntries()) {
-                    if (rnd - i <= entry.getChance()) {
-                        lootSelected.add(entry);
-                    }
-                }
-                i += 5; //increase chance to prevent infinite loop
+        for(int i = 0; i < lootAmount; i++) {
+
+            LootTableEntry selected = getEntries().get((int) (Math.random() * getEntries().size()));
+            int j = 0;
+
+            while(loot.contains(selected) && loot.size() < getEntries().size()) {
+                selected = getEntries().get(j);
+                j++;
             }
-        }
-
-        // limit items and shuffle list
-        int numItems = (int) (Math.random() * (maxLootItems - minLootItems) + minLootItems);
-        for (i = 0; i < numItems; i++) {
-            loot.add(lootSelected.get((int) (Math.random() * (double) lootSelected.size())));
+            loot.add(selected);
         }
 
         return loot;

@@ -216,13 +216,14 @@ public class PlayerListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
 
         if (inventoryLocks.containsKey(event.getPlayer().getName())) {
+            LootObject lootObject = inventoryLocks.get(event.getPlayer().getName());
             inventoryLocks.remove(event.getPlayer().getName());
 
             // drop not cleared items if loot object isn't infinite
             if(adminMode.contains(event.getPlayer().getName())) {
                 return;
             }
-            LootObject lootObject = inventoryLocks.get(event.getPlayer().getName());
+
             if((lootObject instanceof TimedLootObject) && (((TimedLootObject)lootObject).getCooldown() == 0)) {
                 return;
             }

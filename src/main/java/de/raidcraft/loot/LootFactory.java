@@ -13,6 +13,7 @@ import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
+import de.raidcraft.loot.util.ChestUtil;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -160,30 +161,18 @@ public class LootFactory {
 
     public void addLootObject(LootObject lootObject) {
 
-        if (lootObject.getHost().getType() == Material.CHEST) {
-            if (lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST)
-                lootObjects.put(lootObject.getHost().getRelative(1, 0, 0), lootObject);
-            if (lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST)
-                lootObjects.put(lootObject.getHost().getRelative(-1, 0, 0), lootObject);
-            if (lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST)
-                lootObjects.put(lootObject.getHost().getRelative(0, 0, 1), lootObject);
-            if (lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST)
-                lootObjects.put(lootObject.getHost().getRelative(0, 0, -1), lootObject);
+        Block otherChestBlock = ChestUtil.getOtherChestBlock(lootObject.getHost());
+        if(otherChestBlock != null) {
+            lootObjects.put(otherChestBlock, lootObject);
         }
         lootObjects.put(lootObject.getHost(), lootObject);
     }
 
     public void unregisterLootObject(LootObject lootObject) {
 
-        if (lootObject.getHost().getType() == Material.CHEST) {
-            if (lootObject.getHost().getRelative(1, 0, 0).getType() == Material.CHEST)
-                lootObjects.remove(lootObject.getHost().getRelative(1, 0, 0));
-            if (lootObject.getHost().getRelative(-1, 0, 0).getType() == Material.CHEST)
-                lootObjects.remove(lootObject.getHost().getRelative(-1, 0, 0));
-            if (lootObject.getHost().getRelative(0, 0, 1).getType() == Material.CHEST)
-                lootObjects.remove(lootObject.getHost().getRelative(0, 0, 1));
-            if (lootObject.getHost().getRelative(0, 0, -1).getType() == Material.CHEST)
-                lootObjects.remove(lootObject.getHost().getRelative(0, 0, -1));
+        Block otherChestBlock = ChestUtil.getOtherChestBlock(lootObject.getHost());
+        if(otherChestBlock != null) {
+            lootObjects.remove(otherChestBlock);
         }
         lootObjects.remove(lootObject.getHost());
     }

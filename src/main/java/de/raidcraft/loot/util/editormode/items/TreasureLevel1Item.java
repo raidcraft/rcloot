@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
  * Date: 19.11.12 - 21:08
  * Description:
  */
-public class TreasureLevel1 extends SimpleEditorItem {
+public class TreasureLevel1Item extends SimpleEditorItem {
 
     private final static Material MATERIAL = Material.WOOL;
     private final static short DATA = 8; // light grey

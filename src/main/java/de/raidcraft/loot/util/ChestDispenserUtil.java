@@ -41,6 +41,14 @@ public class ChestDispenserUtil {
                 return block.getRelative(-1, 0, 1);
             if (block.getRelative(-1, 0, -1).getType() == Material.CHEST)
                 return block.getRelative(-1, 0, -1);
+            if (block.getRelative(2, 0, 0).getType() == Material.CHEST)
+                return block.getRelative(2, 0, 0);
+            if (block.getRelative(-2, 0, 0).getType() == Material.CHEST)
+                return block.getRelative(-2, 0, 0);
+            if (block.getRelative(0, 0, 2).getType() == Material.CHEST)
+                return block.getRelative(0, 0, 2);
+            if (block.getRelative(0, 0, -2).getType() == Material.CHEST)
+                return block.getRelative(0, 0, -2);
         }
 
         return null;

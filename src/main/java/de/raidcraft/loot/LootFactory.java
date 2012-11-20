@@ -6,17 +6,17 @@ import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.SimpleLootObject;
-import de.raidcraft.loot.object.SimpleTimedLootObject;
-import de.raidcraft.loot.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
+import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class LootFactory {
 
         ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
-        if (andTable && !(lootObject instanceof TreasureRewardLevel)) {
+        if (andTable && !(lootObject instanceof TreasureLootObject)) {
             ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
         }
 
@@ -81,6 +81,20 @@ public class LootFactory {
     }
     
     public void createTreasureLootObject(String creator, Block block, int rewardLevel) {
+
+        createTreasureLootObject(creator, block, rewardLevel, false);
+    }
+
+    public void createTreasureLootObject(String creator, Block block, int rewardLevel, boolean chat) {
+        LootObject existingLootObject = LootFactory.inst.getLootObject(block);
+        if(existingLootObject != null) {
+            Player player = Bukkit.getPlayer(creator);
+            if(player != null && chat) {
+                LootChat.alreadyLootObject(player);
+            }
+            return;
+        }
+
 
         SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
 
@@ -164,11 +178,17 @@ public class LootFactory {
     }
 
     public void addLootObject(LootObject lootObject) {
-
+        if(lootObjects.containsKey(lootObject.getHost())) {
+            return;
+        }
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHost());
         if(otherChestBlock != null) {
+            if(lootObjects.containsKey(otherChestBlock)) {
+                return;
+            }
             lootObjects.put(otherChestBlock, lootObject);
         }
+
         lootObjects.put(lootObject.getHost(), lootObject);
     }
 

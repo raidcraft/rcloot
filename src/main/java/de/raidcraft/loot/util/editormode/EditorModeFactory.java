@@ -1,7 +1,6 @@
 package de.raidcraft.loot.util.editormode;
 
-import de.raidcraft.loot.util.editormode.items.DeleteLootObjectItem;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel1Item;
+import de.raidcraft.loot.util.editormode.items.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -23,6 +22,10 @@ public class EditorModeFactory {
         // register all editor items
         addEditorBlock(new DeleteLootObjectItem());
         addEditorBlock(new TreasureLevel1Item());
+        addEditorBlock(new TreasureLevel2Item());
+        addEditorBlock(new TreasureLevel3Item());
+        addEditorBlock(new TreasureLevel4Item());
+        addEditorBlock(new TreasureLevel5Item());
 
     }
 

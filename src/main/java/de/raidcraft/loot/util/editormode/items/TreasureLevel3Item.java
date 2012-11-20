@@ -1,15 +1,10 @@
 package de.raidcraft.loot.util.editormode.items;
 
-import com.sk89q.worldguard.bukkit.LoggerToChatHandler;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.loot.util.Utils;
-import de.raidcraft.loot.util.editormode.EditorItem;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,11 +13,11 @@ import org.bukkit.inventory.ItemStack;
  * Date: 19.11.12 - 21:08
  * Description:
  */
-public class TreasureLevel1Item extends SimpleEditorItem {
+public class TreasureLevel3Item extends SimpleEditorItem {
 
     private final static Material MATERIAL = Material.WOOL;
-    private final static short DATA = 8; // light grey
-    private final static int REWARD_LEVEL = 1;
+    private final static short DATA = 4; // yellow
+    private final static int REWARD_LEVEL = 3;
     
     @Override
     public ItemStack getItem() {

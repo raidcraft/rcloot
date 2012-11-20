@@ -20,6 +20,10 @@ public class LootChat {
         LootChat.warn(player, "Hier steht bereits eine Truhe im Weg!");
     }
 
+    public static void alreadyLootObject(Player player) {
+        LootChat.warn(player, "Das hier ist bereits ein Loot-Objekt!");
+    }
+
     public static void success(Player player, String msg) {
 
         player.sendMessage(CHAT_TAG + ChatColor.GREEN + msg

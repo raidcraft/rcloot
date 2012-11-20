@@ -74,13 +74,20 @@ public class PlayerListener implements Listener {
             else {
                 SettingStorage settingStorage = createMode.get(event.getPlayer().getName());
                 // clicked object is already loot object
-                if (existingLootObject != null) {
-                    if (settingStorage.getType() == SettingStorage.SETTING_TYPE.REMOVE) {
+
+                if (settingStorage.getType() == SettingStorage.SETTING_TYPE.REMOVE) {
+                    if(existingLootObject == null) {
+                        LootChat.success(event.getPlayer(), "Der angeklickte Block war kein Loot-Objekt!");
+                    }
+                    else {
                         LootFactory.inst.deleteLootObject(existingLootObject, true);
                         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
-                        createMode.remove(event.getPlayer().getName());   // remove create action from cache
-                        return;
                     }
+                    createMode.remove(event.getPlayer().getName());   // remove create action from cache
+                    return;
+                }
+
+                if (existingLootObject != null) {
                     // warn player and request deletion via command -> exit
                     LootChat.warn(event.getPlayer(), "Dies ist bereits ein Loot-Objekt und muss erst per Befehl gelöscht werden!");
                     event.setCancelled(true);

@@ -108,14 +108,11 @@ public class PlayerListener implements Listener {
                             , settingStorage.getRewardLevel());
                 }
 
-                LootChat.successfullyCreatedLootObject(event.getPlayer());
+                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.inst.getLootObject(event.getClickedBlock()));
 
                 createMode.remove(event.getPlayer().getName());   // remove create action from cache
+                event.setCancelled(true);
                 return;
-            }
-
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK && LootFactory.inst.getLootObject(event.getClickedBlock()) != null) {
-
             }
         }
     }

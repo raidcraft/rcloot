@@ -86,9 +86,9 @@ public class LootFactory {
     }
 
     public void createTreasureLootObject(String creator, Block block, int rewardLevel, boolean chat) {
+        Player player = Bukkit.getPlayer(creator);
         LootObject existingLootObject = LootFactory.inst.getLootObject(block);
         if(existingLootObject != null) {
-            Player player = Bukkit.getPlayer(creator);
             if(player != null && chat) {
                 LootChat.alreadyLootObject(player);
             }
@@ -106,6 +106,9 @@ public class LootFactory {
             treasureLootObject.assignLootTable(lootTable);
         } catch (Throwable e) {
             CommandBook.logger().warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
+            if(player != null && chat) {
+                LootChat.failureDuringCreation(player);
+            }
             return;
         }
 
@@ -120,6 +123,10 @@ public class LootFactory {
 
         // register loot object in cache
         addLootObject(treasureLootObject);
+
+        if(player != null && chat) {
+            LootChat.successfullyCreatedLootObject(player, treasureLootObject);
+        }
     }
 
     public void createTimedLootObject(String creator, Block block, ItemStack[] items, int cooldown, int drops) {

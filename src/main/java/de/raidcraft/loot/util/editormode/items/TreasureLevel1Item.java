@@ -43,7 +43,6 @@ public class TreasureLevel1Item extends SimpleEditorItem {
 
         // create treasure loot object
         LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);
-        LootChat.successfullyCreatedLootObject(event.getPlayer());
     }
 
     @Override
@@ -55,7 +54,6 @@ public class TreasureLevel1Item extends SimpleEditorItem {
         
         // create treasure loot object
         LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock(), REWARD_LEVEL, true);
-        LootChat.successfullyCreatedLootObject(event.getPlayer());
     }
 
 }

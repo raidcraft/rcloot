@@ -7,6 +7,7 @@ import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,7 +52,12 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
                 otherChestBlock.setType(Material.AIR);
             }
             else {
-                ((Chest) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
+                if(existingLootObject.getHost().getState() instanceof Chest) {
+                    ((Chest) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
+                }
+                if(existingLootObject.getHost().getState() instanceof Dispenser) {
+                    ((Dispenser) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
+                }
             }
             existingLootObject.getHost().setType(Material.AIR);
         }

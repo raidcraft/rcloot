@@ -66,6 +66,8 @@ public class PlayerListener implements Listener {
                 // show infos about loot object
                 if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
                     printObjectInfo(event.getPlayer(), existingLootObject);
+                    event.setCancelled(true);
+                    return;
                 }
             }
             // player has a setting storage
@@ -81,6 +83,7 @@ public class PlayerListener implements Listener {
                     }
                     // warn player and request deletion via command -> exit
                     LootChat.warn(event.getPlayer(), "Dies ist bereits ein Loot-Objekt und muss erst per Befehl gelöscht werden!");
+                    event.setCancelled(true);
                     return;
                 }
 

@@ -4,6 +4,7 @@ import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
+import de.raidcraft.loot.exceptions.LootTableNotExistsException;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.SimpleLootObject;
@@ -84,8 +85,12 @@ public class LootFactory {
         SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
 
         try {
-            treasureLootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
-        } catch (NoLinkedRewardTableException e) {
+            LootTable lootTable = ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
+            if(lootTable == null) {
+                throw new LootTableNotExistsException("[Loot] Cannot load loot table");
+            }
+            treasureLootObject.assignLootTable(lootTable);
+        } catch (Throwable e) {
             CommandBook.logger().warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
             return;
         }

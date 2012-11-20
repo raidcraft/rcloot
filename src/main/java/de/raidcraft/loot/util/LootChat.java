@@ -16,6 +16,10 @@ public class LootChat {
         LootChat.success(player, "Es wurde erfolgreich ein Loot-Objekt erstellt!");
     }
 
+    public static void occupiedByOtherChest(Player player) {
+        LootChat.warn(player, "Hier steht bereits eine Truhe im Weg!");
+    }
+
     public static void success(Player player, String msg) {
 
         player.sendMessage(CHAT_TAG + ChatColor.GREEN + msg

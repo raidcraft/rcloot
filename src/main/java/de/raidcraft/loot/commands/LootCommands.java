@@ -1,6 +1,7 @@
 package de.raidcraft.loot.commands;
 
 import com.sk89q.minecraft.util.commands.*;
+import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.util.TreasureRewardLevel;
@@ -50,6 +51,19 @@ public class LootCommands {
         public NestedLootCommands(LootModule module) {
 
             this.module = module;
+        }
+
+        @Command(
+                aliases = {"reload"},
+                desc = "Reloads config and shit"
+        )
+        @CommandPermissions("loot.reload")
+        public void reload(CommandContext context, CommandSender sender) throws CommandException {
+
+            LootModule.inst.reload();
+            LootModule.inst.loadConfig();
+            LootFactory.inst.loadLootObjects();
+            LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
 
         @Command(

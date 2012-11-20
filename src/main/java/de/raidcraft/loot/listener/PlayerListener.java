@@ -5,6 +5,7 @@ import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
+import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.editormode.EditorModeFactory;
 import org.bukkit.Material;
@@ -84,15 +85,7 @@ public class PlayerListener implements Listener {
                 }
 
                 // get items in object
-                ItemStack[] items = new ItemStack[]{null};
-                if (event.getClickedBlock().getState() instanceof Chest) {
-                    items = ((Chest) event.getClickedBlock().getState()).getInventory().getContents();
-                    ((Chest) event.getClickedBlock().getState()).getInventory().clear();
-                }
-                if (event.getClickedBlock().getState() instanceof Dispenser) {
-                    items = ((Dispenser) event.getClickedBlock().getState()).getInventory().getContents();
-                }
-
+                ItemStack[] items = ChestDispenserUtil.getItems(event.getClickedBlock());
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
@@ -112,11 +105,10 @@ public class PlayerListener implements Listener {
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
                     // create treasure loot object
                     LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
-                            , settingStorage.getDrops()
                             , settingStorage.getRewardLevel());
                 }
 
-                LootChat.success(event.getPlayer(), "Es wurde erfolgreich ein Loot-Objekt erstellt!");
+                LootChat.successfullyCreatedLootObject(event.getPlayer());
 
                 createMode.remove(event.getPlayer().getName());   // remove create action from cache
                 return;

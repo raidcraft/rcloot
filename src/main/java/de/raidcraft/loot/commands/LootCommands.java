@@ -147,7 +147,6 @@ public class LootCommands {
                 return;
             }
 
-            int drops = SettingStorage.ALL;
             int rewardLevel = context.getInteger(0);
 
             try {
@@ -158,11 +157,7 @@ public class LootCommands {
                 return;
             }
 
-            if (context.argsLength() > 1 && context.getInteger(1) > 0) {
-                drops = context.getInteger(1);
-            }
-
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setDrops(drops).setRewardLevel(rewardLevel));
+            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setRewardLevel(rewardLevel));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
     }

@@ -2,12 +2,11 @@ package de.raidcraft.loot.util.editormode.items;
 
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.util.ChestUtil;
+import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,7 +45,7 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
 
         if(destroy) {
-            Block otherChestBlock = ChestUtil.getOtherChestBlock(existingLootObject.getHost());
+            Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(existingLootObject.getHost());
             if(otherChestBlock != null) {
                 ((Chest) otherChestBlock.getState()).getInventory().setContents(new ItemStack[]{});
                 otherChestBlock.setType(Material.AIR);

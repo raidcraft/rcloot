@@ -13,9 +13,8 @@ import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
-import de.raidcraft.loot.util.ChestUtil;
+import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.TreasureRewardLevel;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -80,7 +79,7 @@ public class LootFactory {
         return lootTable;
     }
     
-    public void createTreasureLootObject(String creator, Block block, int drops, int rewardLevel) {
+    public void createTreasureLootObject(String creator, Block block, int rewardLevel) {
 
         SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
 
@@ -161,7 +160,7 @@ public class LootFactory {
 
     public void addLootObject(LootObject lootObject) {
 
-        Block otherChestBlock = ChestUtil.getOtherChestBlock(lootObject.getHost());
+        Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHost());
         if(otherChestBlock != null) {
             lootObjects.put(otherChestBlock, lootObject);
         }
@@ -170,7 +169,7 @@ public class LootFactory {
 
     public void unregisterLootObject(LootObject lootObject) {
 
-        Block otherChestBlock = ChestUtil.getOtherChestBlock(lootObject.getHost());
+        Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHost());
         if(otherChestBlock != null) {
             lootObjects.remove(otherChestBlock);
         }

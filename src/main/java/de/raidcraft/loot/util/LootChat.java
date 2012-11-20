@@ -12,6 +12,10 @@ public class LootChat {
 
     private final static String CHAT_TAG = ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Loot" + ChatColor.DARK_GRAY + "] " + ChatColor.WHITE;
 
+    public static void successfullyCreatedLootObject(Player player) {
+        LootChat.success(player, "Es wurde erfolgreich ein Loot-Objekt erstellt!");
+    }
+
     public static void success(Player player, String msg) {
 
         player.sendMessage(CHAT_TAG + ChatColor.GREEN + msg

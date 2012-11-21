@@ -34,7 +34,7 @@ public class SimpleLootTableEntry implements LootTableEntry {
     @Override
     public void setItem(ItemStack item) {
 
-        this.item = item;
+        this.item = new ItemStack(item.getType(), item.getAmount(), item.getDurability());
     }
 
     @Override

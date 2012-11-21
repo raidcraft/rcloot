@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.REMOVE) {
                     if(existingLootObject == null) {
-                        LootChat.success(event.getPlayer(), "Der angeklickte Block war kein Loot-Objekt!");
+                        LootChat.warn(event.getPlayer(), "Der angeklickte Block ist kein Loot-Objekt!");
                     }
                     else {
                         LootFactory.inst.deleteLootObject(existingLootObject, true);

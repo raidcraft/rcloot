@@ -3,7 +3,6 @@ package de.raidcraft.loot;
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
 import com.zachsthings.libcomponents.ComponentInformation;
-import com.zachsthings.libcomponents.Depend;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
@@ -25,7 +24,6 @@ import de.raidcraft.loot.util.TreasureRewardLevel;
         friendlyName = "Loot Module",
         desc = "Provides loot chests and more."
 )
-@Depend( plugins = { "RaidCraftCore"})
 public class LootModule extends BukkitComponent {
     public static LootModule inst;
     public LocalConfiguration config;

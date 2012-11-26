@@ -9,7 +9,10 @@ import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.editormode.EditorModeFactory;
 import org.bukkit.Material;
-import org.bukkit.block.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -153,6 +156,10 @@ public class PlayerListener implements Listener {
 
         if (event.getInventory().getType() != InventoryType.DISPENSER
                 && event.getInventory().getType() != InventoryType.CHEST) {
+            return;
+        }
+
+        if(!(event.getInventory().getHolder() instanceof BlockState)) {
             return;
         }
 

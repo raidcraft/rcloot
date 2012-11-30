@@ -165,12 +165,16 @@ public class PlayerListener implements Listener {
         }
 
         Block block;
+        boolean singleChest = false;
 
         if (event.getInventory().getHolder() instanceof DoubleChest) {
             DoubleChest doubleChest = (DoubleChest) event.getInventory().getHolder();
             block = doubleChest.getLocation().getBlock();
         } else {
             block = ((BlockState) event.getInventory().getHolder()).getBlock();
+            if(block.getType() == Material.CHEST) {
+                singleChest = true;
+            }
         }
 
         if (LootFactory.inst.getLootObject(block) == null) {
@@ -216,6 +220,11 @@ public class PlayerListener implements Listener {
 
         // set loot
         event.getInventory().clear();
+
+        // halve the loot if single chest
+        if(singleChest || ((lootObject instanceof TimedLootObject) && ((TimedLootObject) lootObject).getCooldown() == 0)) {
+            loot = loot.subList(0, loot.size()/2);
+        }
 
         event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
     }

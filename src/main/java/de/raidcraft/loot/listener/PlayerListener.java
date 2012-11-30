@@ -159,7 +159,8 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if(!(event.getInventory().getHolder() instanceof BlockState)) {
+        if(!(event.getInventory().getHolder() instanceof BlockState)
+                && !(event.getInventory().getHolder() instanceof DoubleChest)) {
             return;
         }
 
@@ -215,10 +216,6 @@ public class PlayerListener implements Listener {
 
         // set loot
         event.getInventory().clear();
-        for(ItemStack item : loot) {
-            event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), item);
-        }
-
 
         event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
     }

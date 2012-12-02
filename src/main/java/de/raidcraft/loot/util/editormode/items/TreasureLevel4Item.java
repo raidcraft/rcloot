@@ -34,7 +34,12 @@ public class TreasureLevel4Item extends SimpleEditorItem {
             return;
         }
 
-        ChestDispenserUtil.pasteDoublechest(event.getPlayer(), newChestBlock);
+        if(event.getPlayer().isSneaking()) {
+            ChestDispenserUtil.pasteDoublechest(event.getPlayer(), newChestBlock);
+        }
+        else {
+            newChestBlock.setType(Material.CHEST);
+        }
 
         // create treasure loot object
         LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);

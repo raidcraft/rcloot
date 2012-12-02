@@ -1,15 +1,10 @@
 package de.raidcraft.loot.util.editormode.items;
 
-import com.sk89q.worldguard.bukkit.LoggerToChatHandler;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.loot.util.Utils;
-import de.raidcraft.loot.util.editormode.EditorItem;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,7 +34,12 @@ public class TreasureLevel1Item extends SimpleEditorItem {
             return;
         }
 
-        ChestDispenserUtil.pasteDoublechest(event.getPlayer(), newChestBlock);
+        if(event.getPlayer().isSneaking()) {
+            ChestDispenserUtil.pasteDoublechest(event.getPlayer(), newChestBlock);
+        }
+        else {
+            newChestBlock.setType(Material.CHEST);
+        }
 
         // create treasure loot object
         LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);

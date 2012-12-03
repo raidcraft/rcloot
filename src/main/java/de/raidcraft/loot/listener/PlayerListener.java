@@ -64,17 +64,12 @@ public class PlayerListener implements Listener {
 
             LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock());
 
-            // no storage found
-            if (!createMode.containsKey(event.getPlayer().getName())) {
-                // show infos about loot object
-                if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                    printObjectInfo(event.getPlayer(), existingLootObject);
-                    event.setCancelled(true);
-                    return;
-                }
+            if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
+                printObjectInfo(event.getPlayer(), existingLootObject);
             }
-            // player has a setting storage
-            else {
+
+            // no storage found
+            if (createMode.containsKey(event.getPlayer().getName())) {
                 SettingStorage settingStorage = createMode.get(event.getPlayer().getName());
                 // clicked object is already loot object
 

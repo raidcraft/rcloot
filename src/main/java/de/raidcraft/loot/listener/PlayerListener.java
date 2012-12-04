@@ -222,8 +222,8 @@ public class PlayerListener implements Listener {
         }
 
         // cut loot if too many items
-        if(loot.size() > 54) {
-            loot = loot.subList(0, 53);
+        if(loot.size() > event.getInventory().getSize()) {
+            loot = loot.subList(0, event.getInventory().getSize());
         }
 
         event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));

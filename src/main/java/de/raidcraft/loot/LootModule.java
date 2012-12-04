@@ -65,6 +65,7 @@ public class LootModule extends BukkitComponent {
         TreasureRewardLevel.addRewardLevel(3, config.rewardLevel3);
         TreasureRewardLevel.addRewardLevel(4, config.rewardLevel4);
         TreasureRewardLevel.addRewardLevel(5, config.rewardLevel5);
+        TreasureRewardLevel.addRewardLevel(6, config.rewardLevel6);
     }
 
     public class LocalConfiguration extends ConfigurationBase {
@@ -74,5 +75,6 @@ public class LootModule extends BukkitComponent {
         @Setting("reward-level-table-3") public int rewardLevel3 = 0;
         @Setting("reward-level-table-4") public int rewardLevel4 = 0;
         @Setting("reward-level-table-5") public int rewardLevel5 = 0;
+        @Setting("reward-level-table-6") public int rewardLevel6 = 0;
     }
 }

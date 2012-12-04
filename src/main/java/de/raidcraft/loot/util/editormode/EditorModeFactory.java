@@ -26,7 +26,7 @@ public class EditorModeFactory {
         addEditorBlock(new TreasureLevel3Item());
         addEditorBlock(new TreasureLevel4Item());
         addEditorBlock(new TreasureLevel5Item());
-
+        addEditorBlock(new TreasureLevel6Item());
     }
 
     public void addEditorBlock(EditorItem editorItem) {

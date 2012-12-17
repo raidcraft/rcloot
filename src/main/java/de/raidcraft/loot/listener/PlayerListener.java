@@ -245,7 +245,7 @@ public class PlayerListener implements Listener {
                 return;
             }
             for(ItemStack itemStack : event.getInventory().getContents()) {
-                if(itemStack != null) {
+                if(itemStack != null && itemStack.getType() != Material.AIR) {
                     event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                 }
             }

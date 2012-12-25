@@ -130,7 +130,7 @@ public class LootTableEntriesTable extends Table {
             return "";
         }
         else {
-            return getEnchantmentString(item.getEnchantments());
+            return getEnchantmentString(item.getItemMeta().getEnchants());
         }
     }
     

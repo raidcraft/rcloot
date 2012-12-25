@@ -135,12 +135,8 @@ public class PlayerListener implements Listener {
         LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
 
-        if (loot.size() > 0) {
-            // insert the item twice to prevent an empty dispenser
-            ((Dispenser) event.getBlock().getState()).getInventory().setContents(new ItemStack[]{loot.get(0).clone(), loot.get(0).clone()});
-        } else {
-            event.setCancelled(true);
-        }
+        ((Dispenser) event.getBlock().getState()).getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+        event.setItem(loot.get(0));
     }
 
     /*
@@ -249,6 +245,11 @@ public class PlayerListener implements Listener {
                 if(itemStack != null && itemStack.getType() != Material.AIR) {
                     event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                 }
+            }
+
+            // fill dispenser otherwise the dispenser event isn't called
+            if(event.getInventory().getType() == InventoryType.DISPENSER) {
+                event.getInventory().setItem(0, new ItemStack(Material.DIRT, 1));
             }
         }
     }

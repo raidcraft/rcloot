@@ -4,10 +4,10 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.util.TreasureRewardLevel;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
+import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -60,8 +60,8 @@ public class LootCommands {
         @CommandPermissions("loot.reload")
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
-            LootModule.inst.reload();
-            LootModule.inst.loadConfig();
+            LootModule.INST.reload();
+            LootModule.INST.loadConfig();
             LootFactory.inst.loadLootObjects();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }

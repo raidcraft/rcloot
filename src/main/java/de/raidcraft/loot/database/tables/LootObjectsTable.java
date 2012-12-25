@@ -3,10 +3,11 @@ package de.raidcraft.loot.database.tables;
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.loot.util.TreasureRewardLevel;
+import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -33,7 +34,7 @@ public class LootObjectsTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`loot_table_id` INT( 11 ) NOT NULL ,\n" +
@@ -57,7 +58,7 @@ public class LootObjectsTable extends Table {
 
         List<LootObject> lootObjects = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + ";").executeQuery();
 
             while (resultSet.next()) {
@@ -143,7 +144,7 @@ public class LootObjectsTable extends Table {
                     "'" + rewardLevel + "'" +
                     ");";
 
-            Statement statement = getConnection().createStatement();
+            Statement statement = LootModule.INST.getConnection().createStatement();
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -158,7 +159,7 @@ public class LootObjectsTable extends Table {
     public void deleteObject(LootObject object) {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());

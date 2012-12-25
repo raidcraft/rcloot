@@ -15,6 +15,9 @@ import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * Author: Philip
  * Date: 11.10.12 - 19:51
@@ -25,16 +28,19 @@ import de.raidcraft.loot.util.TreasureRewardLevel;
         desc = "Provides loot chests and more."
 )
 public class LootModule extends BukkitComponent {
-    public static LootModule inst;
+    public static LootModule INST;
     public LocalConfiguration config;
     private int reloadTaskId;
+    private Connection connection;
 
     @Override
     public void enable() {
-        inst = this;
+        INST = this;
         reloadTaskId = CommandBook.inst().getServer().getScheduler().scheduleSyncRepeatingTask(CommandBook.inst(), new Runnable() {
             public void run() {
-                if(ComponentDatabase.INSTANCE.getConnection() != null) {
+                Connection conn = ComponentDatabase.INSTANCE.getNewConnection();
+                if(conn != null) {
+                    connection = conn;
                     loadConfig();
 
                     ComponentDatabase.INSTANCE.registerTable(LootObjectsTable.class, new LootObjectsTable());
@@ -54,6 +60,21 @@ public class LootModule extends BukkitComponent {
                 }
             }
         }, 0, 2*20);
+    }
+
+    @Override
+    public void disable() {
+
+        try {
+            connection.close();
+        } catch (SQLException e) {}
+
+        super.disable();
+    }
+
+    public Connection getConnection() {
+
+        return connection;
     }
 
     public void loadConfig() {

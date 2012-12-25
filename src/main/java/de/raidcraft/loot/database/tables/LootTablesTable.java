@@ -3,6 +3,7 @@ package de.raidcraft.loot.database.tables;
 import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -29,7 +30,7 @@ public class LootTablesTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`min_loot` INT( 11 ) NOT NULL ,\n" +
@@ -54,7 +55,7 @@ public class LootTablesTable extends Table {
                     "'" + table.getMinLootItems() + "'" + "," +
                     "'" + table.getMaxLootItems() + "'" +
                     ");";
-            Statement statement = getConnection().createStatement();
+            Statement statement = LootModule.INST.getConnection().createStatement();
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -71,7 +72,7 @@ public class LootTablesTable extends Table {
     public LootTable getLootTable(int id) {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';").executeQuery();
 
             while (resultSet.next()) {
@@ -92,7 +93,7 @@ public class LootTablesTable extends Table {
 
         List<LootTable> tables = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + ";").executeQuery();
 
             while (resultSet.next()) {
@@ -112,7 +113,7 @@ public class LootTablesTable extends Table {
     public void deleteTable(LootTable table) {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';").execute();
             ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).deleteEntries(table);
         } catch (SQLException e) {

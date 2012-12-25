@@ -2,6 +2,7 @@ package de.raidcraft.loot.database.tables;
 
 import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.loot.LootModule;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
@@ -34,7 +35,7 @@ public class LootTableEntriesTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`loot_table_id` INT( 11 ) NOT NULL ,\n" +
@@ -67,7 +68,7 @@ public class LootTableEntriesTable extends Table {
                             "'" + entry.getChance() + "'" +
                             ");";
 
-                    Statement statement = getConnection().createStatement();
+                    Statement statement = LootModule.INST.getConnection().createStatement();
                     statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
                     ResultSet rs = statement.getGeneratedKeys();
                     if (rs != null && rs.next()) {
@@ -85,7 +86,7 @@ public class LootTableEntriesTable extends Table {
 
         List<LootTableEntry> entries = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE loot_table_id = '" + lootTable.getId() + "';").executeQuery();
 
             while (resultSet.next()) {
@@ -112,7 +113,7 @@ public class LootTableEntriesTable extends Table {
     public void deleteEntries(LootTable table) {
 
         try {
-            getConnection().prepareStatement(
+            LootModule.INST.getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';").execute();
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());

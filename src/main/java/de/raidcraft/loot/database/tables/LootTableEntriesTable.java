@@ -7,9 +7,13 @@ import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,7 +100,7 @@ public class LootTableEntriesTable extends Table {
                         resultSet.getShort("durability")
                 );
 
-                itemStack = addItemData(itemStack, resultSet.getString("itemdata"));
+                addItemData(itemStack, resultSet.getString("itemdata"));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
                 entry.setId(resultSet.getInt("id"));
@@ -123,8 +127,7 @@ public class LootTableEntriesTable extends Table {
 
     private String getItemData(ItemStack item) {
         if(item.getType() == Material.FIREWORK) {
-            //TODO save firework rocket type
-            return "";
+            return getFireworkEffectString(((FireworkMeta)item.getItemMeta()));
         }
         else if(item.getType() == Material.BOOK_AND_QUILL) {
             //TODO save written books
@@ -137,10 +140,11 @@ public class LootTableEntriesTable extends Table {
     
     private ItemStack addItemData(ItemStack itemstack, String data) {
         if(itemstack.getType() == Material.FIREWORK) {
-
+            Bukkit.broadcastMessage("0");
+            addFireworkEffectMetaByString(data, itemstack);
         }
         else if(itemstack.getType() == Material.BOOK_AND_QUILL) {
-            
+            //TODO add book data
         }
         else {
             itemstack.addEnchantments(getEnchantmentsByString(data));
@@ -148,6 +152,9 @@ public class LootTableEntriesTable extends Table {
         return itemstack;
     }
     
+    /*
+     * Enchantment conversation methods
+     */
     private String getEnchantmentString(Map<Enchantment, Integer> enchantments) {
 
         String enchantmentString = "";
@@ -169,5 +176,80 @@ public class LootTableEntriesTable extends Table {
             }
         }
         return enchantments;
+    }
+    
+    /*
+     * Firework conversation methods
+     * 
+     * FireworkEffects structure: 
+     * Power=EffectName:Flicker:Trail:Color1,Color2,...:FadeColor1,FadeColor2,...|EffectName2:...
+     */
+    private String getFireworkEffectString(FireworkMeta fireworkMeta) {
+        
+        String fireworkEffects = fireworkMeta.getPower() + "=";
+        for (FireworkEffect effect : fireworkMeta.getEffects()) {
+            fireworkEffects += effect.getType().name() + ":";
+            fireworkEffects += ((effect.hasFlicker()) ? "1" : "0") + ":";
+            fireworkEffects += ((effect.hasTrail()) ? "1" : "0") + ":";
+            for(Color color : effect.getColors()) {
+                fireworkEffects += color.asRGB() + ",";
+            }
+            fireworkEffects += ":";
+            for(Color color : effect.getFadeColors()) {
+                fireworkEffects += color.asRGB() + ",";
+            }
+            fireworkEffects += "|";
+        }
+        return fireworkEffects;
+    }
+    
+    private void addFireworkEffectMetaByString(String fireworkEffectMetaString, ItemStack fireworkItem) {
+        
+        try {
+            FireworkMeta fireworkMeta = (FireworkMeta)fireworkItem.getItemMeta();
+            String[] powerPair = fireworkEffectMetaString.split("=");
+
+            fireworkMeta.setPower(Integer.valueOf(powerPair[0]));
+            
+            String[] effects = powerPair[1].split("|");
+            
+            for(String effect : effects) {
+                Bukkit.broadcastMessage("1");
+                String[] effectParameter = effect.split(":");
+                if(effectParameter.length < 5) continue;
+
+                boolean flicker = (effectParameter[1] == "1") ? true : false;
+                boolean trail = (effectParameter[2] == "1") ? true : false;
+                
+                String[] colorString = effectParameter[3].split(",");
+                List<Color> colors = new ArrayList<>();
+                for(String color : colorString) {
+                    if(color.length() <= 0) continue;
+                    colors.add(Color.fromRGB(Integer.valueOf(color)));
+                }
+
+                String[] fadeColorString = effectParameter[4].split(",");
+                List<Color> fadeColors = new ArrayList<>();
+                for(String color : fadeColorString) {
+                    if(color.length() <= 0) continue;
+                    fadeColors.add(Color.fromRGB(Integer.valueOf(color)));
+                }
+                
+                FireworkEffect fireworkEffect = FireworkEffect.builder()
+                        .with(FireworkEffect.Type.valueOf(effectParameter[0]))
+                        .flicker(flicker)
+                        .trail(trail)
+                        .withColor(colors)
+                        .withFade(fadeColors)
+                        .build();
+
+                fireworkMeta.addEffect(fireworkEffect);
+                Bukkit.broadcastMessage("1.5");
+            }
+            Bukkit.broadcastMessage("2");
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

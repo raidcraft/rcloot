@@ -79,7 +79,8 @@ public class LootPlayersTable extends Table {
             }
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
+            return System.currentTimeMillis();
         }
-        return System.currentTimeMillis();
+        return 0;
     }
 }

@@ -200,8 +200,9 @@ public class PlayerListener implements Listener {
 
         // lock loot object
         inventoryLocks.put(entity.getName(), lootObject);
-
+        boolean admin = false;
         if (adminMode.contains(entity.getName())) {
+            admin = true;
             LootChat.info((Player) entity, "Du befindest dich im Admin-Modus!");
             // fill loot object with all table entries
             List<LootTableEntry> entries = lootObject.getLootTable().getEntries();
@@ -216,8 +217,8 @@ public class PlayerListener implements Listener {
         // set loot
         event.getInventory().clear();
 
-        // halve the loot if single chest
-        if(singleChest || ((lootObject instanceof TimedLootObject) && ((TimedLootObject) lootObject).getCooldown() == 0)) {
+        // halve the loot if single chest (smaller chance for single chests)
+        if(singleChest && loot.size() > 1 && !admin) {
             loot = loot.subList(0, loot.size()/2);
         }
 

@@ -35,7 +35,6 @@ public class SimpleLootTableEntry implements LootTableEntry {
     public void setItem(ItemStack item) {
 
         this.item = new ItemStack(item.getType(), item.getAmount(), item.getDurability());
-        this.item.setItemMeta(item.getItemMeta());
     }
 
     @Override

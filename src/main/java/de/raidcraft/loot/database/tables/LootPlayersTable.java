@@ -64,7 +64,7 @@ public class LootPlayersTable extends Table {
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
-        return false;
+        return true;
     }
 
     public long getLastLooted(String player, int objectId) {
@@ -79,6 +79,6 @@ public class LootPlayersTable extends Table {
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
         }
-        return 0;
+        return System.currentTimeMillis();
     }
 }

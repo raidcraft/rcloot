@@ -41,7 +41,7 @@ public class LootTableEntriesTable extends Table {
                             "`item` VARCHAR( 32 ) NOT NULL ,\n" +
                             "`durability` INT( 11 ) NOT NULL ,\n" +
                             "`amount` INT( 11 ) NOT NULL , \n" +
-                            "`enchantments` TEXT( 300 ) NOT NULL , \n" +
+                            "`itemdata` TEXT( 300 ) NOT NULL , \n" +
                             "`chance` INT( 11 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
@@ -53,17 +53,17 @@ public class LootTableEntriesTable extends Table {
     public void addEntries(LootTable table) {
 
         for (LootTableEntry entry : table.getEntries()) {
-            String enchantments = getEnchantmentString(entry.getItem().getEnchantments());
+            String itemData = getItemData(entry.getItem());
             // save entry if doesn't save yet
             if (entry.getId() == 0) {
                 try {
-                    String query = "INSERT INTO " + getTableName() + " (item, loot_table_id, durability, amount, enchantments, chance) " +
+                    String query = "INSERT INTO " + getTableName() + " (item, loot_table_id, durability, amount, itemdata, chance) " +
                             "VALUES (" +
                             "'" + entry.getItem().getType().name() + "'" + "," +
                             "'" + table.getId() + "'" + "," +
                             "'" + entry.getItem().getDurability() + "'" + "," +
                             "'" + entry.getItem().getAmount() + "'" + "," +
-                            "'" + enchantments + "'" + "," +
+                            "'" + itemData + "'" + "," +
                             "'" + entry.getChance() + "'" +
                             ");";
 
@@ -95,7 +95,7 @@ public class LootTableEntriesTable extends Table {
                         resultSet.getShort("durability")
                 );
 
-                itemStack.addEnchantments(getEnchantmentsByString(resultSet.getString("enchantments")));
+                itemStack = addItemData(itemStack, resultSet.getString("itemdata"));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
                 entry.setId(resultSet.getInt("id"));
@@ -120,6 +120,33 @@ public class LootTableEntriesTable extends Table {
         }
     }
 
+    private String getItemData(ItemStack item) {
+        if(item.getType() == Material.FIREWORK) {
+            //TODO save firework rocket type
+            return "";
+        }
+        else if(item.getType() == Material.BOOK_AND_QUILL) {
+            //TODO save written books
+            return "";
+        }
+        else {
+            return getEnchantmentString(item.getEnchantments());
+        }
+    }
+    
+    private ItemStack addItemData(ItemStack itemstack, String data) {
+        if(itemstack.getType() == Material.FIREWORK) {
+
+        }
+        else if(itemstack.getType() == Material.BOOK_AND_QUILL) {
+            
+        }
+        else {
+            itemstack.addEnchantments(getEnchantmentsByString(data));
+        }
+        return itemstack;
+    }
+    
     private String getEnchantmentString(Map<Enchantment, Integer> enchantments) {
 
         String enchantmentString = "";

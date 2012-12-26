@@ -213,8 +213,8 @@ public class PlayerListener implements Listener {
         // set loot
         event.getInventory().clear();
 
-        // halve the loot if single chest (smaller chance for single chests)
-        if(singleChest && loot.size() > 1 && !admin) {
+        // halve the loot if single chest (smaller chance for single treasure chests)
+        if((lootObject instanceof TreasureLootObject) && singleChest && loot.size() > 1 && !admin) {
             loot = loot.subList(0, loot.size()/2);
         }
 

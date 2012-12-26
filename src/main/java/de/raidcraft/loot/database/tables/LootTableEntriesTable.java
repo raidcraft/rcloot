@@ -213,7 +213,7 @@ public class LootTableEntriesTable extends Table {
             
             for(String effect : effects) {
                 String[] effectParameter = effect.split(":");
-                if(effectParameter.length < 5) continue;
+                if(effectParameter.length < 4) continue;
 
                 boolean flicker = (effectParameter[1] == "1") ? true : false;
                 boolean trail = (effectParameter[2] == "1") ? true : false;
@@ -225,11 +225,13 @@ public class LootTableEntriesTable extends Table {
                     colors.add(Color.fromRGB(Integer.valueOf(color)));
                 }
 
-                String[] fadeColorString = effectParameter[4].split(",");
                 List<Color> fadeColors = new ArrayList<>();
-                for(String color : fadeColorString) {
-                    if(color.length() <= 0) continue;
-                    fadeColors.add(Color.fromRGB(Integer.valueOf(color)));
+                if(effectParameter.length > 4) {
+                    String[] fadeColorString = effectParameter[4].split(",");
+                    for(String color : fadeColorString) {
+                        if(color.length() <= 0) continue;
+                        fadeColors.add(Color.fromRGB(Integer.valueOf(color)));
+                    }
                 }
                 
                 FireworkEffect fireworkEffect = FireworkEffect.builder()

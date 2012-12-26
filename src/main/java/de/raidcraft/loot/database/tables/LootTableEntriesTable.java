@@ -7,7 +7,6 @@ import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
@@ -140,7 +139,6 @@ public class LootTableEntriesTable extends Table {
     
     private ItemStack addItemData(ItemStack itemstack, String data) {
         if(itemstack.getType() == Material.FIREWORK) {
-            Bukkit.broadcastMessage("0");
             addFireworkEffectMetaByString(data, itemstack);
         }
         else if(itemstack.getType() == Material.BOOK_AND_QUILL) {
@@ -167,7 +165,7 @@ public class LootTableEntriesTable extends Table {
     private Map<Enchantment, Integer> getEnchantmentsByString(String enchantmentString) {
 
         Map<Enchantment, Integer> enchantments = new HashMap<>();
-        String[] enchantmentPairs = enchantmentString.split("|");
+        String[] enchantmentPairs = enchantmentString.split("\\|");
         for (String enchantmentPair : enchantmentPairs) {
             String[] enchantmentPairSplit = enchantmentPair.split(":");
             try {
@@ -211,10 +209,9 @@ public class LootTableEntriesTable extends Table {
 
             fireworkMeta.setPower(Integer.valueOf(powerPair[0]));
             
-            String[] effects = powerPair[1].split("|");
+            String[] effects = powerPair[1].split("\\|");
             
             for(String effect : effects) {
-                Bukkit.broadcastMessage("1");
                 String[] effectParameter = effect.split(":");
                 if(effectParameter.length < 5) continue;
 
@@ -244,9 +241,7 @@ public class LootTableEntriesTable extends Table {
                         .build();
 
                 fireworkMeta.addEffect(fireworkEffect);
-                Bukkit.broadcastMessage("1.5");
             }
-            Bukkit.broadcastMessage("2");
         }
         catch(Exception e) {
             e.printStackTrace();

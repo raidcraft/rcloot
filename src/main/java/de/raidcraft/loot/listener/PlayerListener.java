@@ -134,7 +134,7 @@ public class PlayerListener implements Listener {
 
         LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-
+        loot.add(new ItemStack(Material.DIRT, 1));
         ((Dispenser) event.getBlock().getState()).getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
         event.setItem(loot.get(0));
     }
@@ -234,22 +234,20 @@ public class PlayerListener implements Listener {
             inventoryLocks.remove(event.getPlayer().getName());
 
             // drop not cleared items if loot object isn't infinite
-            if(adminMode.contains(event.getPlayer().getName())) {
-                return;
-            }
+            if(!adminMode.contains(event.getPlayer().getName())) {
 
-            if((lootObject instanceof TimedLootObject) && (((TimedLootObject)lootObject).getCooldown() == 0)) {
-                return;
-            }
-            for(ItemStack itemStack : event.getInventory().getContents()) {
-                if(itemStack != null && itemStack.getType() != Material.AIR) {
-                    event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                if(!(lootObject instanceof TimedLootObject) || (((TimedLootObject)lootObject).getCooldown() != 0)) {
+                    for(ItemStack itemStack : event.getInventory().getContents()) {
+                        if(itemStack != null && itemStack.getType() != Material.AIR) {
+                            event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
+                        }
+                    }
                 }
             }
 
             // fill dispenser otherwise the dispenser event isn't called
             if(event.getInventory().getType() == InventoryType.DISPENSER) {
-                event.getInventory().setItem(0, new ItemStack(Material.DIRT, 1));
+                event.getInventory().setItem(1, new ItemStack(Material.DIRT, 1));
             }
         }
     }

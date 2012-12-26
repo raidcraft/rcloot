@@ -242,6 +242,7 @@ public class LootTableEntriesTable extends Table {
 
                 fireworkMeta.addEffect(fireworkEffect);
             }
+            fireworkItem.setItemMeta(fireworkMeta);
         }
         catch(Exception e) {
             e.printStackTrace();

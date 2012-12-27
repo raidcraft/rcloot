@@ -2,14 +2,18 @@ package de.raidcraft.loot.listener;
 
 import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Dispenser;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -42,6 +46,24 @@ public class BlockListener implements Listener {
         if(lootBlocks.size() > 0) {
             TNTPlacerTask task = new TNTPlacerTask(lootBlocks);
             Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin)CommandBook.inst(), task, 20*5);
+        }
+    }
+
+    @EventHandler
+    public void onDispense(BlockDispenseEvent event) {
+
+        if (LootFactory.inst.getLootObject(event.getBlock()) == null) {
+            return;
+        }
+
+        LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
+        List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
+        Dispenser dispenser = (Dispenser) event.getBlock().getState();
+
+        for(ItemStack item : loot) {
+            // create item stack
+            ItemStack newItemStack = item.clone();
+            dispenser.getInventory().addItem(newItemStack);
         }
     }
     

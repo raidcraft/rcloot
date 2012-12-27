@@ -11,7 +11,6 @@ import de.raidcraft.loot.util.editormode.EditorModeFactory;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -19,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -123,20 +121,6 @@ public class PlayerListener implements Listener {
                 return;
             }
         }
-    }
-
-    @EventHandler
-    public void onDispense(BlockDispenseEvent event) {
-
-        if (LootFactory.inst.getLootObject(event.getBlock()) == null) {
-            return;
-        }
-
-        LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
-        List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-        loot.add(new ItemStack(Material.DIRT, 1));
-        ((Dispenser) event.getBlock().getState()).getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
-        event.setItem(loot.get(0));
     }
 
     /*

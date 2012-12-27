@@ -232,7 +232,7 @@ public class PlayerListener implements Listener {
             // fill dispenser otherwise the dispenser event won't be called
             if(event.getInventory().getType() == InventoryType.DISPENSER) {
                 List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-
+                event.getInventory().clear();
                 for(ItemStack item : loot) {
                     // create item stack
                     ItemStack newItemStack = item.clone();

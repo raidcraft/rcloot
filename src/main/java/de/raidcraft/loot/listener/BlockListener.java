@@ -14,7 +14,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class BlockListener implements Listener {
         }
         if(lootBlocks.size() > 0) {
             TNTPlacerTask task = new TNTPlacerTask(lootBlocks);
-            Bukkit.getScheduler().scheduleSyncDelayedTask((Plugin)CommandBook.inst(), task, 20*5);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(CommandBook.inst(), task, 20*5);
         }
     }
 

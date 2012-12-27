@@ -229,9 +229,15 @@ public class PlayerListener implements Listener {
                 }
             }
 
-            // fill dispenser otherwise the dispenser event isn't called
+            // fill dispenser otherwise the dispenser event won't be called
             if(event.getInventory().getType() == InventoryType.DISPENSER) {
-                event.getInventory().setItem(1, new ItemStack(Material.DIRT, 1));
+                List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
+
+                for(ItemStack item : loot) {
+                    // create item stack
+                    ItemStack newItemStack = item.clone();
+                    event.getInventory().addItem(newItemStack);
+                }
             }
         }
     }

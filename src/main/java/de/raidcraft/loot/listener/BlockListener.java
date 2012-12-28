@@ -59,11 +59,8 @@ public class BlockListener implements Listener {
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
 
-        for(ItemStack item : loot) {
-            // create item stack
-            ItemStack newItemStack = item.clone();
-            dispenser.getInventory().addItem(newItemStack);
-        }
+        dispenser.getInventory().clear();
+        dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
     }
     
     public class TNTPlacerTask implements Runnable {

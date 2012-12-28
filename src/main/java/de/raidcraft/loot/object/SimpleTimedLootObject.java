@@ -37,7 +37,7 @@ public class SimpleTimedLootObject extends SimpleLootObject implements TimedLoot
 
         if ((ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).getLastLooted(player, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
             for (LootTableEntry entry : getLootTable().loot()) {
-                loot.add(entry.getItem());
+                loot.add(entry.getItem().clone());
             }
 
             // remember loot if not infinite dispenser

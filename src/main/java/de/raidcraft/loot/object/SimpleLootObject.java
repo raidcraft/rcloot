@@ -104,7 +104,7 @@ public class SimpleLootObject implements LootObject {
         // player not yet looted
         if (id != 0 && !ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).hasLooted(player, id)) {
             for (LootTableEntry entry : getLootTable().loot()) {
-                loot.add(entry.getItem());
+                loot.add(entry.getItem().clone());
             }
 
             // remember loot

@@ -57,6 +57,8 @@ public class BlockListener implements Listener {
 
         LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
+        if(loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
+
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
 
         dispenser.getInventory().clear();

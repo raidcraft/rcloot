@@ -233,6 +233,7 @@ public class PlayerListener implements Listener {
             if(event.getInventory().getType() == InventoryType.DISPENSER) {
                 List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
                 event.getInventory().clear();
+                if(loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
                 for(ItemStack item : loot) {
                     // create item stack
                     ItemStack newItemStack = item.clone();

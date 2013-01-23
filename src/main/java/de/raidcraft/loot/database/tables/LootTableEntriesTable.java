@@ -7,7 +7,7 @@ import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
-import de.raidcraft.util.ItemUtils.ItemUtils;
+import de.raidcraft.util.itemutils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

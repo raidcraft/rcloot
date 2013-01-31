@@ -1,6 +1,6 @@
 package de.raidcraft.loot.object;
 
-import com.silthus.raidcraft.util.component.database.ComponentDatabase;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
@@ -102,13 +102,13 @@ public class SimpleLootObject implements LootObject {
         List<ItemStack> loot = new ArrayList<>();
 
         // player not yet looted
-        if (id != 0 && !ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).hasLooted(player, id)) {
+        if (id != 0 && !RaidCraft.getTable(LootPlayersTable.class).hasLooted(player, id)) {
             for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem().clone());
             }
 
             // remember loot
-            ComponentDatabase.INSTANCE.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis() / 1000);
+            RaidCraft.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis() / 1000);
         }
         return loot;
     }

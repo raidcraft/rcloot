@@ -29,33 +29,35 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
 
     @Override
     public void actionRightClick(PlayerInteractEvent event) {
+
         deleteLootObject(event, false);
     }
 
     @Override
     public void actionLeftClick(PlayerInteractEvent event) {
+
         deleteLootObject(event, true);
     }
 
     private void deleteLootObject(PlayerInteractEvent event, boolean destroy) {
+
         LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock());
-        if(existingLootObject == null) {
+        if (existingLootObject == null) {
             return;
         }
         LootFactory.inst.deleteLootObject(existingLootObject, true);
         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
 
-        if(destroy) {
+        if (destroy) {
             Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(existingLootObject.getHost());
-            if(otherChestBlock != null) {
+            if (otherChestBlock != null) {
                 ((Chest) otherChestBlock.getState()).getInventory().setContents(new ItemStack[]{});
                 otherChestBlock.setType(Material.AIR);
-            }
-            else {
-                if(existingLootObject.getHost().getState() instanceof Chest) {
+            } else {
+                if (existingLootObject.getHost().getState() instanceof Chest) {
                     ((Chest) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
                 }
-                if(existingLootObject.getHost().getState() instanceof Dispenser) {
+                if (existingLootObject.getHost().getState() instanceof Dispenser) {
                     ((Dispenser) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
                 }
             }

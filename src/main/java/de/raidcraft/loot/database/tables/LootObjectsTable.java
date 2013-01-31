@@ -1,12 +1,15 @@
 package de.raidcraft.loot.database.tables;
 
-import com.silthus.raidcraft.util.component.database.ComponentDatabase;
-import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.loot.LootModule;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -34,7 +37,7 @@ public class LootObjectsTable extends Table {
     public void createTable() {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`loot_table_id` INT( 11 ) NOT NULL ,\n" +
@@ -58,7 +61,7 @@ public class LootObjectsTable extends Table {
 
         List<LootObject> lootObjects = new ArrayList<>();
         try {
-            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
+            ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + ";").executeQuery();
 
             while (resultSet.next()) {
@@ -72,7 +75,7 @@ public class LootObjectsTable extends Table {
                 } else {
                     lootObject = new SimpleLootObject();
                 }
-                if(rewardLevel > 0) {
+                if (rewardLevel > 0) {
                     lootObject = new SimpleTreasureLootObject();
                     ((TreasureLootObject) lootObject).setRewardLevel(rewardLevel);
                 }
@@ -88,17 +91,16 @@ public class LootObjectsTable extends Table {
                 Block host = world.getBlockAt(resultSet.getInt("x")
                         , resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHost(host);
-                if(lootObject instanceof TreasureLootObject) {
+                if (lootObject instanceof TreasureLootObject) {
                     try {
-                        lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class)
+                        lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
                                 .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
                     } catch (NoLinkedRewardTableException e) {
                         CommandBook.logger().warning("[Loot] Try to load treasure object: " + e.getMessage());
                         continue;
                     }
-                }
-                else {
-                    lootObject.assignLootTable(ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                } else {
+                    lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
                 }
                 lootObjects.add(lootObject);
             }
@@ -117,7 +119,7 @@ public class LootObjectsTable extends Table {
 
         // save table if not done yes
         if (object.getLootTable().getId() == 0) {
-            ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
+            RaidCraft.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
         }
 
         int cooldown = -1;
@@ -126,7 +128,7 @@ public class LootObjectsTable extends Table {
         if (object instanceof SimpleTimedLootObject) {
             cooldown = ((SimpleTimedLootObject) object).getCooldown();
         }
-        if(object instanceof TreasureLootObject) {
+        if (object instanceof TreasureLootObject) {
             rewardLevel = ((TreasureLootObject) object).getRewardLevel();
         }
         try {
@@ -144,7 +146,7 @@ public class LootObjectsTable extends Table {
                     "'" + rewardLevel + "'" +
                     ");";
 
-            Statement statement = LootModule.INST.getConnection().createStatement();
+            Statement statement = getConnection().createStatement();
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.getGeneratedKeys();
             if (rs != null && rs.next()) {
@@ -159,7 +161,7 @@ public class LootObjectsTable extends Table {
     public void deleteObject(LootObject object) {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());

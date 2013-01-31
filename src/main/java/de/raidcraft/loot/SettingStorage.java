@@ -41,6 +41,7 @@ public class SettingStorage {
     }
 
     public SettingStorage setRewardLevel(int level) {
+
         this.rewardLevel = level;
         return this;
     }

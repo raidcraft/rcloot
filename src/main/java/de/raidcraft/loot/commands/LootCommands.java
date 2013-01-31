@@ -1,8 +1,13 @@
 package de.raidcraft.loot.commands;
 
-import com.sk89q.minecraft.util.commands.*;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.minecraft.util.commands.NestedCommand;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
-import de.raidcraft.loot.LootModule;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
@@ -18,7 +23,7 @@ import org.bukkit.entity.Player;
  */
 public class LootCommands {
 
-    public LootCommands(LootModule module) {
+    public LootCommands(LootPlugin module) {
 
     }
 
@@ -46,9 +51,9 @@ public class LootCommands {
 
     public static class NestedLootCommands {
 
-        private final LootModule module;
+        private final LootPlugin module;
 
-        public NestedLootCommands(LootModule module) {
+        public NestedLootCommands(LootPlugin module) {
 
             this.module = module;
         }
@@ -60,8 +65,7 @@ public class LootCommands {
         @CommandPermissions("loot.reload")
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
-            LootModule.INST.reload();
-            LootModule.INST.loadConfig();
+            RaidCraft.getComponent(LootPlugin.class).reload();
             LootFactory.inst.loadLootObjects();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
@@ -84,11 +88,10 @@ public class LootCommands {
         @CommandPermissions("loot.mode.editor")
         public void editorMode(CommandContext context, CommandSender sender) throws CommandException {
 
-            if(PlayerListener.editorMode.contains(sender.getName())) {
+            if (PlayerListener.editorMode.contains(sender.getName())) {
                 PlayerListener.editorMode.remove(sender.getName());
                 LootChat.info((Player) sender, "Du hast den Editor-Modus verlassen!");
-            }
-            else {
+            } else {
                 PlayerListener.editorMode.add(sender.getName());
                 LootChat.success((Player) sender, "Du hast den Editor-Modus betreten!");
             }
@@ -101,11 +104,10 @@ public class LootCommands {
         @CommandPermissions("loot.mode.admin")
         public void adminMode(CommandContext context, CommandSender sender) throws CommandException {
 
-            if(PlayerListener.adminMode.contains(sender.getName())) {
+            if (PlayerListener.adminMode.contains(sender.getName())) {
                 PlayerListener.adminMode.remove(sender.getName());
                 LootChat.info((Player) sender, "Du hast den Admin-Modus verlassen!");
-            }
-            else {
+            } else {
                 PlayerListener.adminMode.add(sender.getName());
                 LootChat.success((Player) sender, "Du hast den Admin-Modus betreten!");
             }
@@ -156,8 +158,8 @@ public class LootCommands {
         @CommandPermissions("loot.create")
         public void treasure(CommandContext context, CommandSender sender) throws CommandException {
 
-            if(context.argsLength() < 1) {
-                LootChat.warn((Player)sender, "Du musst als Parameter eine Belohnungsstufe angeben!");
+            if (context.argsLength() < 1) {
+                LootChat.warn((Player) sender, "Du musst als Parameter eine Belohnungsstufe angeben!");
                 return;
             }
 
@@ -165,8 +167,7 @@ public class LootCommands {
 
             try {
                 TreasureRewardLevel.getLinkedTable(rewardLevel);
-            }
-            catch(NoLinkedRewardTableException e) {
+            } catch (NoLinkedRewardTableException e) {
                 LootChat.warn((Player) sender, "Die angegebene Belohungsstufe existiert nicht!");
                 return;
             }

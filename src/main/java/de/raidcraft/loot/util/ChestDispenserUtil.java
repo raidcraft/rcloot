@@ -8,8 +8,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 /**
  * Author: Philip
  * Date: 19.11.12 - 21:40
@@ -18,6 +16,7 @@ import java.util.List;
 public class ChestDispenserUtil {
 
     public static Block getOtherChestBlock(Block block) {
+
         return getOtherChestBlock(block, false);
     }
 
@@ -32,7 +31,7 @@ public class ChestDispenserUtil {
         if (block.getRelative(0, 0, -1).getType() == Material.CHEST)
             return block.getRelative(0, 0, -1);
 
-        if(allDirections) {
+        if (allDirections) {
             if (block.getRelative(1, 0, 1).getType() == Material.CHEST)
                 return block.getRelative(1, 0, 1);
             if (block.getRelative(1, 0, -1).getType() == Material.CHEST)
@@ -53,8 +52,9 @@ public class ChestDispenserUtil {
 
         return null;
     }
-    
+
     public static boolean isChestOrDispenser(Block block) {
+
         if (block != null
                 && (block.getType() == Material.DISPENSER
                 || block.getType() == Material.CHEST)) {
@@ -62,8 +62,9 @@ public class ChestDispenserUtil {
         }
         return false;
     }
-    
+
     public static ItemStack[] getItems(Block block) {
+
         ItemStack[] items = new ItemStack[]{null};
 
         if (block.getState() instanceof Chest) {
@@ -78,20 +79,21 @@ public class ChestDispenserUtil {
     }
 
     public static void pasteDoublechest(Player player, Block block) {
+
         block.setType(Material.CHEST);
 
         BlockFace face = Utils.yawToFace(player.getLocation().getYaw());
 
-        if(face == BlockFace.NORTH) {
+        if (face == BlockFace.NORTH) {
             block.getRelative(-1, 0, 0).setType(Material.CHEST);
         }
-        if(face == BlockFace.EAST) {
+        if (face == BlockFace.EAST) {
             block.getRelative(0, 0, -1).setType(Material.CHEST);
         }
-        if(face == BlockFace.SOUTH) {
+        if (face == BlockFace.SOUTH) {
             block.getRelative(1, 0, 0).setType(Material.CHEST);
         }
-        if(face == BlockFace.WEST) {
+        if (face == BlockFace.WEST) {
             block.getRelative(0, 0, 1).setType(Material.CHEST);
         }
     }

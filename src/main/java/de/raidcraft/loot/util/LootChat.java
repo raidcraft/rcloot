@@ -1,6 +1,11 @@
 package de.raidcraft.loot.util;
 
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.object.TimedLootObject;
+import de.raidcraft.loot.object.TreasureLootObject;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -14,6 +19,7 @@ public class LootChat {
     private final static String CHAT_TAG = ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Loot" + ChatColor.DARK_GRAY + "] " + ChatColor.WHITE;
 
     public static void successfullyCreatedLootObject(Player player, LootObject lootObject) {
+
         String objectInfo = "";
         if (lootObject instanceof TimedLootObject) {
             objectInfo += "Timed, Cooldown: "
@@ -21,8 +27,7 @@ public class LootChat {
                     + "s";
         } else if (lootObject instanceof TreasureLootObject) {
             objectInfo += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) lootObject).getRewardLevel();
-        }
-        else if (lootObject instanceof SimpleLootObject) {
+        } else if (lootObject instanceof SimpleLootObject) {
             objectInfo += "Default";
         }
 
@@ -30,14 +35,17 @@ public class LootChat {
     }
 
     public static void occupiedByOtherChest(Player player) {
+
         LootChat.warn(player, "Hier steht bereits eine Truhe im Weg!");
     }
 
     public static void alreadyLootObject(Player player) {
+
         LootChat.warn(player, "Das hier ist bereits ein Loot-Objekt!");
     }
 
     public static void failureDuringCreation(Player player) {
+
         LootChat.warn(player, "Beim erstellen ist ein Fehler aufgetreten!");
     }
 

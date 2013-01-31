@@ -6,7 +6,9 @@ package de.raidcraft.loot.exceptions;
  * Description:
  */
 public class LootTableNotExistsException extends Throwable {
+
     public LootTableNotExistsException(String message) {
+
         super(message);
     }
 }

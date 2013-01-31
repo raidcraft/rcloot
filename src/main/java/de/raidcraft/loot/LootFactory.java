@@ -1,12 +1,15 @@
 package de.raidcraft.loot;
 
-import com.silthus.raidcraft.util.component.database.ComponentDatabase;
 import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
-import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -37,10 +40,10 @@ public class LootFactory {
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
 
-        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).deleteObject(lootObject);
+        RaidCraft.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
         if (andTable && !(lootObject instanceof TreasureLootObject)) {
-            ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
+            RaidCraft.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
         }
 
         unregisterLootObject(lootObject);
@@ -79,17 +82,18 @@ public class LootFactory {
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
         return lootTable;
     }
-    
+
     public void createTreasureLootObject(String creator, Block block, int rewardLevel) {
 
         createTreasureLootObject(creator, block, rewardLevel, false);
     }
 
     public void createTreasureLootObject(String creator, Block block, int rewardLevel, boolean chat) {
+
         Player player = Bukkit.getPlayer(creator);
         LootObject existingLootObject = LootFactory.inst.getLootObject(block);
-        if(existingLootObject != null) {
-            if(player != null && chat) {
+        if (existingLootObject != null) {
+            if (player != null && chat) {
                 LootChat.alreadyLootObject(player);
             }
             return;
@@ -99,14 +103,14 @@ public class LootFactory {
         SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
 
         try {
-            LootTable lootTable = ComponentDatabase.INSTANCE.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
-            if(lootTable == null) {
+            LootTable lootTable = RaidCraft.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
+            if (lootTable == null) {
                 throw new LootTableNotExistsException("[Loot] Cannot load loot table");
             }
             treasureLootObject.assignLootTable(lootTable);
         } catch (Throwable e) {
             CommandBook.logger().warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
-            if(player != null && chat) {
+            if (player != null && chat) {
                 LootChat.failureDuringCreation(player);
             }
             return;
@@ -119,12 +123,12 @@ public class LootFactory {
         treasureLootObject.setEnabled(true);
 
         // save loot object in database
-        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(treasureLootObject);
+        RaidCraft.getTable(LootObjectsTable.class).addObject(treasureLootObject);
 
         // register loot object in cache
         addLootObject(treasureLootObject);
 
-        if(player != null && chat) {
+        if (player != null && chat) {
             LootChat.successfullyCreatedLootObject(player, treasureLootObject);
         }
     }
@@ -151,7 +155,7 @@ public class LootFactory {
         timedLootObject.setEnabled(true);
 
         // save loot object in database
-        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(timedLootObject);
+        RaidCraft.getTable(LootObjectsTable.class).addObject(timedLootObject);
 
         // register loot object in cache
         addLootObject(timedLootObject);
@@ -178,19 +182,20 @@ public class LootFactory {
         lootObject.setEnabled(true);
 
         // save loot object in database
-        ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).addObject(lootObject);
+        RaidCraft.getTable(LootObjectsTable.class).addObject(lootObject);
 
         // register loot object in cache
         addLootObject(lootObject);
     }
 
     public void addLootObject(LootObject lootObject) {
-        if(lootObjects.containsKey(lootObject.getHost())) {
+
+        if (lootObjects.containsKey(lootObject.getHost())) {
             return;
         }
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHost());
-        if(otherChestBlock != null) {
-            if(lootObjects.containsKey(otherChestBlock)) {
+        if (otherChestBlock != null) {
+            if (lootObjects.containsKey(otherChestBlock)) {
                 return;
             }
             lootObjects.put(otherChestBlock, lootObject);
@@ -202,7 +207,7 @@ public class LootFactory {
     public void unregisterLootObject(LootObject lootObject) {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHost());
-        if(otherChestBlock != null) {
+        if (otherChestBlock != null) {
             lootObjects.remove(otherChestBlock);
         }
         lootObjects.remove(lootObject.getHost());
@@ -211,7 +216,7 @@ public class LootFactory {
     public void loadLootObjects() {
 
         lootObjects.clear();
-        for (LootObject lootObject : ComponentDatabase.INSTANCE.getTable(LootObjectsTable.class).getAllObjects()) {
+        for (LootObject lootObject : RaidCraft.getTable(LootObjectsTable.class).getAllObjects()) {
             addLootObject(lootObject);
         }
     }

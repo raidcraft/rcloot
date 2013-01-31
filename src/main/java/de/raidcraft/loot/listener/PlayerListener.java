@@ -1,13 +1,18 @@
 package de.raidcraft.loot.listener;
 
-import com.silthus.raidcraft.util.component.DateUtil;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.SimpleLootObject;
+import de.raidcraft.loot.object.SimpleTimedLootObject;
+import de.raidcraft.loot.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.object.TimedLootObject;
+import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.editormode.EditorModeFactory;
+import de.raidcraft.util.DateUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -46,7 +51,7 @@ public class PlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 
         // editor mode
-        if(editorMode.contains(event.getPlayer().getName())
+        if (editorMode.contains(event.getPlayer().getName())
                 && event.getItem() != null
                 && event.getClickedBlock() != null
                 && EditorModeFactory.INSTANCE.isEditorBlock(event.getItem())) {
@@ -72,10 +77,9 @@ public class PlayerListener implements Listener {
                 // clicked object is already loot object
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.REMOVE) {
-                    if(existingLootObject == null) {
+                    if (existingLootObject == null) {
                         LootChat.warn(event.getPlayer(), "Der angeklickte Block ist kein Loot-Objekt!");
-                    }
-                    else {
+                    } else {
                         LootFactory.inst.deleteLootObject(existingLootObject, true);
                         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
                     }
@@ -134,7 +138,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if(!(event.getInventory().getHolder() instanceof BlockState)
+        if (!(event.getInventory().getHolder() instanceof BlockState)
                 && !(event.getInventory().getHolder() instanceof DoubleChest)) {
             return;
         }
@@ -147,7 +151,7 @@ public class PlayerListener implements Listener {
             block = doubleChest.getLocation().getBlock();
         } else {
             block = ((BlockState) event.getInventory().getHolder()).getBlock();
-            if(block.getType() == Material.CHEST) {
+            if (block.getType() == Material.CHEST) {
                 singleChest = true;
             }
         }
@@ -198,12 +202,12 @@ public class PlayerListener implements Listener {
         event.getInventory().clear();
 
         // halve the loot if single chest (smaller chance for single treasure chests)
-        if((lootObject instanceof TreasureLootObject) && singleChest && loot.size() > 1 && !admin) {
-            loot = loot.subList(0, loot.size()/2);
+        if ((lootObject instanceof TreasureLootObject) && singleChest && loot.size() > 1 && !admin) {
+            loot = loot.subList(0, loot.size() / 2);
         }
 
         // cut loot if too many items
-        if(loot.size() > event.getInventory().getSize()) {
+        if (loot.size() > event.getInventory().getSize()) {
             loot = loot.subList(0, event.getInventory().getSize());
         }
 
@@ -218,11 +222,11 @@ public class PlayerListener implements Listener {
             inventoryLocks.remove(event.getPlayer().getName());
 
             // drop not cleared items if loot object isn't infinite
-            if(!adminMode.contains(event.getPlayer().getName())) {
+            if (!adminMode.contains(event.getPlayer().getName())) {
 
-                if(!(lootObject instanceof TimedLootObject) || (((TimedLootObject)lootObject).getCooldown() != 0)) {
-                    for(ItemStack itemStack : event.getInventory().getContents()) {
-                        if(itemStack != null && itemStack.getType() != Material.AIR) {
+                if (!(lootObject instanceof TimedLootObject) || (((TimedLootObject) lootObject).getCooldown() != 0)) {
+                    for (ItemStack itemStack : event.getInventory().getContents()) {
+                        if (itemStack != null && itemStack.getType() != Material.AIR) {
                             event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
                         }
                     }
@@ -230,11 +234,11 @@ public class PlayerListener implements Listener {
             }
 
             // fill dispenser otherwise the dispenser event won't be called
-            if(event.getInventory().getType() == InventoryType.DISPENSER) {
+            if (event.getInventory().getType() == InventoryType.DISPENSER) {
                 List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
                 event.getInventory().clear();
-                if(loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
-                for(ItemStack item : loot) {
+                if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
+                for (ItemStack item : loot) {
                     // create item stack
                     ItemStack newItemStack = item.clone();
                     event.getInventory().addItem(newItemStack);
@@ -252,10 +256,11 @@ public class PlayerListener implements Listener {
         editorMode.remove(event.getPlayer().getName());
         adminMode.remove(event.getPlayer().getName());
     }
-    
+
     //////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     private void printObjectInfo(Player player, LootObject lootObject) {
+
         String info = "Typ: ";
         if (lootObject instanceof TimedLootObject) {
             info += "Timed-Loot-Objekt, Cooldown: "
@@ -263,8 +268,7 @@ public class PlayerListener implements Listener {
                     + "s";
         } else if (lootObject instanceof TreasureLootObject) {
             info += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) lootObject).getRewardLevel();
-        }
-        else if (lootObject instanceof SimpleLootObject) {
+        } else if (lootObject instanceof SimpleLootObject) {
             info += "Default-Loot-Objekt";
         }
 

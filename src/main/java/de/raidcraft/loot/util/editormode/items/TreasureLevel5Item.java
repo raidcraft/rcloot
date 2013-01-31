@@ -18,7 +18,7 @@ public class TreasureLevel5Item extends SimpleEditorItem {
     private final static Material MATERIAL = Material.WOOL;
     private final static short DATA = 14; // red
     private final static int REWARD_LEVEL = 5;
-    
+
     @Override
     public ItemStack getItem() {
 
@@ -29,15 +29,14 @@ public class TreasureLevel5Item extends SimpleEditorItem {
     public void actionRightClick(PlayerInteractEvent event) {
 
         Block newChestBlock = event.getClickedBlock().getRelative(0, 1, 0);
-        if(ChestDispenserUtil.getOtherChestBlock(newChestBlock, true) != null) {
+        if (ChestDispenserUtil.getOtherChestBlock(newChestBlock, true) != null) {
             LootChat.occupiedByOtherChest(event.getPlayer());
             return;
         }
 
-        if(event.getPlayer().isSneaking()) {
+        if (event.getPlayer().isSneaking()) {
             ChestDispenserUtil.pasteDoublechest(event.getPlayer(), newChestBlock);
-        }
-        else {
+        } else {
             newChestBlock.setType(Material.CHEST);
         }
 
@@ -48,10 +47,10 @@ public class TreasureLevel5Item extends SimpleEditorItem {
     @Override
     public void actionLeftClick(PlayerInteractEvent event) {
 
-        if(!ChestDispenserUtil.isChestOrDispenser(event.getClickedBlock())) {
+        if (!ChestDispenserUtil.isChestOrDispenser(event.getClickedBlock())) {
             return;
         }
-        
+
         // create treasure loot object
         LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock(), REWARD_LEVEL, true);
     }

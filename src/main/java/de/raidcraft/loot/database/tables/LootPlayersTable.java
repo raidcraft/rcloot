@@ -1,8 +1,7 @@
 package de.raidcraft.loot.database.tables;
 
-import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.loot.LootModule;
+import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 
 import java.sql.ResultSet;
@@ -24,7 +23,7 @@ public class LootPlayersTable extends Table {
     public void createTable() {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`object_id` INT( 11 ) NOT NULL ,\n" +
@@ -40,7 +39,7 @@ public class LootPlayersTable extends Table {
     public void addEntry(String player, int objectId, long timestamp) {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "INSERT INTO " + getTableName() + " (object_id, player, timestamp) " +
                             "VALUES (" +
                             "'" + objectId + "'" + "," +
@@ -56,7 +55,7 @@ public class LootPlayersTable extends Table {
     public boolean hasLooted(String player, int objectId) {
 
         try {
-            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
+            ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';").executeQuery();
 
             while (resultSet.next()) {
@@ -71,7 +70,7 @@ public class LootPlayersTable extends Table {
     public long getLastLooted(String player, int objectId) {
 
         try {
-            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
+            ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;").executeQuery();
 
             while (resultSet.next()) {

@@ -1,9 +1,8 @@
 package de.raidcraft.loot.database.tables;
 
-import com.silthus.raidcraft.util.component.database.ComponentDatabase;
-import com.silthus.raidcraft.util.component.database.Table;
 import com.sk89q.commandbook.CommandBook;
-import de.raidcraft.loot.LootModule;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -30,7 +29,7 @@ public class LootTablesTable extends Table {
     public void createTable() {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`min_loot` INT( 11 ) NOT NULL ,\n" +
@@ -55,13 +54,13 @@ public class LootTablesTable extends Table {
                     "'" + table.getMinLootItems() + "'" + "," +
                     "'" + table.getMaxLootItems() + "'" +
                     ");";
-            Statement statement = LootModule.INST.getConnection().createStatement();
+            Statement statement = getConnection().createStatement();
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet rs = statement.getGeneratedKeys();
             if (rs != null && rs.next()) {
                 table.setId(rs.getInt(1));
             }
-            ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).addEntries(table);
+            RaidCraft.getTable(LootTableEntriesTable.class).addEntries(table);
 
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
@@ -72,7 +71,7 @@ public class LootTablesTable extends Table {
     public LootTable getLootTable(int id) {
 
         try {
-            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
+            ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';").executeQuery();
 
             while (resultSet.next()) {
@@ -80,7 +79,7 @@ public class LootTablesTable extends Table {
                 table.setId(resultSet.getInt("id"));
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
-                table.setEntries(ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).getEntries(table));
+                table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 return table;
             }
         } catch (SQLException e) {
@@ -93,7 +92,7 @@ public class LootTablesTable extends Table {
 
         List<LootTable> tables = new ArrayList<>();
         try {
-            ResultSet resultSet = LootModule.INST.getConnection().prepareStatement(
+            ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + ";").executeQuery();
 
             while (resultSet.next()) {
@@ -101,7 +100,7 @@ public class LootTablesTable extends Table {
                 table.setId(resultSet.getInt("id"));
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
-                table.setEntries(ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).getEntries(table));
+                table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
             }
         } catch (SQLException e) {
@@ -113,9 +112,9 @@ public class LootTablesTable extends Table {
     public void deleteTable(LootTable table) {
 
         try {
-            LootModule.INST.getConnection().prepareStatement(
+            getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';").execute();
-            ComponentDatabase.INSTANCE.getTable(LootTableEntriesTable.class).deleteEntries(table);
+            RaidCraft.getTable(LootTableEntriesTable.class).deleteEntries(table);
         } catch (SQLException e) {
             CommandBook.logger().warning(e.getMessage());
             e.printStackTrace();

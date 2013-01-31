@@ -1,6 +1,12 @@
 package de.raidcraft.loot.util.editormode;
 
-import de.raidcraft.loot.util.editormode.items.*;
+import de.raidcraft.loot.util.editormode.items.DeleteLootObjectItem;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel1Item;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel2Item;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel3Item;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel4Item;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel5Item;
+import de.raidcraft.loot.util.editormode.items.TreasureLevel6Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -30,22 +36,25 @@ public class EditorModeFactory {
     }
 
     public void addEditorBlock(EditorItem editorItem) {
+
         editorItems.put(editorItem.getItem(), editorItem);
     }
 
     public boolean isEditorBlock(ItemStack itemStack) {
-        for(Map.Entry<ItemStack, EditorItem> entry : editorItems.entrySet()) {
-            if(entry.getKey().getType() == itemStack.getType()
+
+        for (Map.Entry<ItemStack, EditorItem> entry : editorItems.entrySet()) {
+            if (entry.getKey().getType() == itemStack.getType()
                     && entry.getKey().getDurability() == itemStack.getDurability()) {
                 return true;
             }
         }
         return false;
     }
-    
+
     public EditorItem getEditorItem(ItemStack itemStack) {
-        for(Map.Entry<ItemStack, EditorItem> entry : editorItems.entrySet()) {
-            if(entry.getKey().getType() == itemStack.getType()
+
+        for (Map.Entry<ItemStack, EditorItem> entry : editorItems.entrySet()) {
+            if (entry.getKey().getType() == itemStack.getType()
                     && entry.getKey().getDurability() == itemStack.getDurability()) {
                 return entry.getValue();
             }

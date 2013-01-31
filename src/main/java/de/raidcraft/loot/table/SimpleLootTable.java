@@ -84,18 +84,19 @@ public class SimpleLootTable implements LootTable {
 
     @Override
     public List<LootTableEntry> loot() {
+
         List<LootTableEntry> loot = new ArrayList<>();
-        if(getEntries().size() == 0) {
+        if (getEntries().size() == 0) {
             return loot;
         }
         int lootAmount = (int) (Math.random() * (maxLootItems - minLootItems) + minLootItems);
 
-        for(int i = 0; i < lootAmount; i++) {
+        for (int i = 0; i < lootAmount; i++) {
 
             LootTableEntry selected = getEntries().get((int) (Math.random() * getEntries().size()));
             int j = 0;
 
-            while(loot.contains(selected) && loot.size() < getEntries().size()) {
+            while (loot.contains(selected) && loot.size() < getEntries().size()) {
                 selected = getEntries().get(j);
                 j++;
             }

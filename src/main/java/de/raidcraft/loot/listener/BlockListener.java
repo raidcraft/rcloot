@@ -36,15 +36,16 @@ public class BlockListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event) {
+
         List<Block> lootBlocks = new ArrayList<>();
-        for(Block block : event.blockList()) {
+        for (Block block : event.blockList()) {
             if (LootFactory.inst.getLootObject(block) != null) {
                 lootBlocks.add(block);
             }
         }
-        if(lootBlocks.size() > 0) {
+        if (lootBlocks.size() > 0) {
             TNTPlacerTask task = new TNTPlacerTask(lootBlocks);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(CommandBook.inst(), task, 20*5);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(CommandBook.inst(), task, 20 * 5);
         }
     }
 
@@ -57,23 +58,27 @@ public class BlockListener implements Listener {
 
         LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-        if(loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
+        if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
 
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
 
         dispenser.getInventory().clear();
         dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
     }
-    
+
     public class TNTPlacerTask implements Runnable {
+
         List<Block> chestBlocks;
-        
+
         public TNTPlacerTask(List<Block> chestBlocks) {
+
             this.chestBlocks = chestBlocks;
         }
+
         @Override
         public void run() {
-            for(Block block : chestBlocks) {
+
+            for (Block block : chestBlocks) {
                 block.setType(Material.CHEST);
             }
         }

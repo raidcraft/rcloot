@@ -15,11 +15,12 @@ public abstract class SimpleEditorItem implements EditorItem {
 
     @Override
     public final void run(PlayerInteractEvent event) {
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             actionRightClick(event);
             return;
         }
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
             actionLeftClick(event);
             return;
         }

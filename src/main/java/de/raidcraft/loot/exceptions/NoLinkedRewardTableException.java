@@ -6,7 +6,9 @@ package de.raidcraft.loot.exceptions;
  * Description:
  */
 public class NoLinkedRewardTableException extends Throwable {
+
     public NoLinkedRewardTableException(String message) {
+
         super(message);
     }
 }

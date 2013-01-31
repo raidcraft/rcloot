@@ -8,6 +8,6 @@ package de.raidcraft.loot.object;
 public interface TreasureLootObject {
 
     public void setRewardLevel(int rewardLevel);
-    
+
     public int getRewardLevel();
 }

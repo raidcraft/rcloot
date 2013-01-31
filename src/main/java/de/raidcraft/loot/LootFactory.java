@@ -1,6 +1,5 @@
 package de.raidcraft.loot;
 
-import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
@@ -109,7 +108,7 @@ public class LootFactory {
             }
             treasureLootObject.assignLootTable(lootTable);
         } catch (Throwable e) {
-            CommandBook.logger().warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
+            RaidCraft.LOGGER.warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
             if (player != null && chat) {
                 LootChat.failureDuringCreation(player);
             }

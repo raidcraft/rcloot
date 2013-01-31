@@ -1,6 +1,5 @@
 package de.raidcraft.loot.database.tables;
 
-import com.sk89q.commandbook.CommandBook;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
@@ -53,7 +52,7 @@ public class LootObjectsTable extends Table {
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
         }
     }
 
@@ -96,7 +95,7 @@ public class LootObjectsTable extends Table {
                         lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
                                 .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
                     } catch (NoLinkedRewardTableException e) {
-                        CommandBook.logger().warning("[Loot] Try to load treasure object: " + e.getMessage());
+                        RaidCraft.LOGGER.warning("[Loot] Try to load treasure object: " + e.getMessage());
                         continue;
                     }
                 } else {
@@ -105,7 +104,7 @@ public class LootObjectsTable extends Table {
                 lootObjects.add(lootObject);
             }
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
         }
         return lootObjects;
     }
@@ -153,7 +152,7 @@ public class LootObjectsTable extends Table {
                 object.setId(rs.getInt(1));
             }
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -164,7 +163,7 @@ public class LootObjectsTable extends Table {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }

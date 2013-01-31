@@ -1,7 +1,8 @@
 package de.raidcraft.loot.listener;
 
-import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Bukkit;
@@ -45,7 +46,7 @@ public class BlockListener implements Listener {
         }
         if (lootBlocks.size() > 0) {
             TNTPlacerTask task = new TNTPlacerTask(lootBlocks);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(CommandBook.inst(), task, 20 * 5);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(RaidCraft.getComponent(LootPlugin.class), task, 20 * 5);
         }
     }
 

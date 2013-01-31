@@ -1,6 +1,6 @@
 package de.raidcraft.loot.database.tables;
 
-import com.sk89q.commandbook.CommandBook;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
@@ -44,7 +44,7 @@ public class LootTableEntriesTable extends Table {
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
         }
     }
 
@@ -73,7 +73,7 @@ public class LootTableEntriesTable extends Table {
                         entry.setId(rs.getInt(1));
                     }
                 } catch (SQLException e) {
-                    CommandBook.logger().warning(e.getMessage());
+                    RaidCraft.LOGGER.warning(e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -104,7 +104,7 @@ public class LootTableEntriesTable extends Table {
                 entries.add(entry);
             }
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
         }
         return entries;
     }
@@ -115,7 +115,7 @@ public class LootTableEntriesTable extends Table {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';").execute();
         } catch (SQLException e) {
-            CommandBook.logger().warning(e.getMessage());
+            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }

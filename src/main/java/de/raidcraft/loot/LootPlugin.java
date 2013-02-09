@@ -12,7 +12,6 @@ import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.TreasureRewardLevel;
-import org.bukkit.Bukkit;
 
 /**
  * Author: Philip
@@ -22,32 +21,23 @@ import org.bukkit.Bukkit;
 public class LootPlugin extends BasePlugin implements Component {
 
     public LocalConfiguration config;
-    private int reloadTaskId;
 
     @Override
     public void enable() {
 
-        reloadTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            public void run() {
+        loadConfig();
+        registerTable(LootObjectsTable.class, new LootObjectsTable());
+        registerTable(LootPlayersTable.class, new LootPlayersTable());
+        registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
+        registerTable(LootTablesTable.class, new LootTablesTable());
 
-                loadConfig();
+        // do some command init
+        registerCommands(LootCommands.class);
+        // and of course we need some event handlers
+        registerEvents(new PlayerListener());
+        registerEvents(new BlockListener());
 
-                registerTable(LootObjectsTable.class, new LootObjectsTable());
-                registerTable(LootPlayersTable.class, new LootPlayersTable());
-                registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
-                registerTable(LootTablesTable.class, new LootTablesTable());
-
-                // do some command init
-                registerCommands(LootCommands.class);
-                // and of course we need some event handlers
-                registerEvents(new PlayerListener());
-                registerEvents(new BlockListener());
-
-                LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
-                getLogger().info("[Loot] Found DB connection, init loot module...");
-                Bukkit.getScheduler().cancelTask(reloadTaskId);
-            }
-        }, 0, 2 * 20);
+        LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
     }
 
     @Override

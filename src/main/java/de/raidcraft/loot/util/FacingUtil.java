@@ -8,7 +8,7 @@ import org.bukkit.block.BlockFace;
  * Date: 20.11.12 - 19:50
  * Description:
  */
-public class Utils {
+public class FacingUtil {
 
     public static BlockFace getBlockFace(Block block) {
 

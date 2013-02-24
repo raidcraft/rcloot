@@ -1,4 +1,4 @@
-package de.raidcraft.loot.util.editormode;
+package de.raidcraft.loot.editor;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;

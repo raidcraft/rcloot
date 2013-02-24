@@ -1,4 +1,4 @@
-package de.raidcraft.loot.util.editormode.items;
+package de.raidcraft.loot.editor.items;
 
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.util.ChestDispenserUtil;

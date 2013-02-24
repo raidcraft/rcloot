@@ -82,7 +82,7 @@ public class ChestDispenserUtil {
 
         block.setType(Material.CHEST);
 
-        BlockFace face = Utils.yawToFace(player.getLocation().getYaw());
+        BlockFace face = FacingUtil.yawToFace(player.getLocation().getYaw());
 
         if (face == BlockFace.NORTH) {
             block.getRelative(-1, 0, 0).setType(Material.CHEST);

@@ -1,4 +1,4 @@
-package de.raidcraft.loot.util.editormode.items;
+package de.raidcraft.loot.editor.items;
 
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.util.ChestDispenserUtil;
@@ -13,11 +13,11 @@ import org.bukkit.inventory.ItemStack;
  * Date: 19.11.12 - 21:08
  * Description:
  */
-public class TreasureLevel5Item extends SimpleEditorItem {
+public class TreasureLevel4Item extends SimpleEditorItem {
 
     private final static Material MATERIAL = Material.WOOL;
-    private final static short DATA = 14; // red
-    private final static int REWARD_LEVEL = 5;
+    private final static short DATA = 1; // orange
+    private final static int REWARD_LEVEL = 4;
 
     @Override
     public ItemStack getItem() {

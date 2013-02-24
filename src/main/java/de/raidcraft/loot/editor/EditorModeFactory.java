@@ -1,12 +1,6 @@
-package de.raidcraft.loot.util.editormode;
+package de.raidcraft.loot.editor;
 
-import de.raidcraft.loot.util.editormode.items.DeleteLootObjectItem;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel1Item;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel2Item;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel3Item;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel4Item;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel5Item;
-import de.raidcraft.loot.util.editormode.items.TreasureLevel6Item;
+import de.raidcraft.loot.editor.items.*;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;

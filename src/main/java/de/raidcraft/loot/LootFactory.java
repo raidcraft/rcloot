@@ -4,11 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.SimpleLootObject;
-import de.raidcraft.loot.object.SimpleTimedLootObject;
-import de.raidcraft.loot.object.SimpleTreasureLootObject;
-import de.raidcraft.loot.object.TreasureLootObject;
+import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -185,6 +181,10 @@ public class LootFactory {
 
         // register loot object in cache
         addLootObject(lootObject);
+    }
+
+    public void createPublicLootObject(String creator, Block block, ItemStack[] items) {
+        // TODO implement
     }
 
     public void addLootObject(LootObject lootObject) {

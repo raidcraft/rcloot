@@ -20,20 +20,20 @@ import de.raidcraft.loot.util.TreasureRewardLevel;
  */
 public class LootPlugin extends BasePlugin implements Component {
 
+    public static LootPlugin INST;
     public LocalConfiguration config;
 
     @Override
     public void enable() {
 
+        INST = this;
         loadConfig();
         registerTable(LootObjectsTable.class, new LootObjectsTable());
         registerTable(LootPlayersTable.class, new LootPlayersTable());
         registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
         registerTable(LootTablesTable.class, new LootTablesTable());
 
-        // do some command init
         registerCommands(LootCommands.class);
-        // and of course we need some event handlers
         registerEvents(new PlayerListener());
         registerEvents(new BlockListener());
 

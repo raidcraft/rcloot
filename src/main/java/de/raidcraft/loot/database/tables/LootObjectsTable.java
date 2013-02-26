@@ -4,11 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.SimpleLootObject;
-import de.raidcraft.loot.object.SimpleTimedLootObject;
-import de.raidcraft.loot.object.SimpleTreasureLootObject;
-import de.raidcraft.loot.object.TreasureLootObject;
+import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -49,6 +45,7 @@ public class LootObjectsTable extends Table {
                             "`created` BIGINT( 20 ) NOT NULL , \n" +
                             "`enabled` TINYINT( 1 ) DEFAULT 1,\n" +
                             "`reward_level` INT( 11 ) DEFAULT 0,\n" +
+                            "`public_chest` TINYINT( 1 ) DEFAULT 0,)" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
@@ -66,11 +63,18 @@ public class LootObjectsTable extends Table {
             while (resultSet.next()) {
                 int cooldown = resultSet.getInt("cooldown");
                 int rewardLevel = resultSet.getInt("reward_level");
+                boolean publicChest = resultSet.getBoolean("public_chest");
 
                 LootObject lootObject;
                 if (cooldown != -1) {
-                    lootObject = new SimpleTimedLootObject();
-                    ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
+                    if(publicChest) {
+                        lootObject = new SimplePublicLootObject();
+                        ((SimplePublicLootObject) lootObject).setCooldown(cooldown);
+                    }
+                    else {
+                        lootObject = new SimpleTimedLootObject();
+                        ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
+                    }
                 } else {
                     lootObject = new SimpleLootObject();
                 }
@@ -116,13 +120,14 @@ public class LootObjectsTable extends Table {
             return;
         }
 
-        // save table if not done yes
+        // save table if not done yet
         if (object.getLootTable().getId() == 0) {
             RaidCraft.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
         }
 
         int cooldown = -1;
         int rewardLevel = 0;
+        boolean publicChest = false;
 
         if (object instanceof SimpleTimedLootObject) {
             cooldown = ((SimpleTimedLootObject) object).getCooldown();
@@ -130,8 +135,12 @@ public class LootObjectsTable extends Table {
         if (object instanceof TreasureLootObject) {
             rewardLevel = ((TreasureLootObject) object).getRewardLevel();
         }
+        if(object instanceof PublicLootObject) {
+            publicChest = true;
+        }
+
         try {
-            String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled, reward_level) " +
+            String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled, reward_level, public_chest) " +
                     "VALUES (" +
                     "'" + object.getLootTable().getId() + "'" + "," +
                     "'" + object.getHost().getLocation().getWorld().getName() + "'" + "," +
@@ -142,7 +151,8 @@ public class LootObjectsTable extends Table {
                     "'" + object.getCreator() + "'" + "," +
                     "'" + object.getCreated() + "'" + "," +
                     "'" + ((object.isEnabled()) ? 1 : 0) + "'" + "," +
-                    "'" + rewardLevel + "'" +
+                    "'" + rewardLevel + "'" + "," +
+                    "'" + ((publicChest) ? 1 : 0) + "'" +
                     ");";
 
             Statement statement = getConnection().createStatement();

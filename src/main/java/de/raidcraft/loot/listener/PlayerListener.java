@@ -177,6 +177,16 @@ public class PlayerListener implements Listener {
             return;
         }
 
+
+        // fill public loot chest if cooldown over
+        if(lootObject instanceof PublicLootObject) {
+            loot = lootObject.loot(entity.getName());
+            if(loot != null) {
+                event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+            }
+            return;
+        }
+
         // lock loot object
         inventoryLocks.put(entity.getName(), lootObject);
         boolean admin = false;
@@ -192,7 +202,6 @@ public class PlayerListener implements Listener {
         } else {
             loot = lootObject.loot(entity.getName());
         }
-
         // set loot
         event.getInventory().clear();
 

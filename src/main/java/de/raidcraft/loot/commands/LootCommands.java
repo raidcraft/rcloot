@@ -1,10 +1,6 @@
 package de.raidcraft.loot.commands;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.minecraft.util.commands.CommandPermissions;
-import com.sk89q.minecraft.util.commands.NestedCommand;
+import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
@@ -132,6 +128,24 @@ public class LootCommands {
             }
 
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(cooldown).setDrops(drops));
+            LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+        }
+
+        @Command(
+                aliases = {"public"},
+                min = 1,
+                desc = "Creates an timed loot object"
+        )
+        @CommandPermissions("loot.public")
+        public void publicLoot(CommandContext context, CommandSender sender) throws CommandException {
+
+            int cooldown = context.getInteger(0);
+            if (cooldown < 0) {
+                LootChat.warn((Player) sender, "Der Cooldown muss größer 0 sein!");
+                return;
+            }
+
+            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.PUBLIC).setCooldown(cooldown));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 

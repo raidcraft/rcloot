@@ -12,6 +12,7 @@ import de.raidcraft.loot.table.SimpleLootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import de.raidcraft.util.DateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -183,8 +184,28 @@ public class LootFactory {
         addLootObject(lootObject);
     }
 
-    public void createPublicLootObject(String creator, Block block, ItemStack[] items) {
-        // TODO implement
+    public void createPublicLootObject(String creator, Block block, ItemStack[] items, int cooldown) {
+        int itemCount = 0;
+        for (ItemStack item : items) {
+            if (item != null) {
+                itemCount++;
+            }
+        }
+        LootTable lootTable = createLootTable(items, itemCount, itemCount);
+        // create loot object
+        SimplePublicLootObject publicLootObject = new SimplePublicLootObject();
+        publicLootObject.setCooldown(cooldown);
+        publicLootObject.setHost(block);
+        publicLootObject.assignLootTable(lootTable);
+        publicLootObject.setCreator(creator);
+        publicLootObject.setCreated(System.currentTimeMillis() / 1000);
+        publicLootObject.setEnabled(true);
+
+        // save loot object in database
+        RaidCraft.getTable(LootObjectsTable.class).addObject(publicLootObject);
+
+        // register loot object in cache
+        addLootObject(publicLootObject);
     }
 
     public void addLootObject(LootObject lootObject) {
@@ -218,5 +239,28 @@ public class LootFactory {
         for (LootObject lootObject : RaidCraft.getTable(LootObjectsTable.class).getAllObjects()) {
             addLootObject(lootObject);
         }
+    }
+
+    public String getObjectInfo(Player player, LootObject lootObject) {
+
+        String info = "Typ: ";
+        if(lootObject instanceof PublicLootObject) {
+            info += "Public-Loot-Objekt, Cooldown: "
+                    + ((TimedLootObject) lootObject).getCooldown()
+                    + "s";
+        }
+        else if (lootObject instanceof TimedLootObject) {
+            info += "Timed-Loot-Objekt, Cooldown: "
+                    + ((TimedLootObject) lootObject).getCooldown()
+                    + "s";
+        } else if (lootObject instanceof TreasureLootObject) {
+            info += "Schatztruhe, Stufe: " + ((TreasureLootObject) lootObject).getRewardLevel();
+        } else if (lootObject instanceof SimpleLootObject) {
+            info += "Default-Loot-Objekt";
+        }
+
+        info += ", Drops: " + lootObject.getLootTable().getMinLootItems() + "-" + lootObject.getLootTable().getMaxLootItems() + ", Ersteller: " + lootObject.getCreator()
+                + ", Erstelldatum: " + DateUtil.getDateString(lootObject.getCreated() * 1000);
+        return info;
     }
 }

@@ -129,8 +129,8 @@ public class LootObjectsTable extends Table {
         int rewardLevel = 0;
         boolean publicChest = false;
 
-        if (object instanceof SimpleTimedLootObject) {
-            cooldown = ((SimpleTimedLootObject) object).getCooldown();
+        if (object instanceof TimedLootObject) {
+            cooldown = ((TimedLootObject) object).getCooldown();
         }
         if (object instanceof TreasureLootObject) {
             rewardLevel = ((TreasureLootObject) object).getRewardLevel();

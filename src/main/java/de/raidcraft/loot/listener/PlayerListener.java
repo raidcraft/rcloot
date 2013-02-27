@@ -3,11 +3,13 @@ package de.raidcraft.loot.listener;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.object.PublicLootObject;
+import de.raidcraft.loot.object.TimedLootObject;
+import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.util.DateUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -63,7 +65,7 @@ public class PlayerListener implements Listener {
             LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                printObjectInfo(event.getPlayer(), existingLootObject);
+                LootChat.info(event.getPlayer(), LootFactory.inst.getObjectInfo(event.getPlayer(), existingLootObject));
             }
 
             // no storage found
@@ -98,6 +100,13 @@ public class PlayerListener implements Listener {
                             , items
                             , settingStorage.getCooldown()
                             , settingStorage.getDrops());
+                }
+
+                if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
+                    // create public loot object
+                    LootFactory.inst.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                            , items
+                            , settingStorage.getCooldown());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
@@ -181,7 +190,7 @@ public class PlayerListener implements Listener {
         // fill public loot chest if cooldown over
         if(lootObject instanceof PublicLootObject) {
             loot = lootObject.loot(entity.getName());
-            if(loot != null) {
+            if(loot.size() > 0) {
                 event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
             }
             return;
@@ -259,25 +268,5 @@ public class PlayerListener implements Listener {
         }
         editorMode.remove(event.getPlayer().getName());
         adminMode.remove(event.getPlayer().getName());
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void printObjectInfo(Player player, LootObject lootObject) {
-
-        String info = "Typ: ";
-        if (lootObject instanceof TimedLootObject) {
-            info += "Timed-Loot-Objekt, Cooldown: "
-                    + ((SimpleTimedLootObject) lootObject).getCooldown()
-                    + "s";
-        } else if (lootObject instanceof TreasureLootObject) {
-            info += "Schatztruhe, Stufe: " + ((SimpleTreasureLootObject) lootObject).getRewardLevel();
-        } else if (lootObject instanceof SimpleLootObject) {
-            info += "Default-Loot-Objekt";
-        }
-
-        info += ", Drops: " + lootObject.getLootTable().getMinLootItems() + "-" + lootObject.getLootTable().getMaxLootItems() + ", Ersteller: " + lootObject.getCreator()
-                + ", Erstelldatum: " + DateUtil.getDateString(lootObject.getCreated() * 1000);
-        LootChat.info(player, info);
     }
 }

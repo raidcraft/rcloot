@@ -32,14 +32,19 @@ public class SimplePublicLootObject extends SimpleLootObject implements TimedLoo
 
     @Override
     public List<ItemStack> loot(String player) {
-
+        List<ItemStack> content = new ArrayList<>();
         // no cooldown -> fill chest
         if ((RaidCraft.getTable(LootPlayersTable.class).getLastLooted(LootFactory.ANY, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
-            List<ItemStack> content = new ArrayList<>();
+
             for (LootTableEntry entry : getLootTable().loot()) {
                 content.add(entry.getItem().clone());
             }
+
+            // remember loot if not infinite
+            if (cooldown != 0) {
+                RaidCraft.getTable(LootPlayersTable.class).addEntry(LootFactory.ANY, getId(), System.currentTimeMillis() / 1000);
+            }
         }
-        return null;
+        return content;
     }
 }

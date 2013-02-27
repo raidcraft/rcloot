@@ -58,6 +58,7 @@ public class SettingStorage {
 
     public enum SETTING_TYPE {
         TIMED,
+        PUBLIC,
         DEFAULT,
         TREASURE,
         REMOVE

@@ -5,6 +5,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
+import de.raidcraft.loot.autoplacer.AutomaticPlacer;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
@@ -29,7 +30,22 @@ public class LootCommands {
     )
     @NestedCommand(NestedLootCommands.class)
     public void loot(CommandContext context, CommandSender sender) throws CommandException {
-        //TODO add help
+        //TODO probably add help
+    }
+
+    @Command(
+            aliases = {"lootchestautoplace", "lcap"},
+            desc = "Place automatic chests"
+    )
+    @CommandPermissions("autoplace.cmd")
+    public void autoplace(CommandContext context, CommandSender sender) throws CommandException {
+
+        LootChat.info((Player) sender, "Kisten werden automatisch verteilt...");
+
+        Player player = (Player)sender;
+        AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(0), context.getInteger(1));
+
+        LootChat.info((Player) sender, "Finished!");
     }
 
     @Command(

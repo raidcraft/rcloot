@@ -1,18 +1,26 @@
 package de.raidcraft.loot.autoplacer;
 
+import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.autoplacer.listener.NextLocationListener;
+import org.bukkit.World;
 
 /**
  * @author Philip
  */
-public class Autoplacer implements Component {
+public class AutomaticPlacer implements Component {
+
+    public static AutomaticPlacer INST = null;
+
     public LocalConfiguration config = new LocalConfiguration(LootPlugin.INST);
 
-    public Autoplacer() {
+    public AutomaticPlacer(BasePlugin plugin) {
+        INST = this;
         config.load(true);
+        plugin.registerEvents(new NextLocationListener());
     }
 
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {
@@ -30,5 +38,11 @@ public class Autoplacer implements Component {
 
             super(plugin, "autoplacer.yml");
         }
+    }
+
+    public void run(World world, int maxCoordinate, int pointDistance) {
+
+        SpiralChecker spiralChecker = new SpiralChecker(world, maxCoordinate, pointDistance);
+        spiralChecker.doRecursiveSpiral(0);
     }
 }

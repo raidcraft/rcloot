@@ -41,7 +41,7 @@ public class LootPlugin extends BasePlugin implements Component {
         LootFactory.inst.loadLootObjects(); // loads all existing loot objects from database
 
         // register auto chest placer
-        new AutomaticPlacer(this);
+        new AutomaticPlacer();
     }
 
     @Override

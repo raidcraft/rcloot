@@ -44,8 +44,6 @@ public class LootCommands {
 
         Player player = (Player)sender;
         AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(0), context.getInteger(1));
-
-        LootChat.info((Player) sender, "Finished!");
     }
 
     @Command(

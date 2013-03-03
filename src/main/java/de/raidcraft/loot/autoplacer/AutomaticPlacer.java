@@ -32,14 +32,14 @@ public class AutomaticPlacer implements Component {
 
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {
 
-        @Setting("treasure-1-amount-surface")
-        public int treasure1AmountSurface = 0;
-        @Setting("treasure-2-amount-surface")
-        public int treasure2AmountSurface = 0;
-        @Setting("treasure-1-amount-caves")
-        public int treasure1AmountCaves = 0;
-        @Setting("treasure-2-amount-caves")
-        public int treasure2AmountCaves = 0;
+        @Setting("min-distance-surface")
+        public int surfaceMinDistance = 0;
+        @Setting("min-distance-cave")
+        public int caveMinDistance = 0;
+        @Setting("treasure-2-chance")
+        public int treasure2Chance = 30;
+        @Setting("bad-regions")
+        public String[] badRegions;
 
         public LocalConfiguration(LootPlugin plugin) {
 

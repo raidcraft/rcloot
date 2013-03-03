@@ -7,6 +7,7 @@ import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -165,6 +166,28 @@ public class LootObjectsTable extends Table {
             RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public boolean isNearLootObject(Location location, int radiusXZ, int radiusY) {
+
+        try {
+            ResultSet resultSet = getConnection().prepareStatement(
+                    "SELECT * FROM `" + getTableName() + "` WHERE " +
+                    "x > '" + (location.getBlockX() - radiusXZ) + "' AND " +
+                    "x < '" + (location.getBlockX() + radiusXZ) + "' AND " +
+                    "z > '" + (location.getBlockZ() - radiusXZ) + "' AND " +
+                    "z < '" + (location.getBlockZ() + radiusXZ) + "' AND " +
+                    "y > '" + (location.getBlockY() - radiusY) + "' AND " +
+                    "y < '" + (location.getBlockY() + radiusY) + "' AND "
+            ).executeQuery();
+
+            while (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+        }
+        return false;
     }
 
     public void deleteObject(LootObject object) {

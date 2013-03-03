@@ -77,6 +77,7 @@ public class LootCommands {
 
             RaidCraft.getComponent(LootPlugin.class).reload();
             LootFactory.inst.loadLootObjects();
+            AutomaticPlacer.INST.config.reload();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
 

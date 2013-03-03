@@ -1,7 +1,10 @@
 package de.raidcraft.loot.autoplacer;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.database.tables.LootObjectsTable;
+import de.raidcraft.loot.util.WorldGuardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -16,9 +19,34 @@ public class LocationChecker {
 
         /* check here if chest can be set */
 
-        // check if other chests too close
+        // check if bad region
+        for(String region : WorldGuardManager.INST.getLocatedRegions(location)) {
+            for(String badRegion : AutomaticPlacer.INST.config.badRegions){
+                if(region.equalsIgnoreCase(badRegion)) {
+                    return;
+                }
+            }
+        }
 
-        // check if wrong region
+
+        // surface:
+
+        Location surface = location.getWorld().getHighestBlockAt(location.getBlockX(), location.getBlockZ()).getLocation();
+
+        // check if other chests too close
+        if(Database.getTable(LootObjectsTable.class).isNearLootObject(surface, AutomaticPlacer.INST.config.surfaceMinDistance, 10)) {
+            return;
+        }
+
+
+        // cave:
+
+        // check if other chests too close
+        if(Database.getTable(LootObjectsTable.class).isNearLootObject(location, AutomaticPlacer.INST.config.caveMinDistance, 20)) {
+            return;
+        }
+
+
 
 
 

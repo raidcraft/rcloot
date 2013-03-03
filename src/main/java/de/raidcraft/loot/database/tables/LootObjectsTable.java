@@ -178,7 +178,7 @@ public class LootObjectsTable extends Table {
                     "z > '" + (location.getBlockZ() - radiusXZ) + "' AND " +
                     "z < '" + (location.getBlockZ() + radiusXZ) + "' AND " +
                     "y > '" + (location.getBlockY() - radiusY) + "' AND " +
-                    "y < '" + (location.getBlockY() + radiusY) + "' AND "
+                    "y < '" + (location.getBlockY() + radiusY) + "'"
             ).executeQuery();
 
             while (resultSet.next()) {

@@ -8,11 +8,17 @@ import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.autoplacer.AutomaticPlacer;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: Philip
@@ -54,6 +60,24 @@ public class LootCommands {
         if(context.getString(0).equalsIgnoreCase("start")) {
             Player player = (Player)sender;
             AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(1));
+        }
+
+        if(context.getString(0).equalsIgnoreCase("delete")) {
+
+            int i = 0;
+            Map<Block, LootObject> lootObjectsCopy = new HashMap<>(LootFactory.inst.getLootObjects());
+            for(Map.Entry<Block, LootObject> entry : lootObjectsCopy.entrySet()) {
+                if(entry.getValue().getCreator().contains("AutomaticPlacer")) {
+                    i++;
+                    entry.getKey().setType(Material.AIR);
+                    LootFactory.inst.deleteLootObject(entry.getValue(), false);
+
+                    if(i % 100 == 0) {
+                        Bukkit.broadcastMessage("LCAP removed: " + i);
+                    }
+                }
+                Bukkit.broadcastMessage("LCAP removed all ap chests!");
+            }
         }
     }
 

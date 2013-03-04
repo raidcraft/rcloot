@@ -32,7 +32,7 @@ public class LootFactory {
 
     public final static String ANY = "ANY";
     public final static LootFactory inst = new LootFactory();
-    private static Map<Block, LootObject> lootObjects = new HashMap<>();
+    private Map<Block, LootObject> lootObjects = new HashMap<>();
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
 
@@ -262,5 +262,10 @@ public class LootFactory {
         info += ", Drops: " + lootObject.getLootTable().getMinLootItems() + "-" + lootObject.getLootTable().getMaxLootItems() + ", Ersteller: " + lootObject.getCreator()
                 + ", Erstelldatum: " + DateUtil.getDateString(lootObject.getCreated() * 1000);
         return info;
+    }
+
+    public Map<Block, LootObject> getLootObjects() {
+
+        return lootObjects;
     }
 }

@@ -76,7 +76,10 @@ public class LocationChecker {
             targetBlock = targetBlock.getRelative(0, -1, 0);
 
             // check if above is air and below hard ground
-            if(targetBlock.getRelative(0, 1, 0).getType() == Material.AIR && targetBlock.getRelative(0, -1, 0).getType() != Material.AIR && !AutomaticPlacer.badGroundMaterials.contains(targetBlock.getRelative(0, -1, 0).getType())) {
+            if(targetBlock.getType() == Material.AIR
+                    && targetBlock.getRelative(0, 1, 0).getType() == Material.AIR
+                    && targetBlock.getRelative(0, -1, 0).getType() != Material.AIR
+                    && !AutomaticPlacer.badGroundMaterials.contains(targetBlock.getRelative(0, -1, 0).getType())) {
                 caveLocations.add(targetBlock.getLocation().clone());
             }
         }

@@ -33,9 +33,9 @@ public class AutomaticPlacer implements Component {
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {
 
         @Setting("min-distance-surface")
-        public int surfaceMinDistance = 0;
+        public int surfaceMinDistance = 50;
         @Setting("max-distance-surface")
-        public int surfaceMaxDistance = 0;
+        public int surfaceMaxDistance = 300;
         @Setting("min-distance-cave")
         public int caveMinDistance = 0;
         @Setting("max-distance-cave")
@@ -66,7 +66,7 @@ public class AutomaticPlacer implements Component {
         totalLocations = locations.size();
         Bukkit.broadcastMessage("Will check " + locations.size() + " locations!");
 
-        RepeatingChecker repeatingChecker = new RepeatingChecker(locations, 250);
+        RepeatingChecker repeatingChecker = new RepeatingChecker(locations, 200);
         checkerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(RaidCraft.getComponent(LootPlugin.class), repeatingChecker, 10, 10);
     }
 

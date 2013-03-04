@@ -46,7 +46,7 @@ public class LootObjectsTable extends Table {
                             "`created` BIGINT( 20 ) NOT NULL , \n" +
                             "`enabled` TINYINT( 1 ) DEFAULT 1,\n" +
                             "`reward_level` INT( 11 ) DEFAULT 0,\n" +
-                            "`public_chest` TINYINT( 1 ) DEFAULT 0,)" +
+                            "`public_chest` TINYINT( 1 ) DEFAULT 0, " +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {

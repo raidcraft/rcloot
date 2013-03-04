@@ -5,6 +5,7 @@ import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.util.WorldGuardManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +19,7 @@ import java.util.List;
 public class LocationChecker {
 
     public final static LocationChecker INST = new LocationChecker();
+    public Chunk currentChunk = null;
 
     public void checkNextLocation(Location location) {
 
@@ -31,6 +33,13 @@ public class LocationChecker {
                 if(region.contains(badRegion)) {
                     return;
                 }
+            }
+        }
+
+        if(currentChunk != location.getChunk()) {
+            if(currentChunk != null) {
+                currentChunk.unload();
+                currentChunk = location.getChunk();
             }
         }
 

@@ -39,8 +39,8 @@ public class LocationChecker {
         if(currentChunk != location.getChunk()) {
             if(currentChunk != null) {
                 currentChunk.unload();
-                currentChunk = location.getChunk();
             }
+            currentChunk = location.getChunk();
         }
 
         /* surface: */

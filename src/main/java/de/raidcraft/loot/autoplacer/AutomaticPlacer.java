@@ -178,7 +178,7 @@ public class AutomaticPlacer implements Component {
                 stopped = false;
                 Bukkit.broadcastMessage("Placement task resumed (" + availableMemory + "MB free)");
             }
-            else {
+            else if(stopped) {
                 return;
             }
 

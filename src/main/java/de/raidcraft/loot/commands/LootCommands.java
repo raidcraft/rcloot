@@ -41,7 +41,7 @@ public class LootCommands {
     }
 
     @Command(
-            aliases = {"lootchestautoplace", "lcap"},
+            aliases = {"lcap"},
             desc = "Place automatic chests"
     )
     @CommandPermissions("autoplace.cmd")
@@ -76,8 +76,8 @@ public class LootCommands {
                         Bukkit.broadcastMessage("LCAP removed: " + i);
                     }
                 }
-                Bukkit.broadcastMessage("LCAP removed all ap chests!");
             }
+            Bukkit.broadcastMessage("LCAP removed all ap chests!");
         }
     }
 

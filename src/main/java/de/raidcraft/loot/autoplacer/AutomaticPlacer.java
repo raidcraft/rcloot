@@ -169,14 +169,14 @@ public class AutomaticPlacer implements Component {
             int availableMemory = (int)((runtime.maxMemory() - runtime.totalMemory() + runtime.freeMemory()) / 1048576);
             if(availableMemory < 1512) {
                 if(stopped == false) {
-                    Bukkit.broadcastMessage("Stopped placement due to low memory! (" + availableMemory + "MB free)");
+                    Bukkit.broadcastMessage("LCAP stopped placement due to low memory! (" + availableMemory + "MB free)");
                 }
                 stopped = true;
                 return;
             }
             if(stopped && availableMemory > 2048) {
                 stopped = false;
-                Bukkit.broadcastMessage("Placement task resumed (" + availableMemory + "MB free)");
+                Bukkit.broadcastMessage("LCAP placement task resumed (" + availableMemory + "MB free)");
             }
             else if(stopped) {
                 return;
@@ -188,7 +188,7 @@ public class AutomaticPlacer implements Component {
                 if(locations.isEmpty()) {
                     Bukkit.getScheduler().cancelTask(checkerTaskId);
                     running = false;
-                    Bukkit.broadcastMessage("Placement finished!");
+                    Bukkit.broadcastMessage("LCAP placement finished!");
                     return;
                 }
 

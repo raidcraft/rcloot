@@ -10,7 +10,6 @@ import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -211,7 +210,6 @@ public class PlayerListener implements Listener {
             }
         } else {
             loot = lootObject.loot(entity.getName());
-            Bukkit.broadcastMessage("DEBUG 0: " + loot.size());
         }
         // set loot
         event.getInventory().clear();

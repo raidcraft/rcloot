@@ -96,9 +96,9 @@ public class LocationChecker {
 
         // info
         AutomaticPlacer.INST.checkedLocations++;
-        if(AutomaticPlacer.INST.checkedLocations % 100 == 0) {
+        if(AutomaticPlacer.INST.checkedLocations % 500 == 0) {
             double percentage = (double)Math.round(((double)AutomaticPlacer.INST.checkedLocations / (double)AutomaticPlacer.INST.totalLocations) * 10000.) / 100.;
-            Bukkit.broadcastMessage("Processed: " + AutomaticPlacer.INST.checkedLocations + " / " + AutomaticPlacer.INST.totalLocations
+            Bukkit.broadcastMessage("LCAP processed: " + AutomaticPlacer.INST.checkedLocations + " / " + AutomaticPlacer.INST.totalLocations
                     + " (" + percentage + "%)");
         }
     }

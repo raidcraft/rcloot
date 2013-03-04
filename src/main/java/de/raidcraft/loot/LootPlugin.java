@@ -13,6 +13,7 @@ import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import org.bukkit.Bukkit;
 
 /**
  * Author: Philip
@@ -42,12 +43,19 @@ public class LootPlugin extends BasePlugin implements Component {
 
         // register auto chest placer
         new AutomaticPlacer();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                AutomaticPlacer.INST.resume();
+            }
+        }, 10*20);
     }
 
     @Override
     public void disable() {
 
-
+        AutomaticPlacer.INST.save();
     }
 
     @Override

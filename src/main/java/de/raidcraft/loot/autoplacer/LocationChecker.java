@@ -28,7 +28,7 @@ public class LocationChecker {
         // check if bad region
         for(String region : WorldGuardManager.INST.getLocatedRegions(location)) {
             for(String badRegion : AutomaticPlacer.INST.config.badRegions){
-                if(region.equalsIgnoreCase(badRegion)) {
+                if(region.contains(badRegion)) {
                     return;
                 }
             }
@@ -44,7 +44,7 @@ public class LocationChecker {
             distance = (int) (Math.random()
                     * (AutomaticPlacer.INST.config.surfaceMaxDistance - AutomaticPlacer.INST.config.surfaceMinDistance)
                     +  AutomaticPlacer.INST.config.surfaceMinDistance);
-            if(!Database.getTable(LootObjectsTable.class).isNearLootObject(surfaceLocation, distance, 25)) {
+            if(!Database.getTable(LootObjectsTable.class).isNearLootObject(surfaceLocation, distance, 20)) {
                 treasureLevel = 1;
                 chance = (int) (Math.random() * 100F);
                 if(AutomaticPlacer.INST.config.treasure2Chance > chance) {

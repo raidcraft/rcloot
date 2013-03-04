@@ -31,6 +31,7 @@ public class LocationChecker {
         for(String region : WorldGuardManager.INST.getLocatedRegions(location)) {
             for(String badRegion : AutomaticPlacer.INST.config.badRegions){
                 if(region.contains(badRegion)) {
+                    printInfo();
                     return;
                 }
             }
@@ -75,10 +76,7 @@ public class LocationChecker {
             targetBlock = targetBlock.getRelative(0, -1, 0);
 
             // check if above is air and below hard ground
-            if(targetBlock.getType() == Material.AIR
-                    && targetBlock.getRelative(0, 1, 0).getType() == Material.AIR
-                    && targetBlock.getRelative(0, -1, 0).getType() != Material.AIR
-                    && targetBlock.getRelative(0, -1, 0).getType() != Material.WATER) {
+            if(targetBlock.getRelative(0, 1, 0).getType() == Material.AIR && !AutomaticPlacer.badGroundMaterials.contains(targetBlock.getRelative(0, -1, 0).getType())) {
                 caveLocations.add(targetBlock.getLocation().clone());
             }
         }
@@ -103,11 +101,15 @@ public class LocationChecker {
             }
         }
 
+        printInfo();
+    }
+
+    public void printInfo() {
         // info
         AutomaticPlacer.INST.checkedLocations++;
         if(AutomaticPlacer.INST.checkedLocations % 500 == 0) {
             double percentage = (double)Math.round(((double)AutomaticPlacer.INST.checkedLocations / (double)AutomaticPlacer.INST.totalLocations) * 10000.) / 100.;
-            Bukkit.broadcastMessage("LCAP processed: " + AutomaticPlacer.INST.checkedLocations + " / " + AutomaticPlacer.INST.totalLocations
+            Bukkit.broadcastMessage("LCAP status: " + AutomaticPlacer.INST.checkedLocations + " / " + AutomaticPlacer.INST.totalLocations
                     + " (" + percentage + "%)");
         }
     }

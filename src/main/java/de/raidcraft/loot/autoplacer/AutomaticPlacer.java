@@ -85,13 +85,13 @@ public class AutomaticPlacer implements Component {
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {
 
         @Setting("min-distance-surface")
-        public int surfaceMinDistance = 80;
+        public int surfaceMinDistance = 90;
         @Setting("max-distance-surface")
-        public int surfaceMaxDistance = 300;
+        public int surfaceMaxDistance = 330;
         @Setting("min-distance-cave")
-        public int caveMinDistance = 50;
+        public int caveMinDistance = 80;
         @Setting("max-distance-cave")
-        public int caveMaxDistance = 200;
+        public int caveMaxDistance = 230;
         @Setting("treasure-2-chance")
         public int treasure2Chance = 30;
         @Setting("bad-regions")

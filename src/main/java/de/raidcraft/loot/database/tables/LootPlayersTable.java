@@ -61,6 +61,7 @@ public class LootPlayersTable extends Table {
             while (resultSet.next()) {
                 return true;
             }
+            return false;
         } catch (SQLException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
         }

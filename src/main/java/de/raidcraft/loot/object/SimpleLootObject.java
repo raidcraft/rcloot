@@ -100,7 +100,6 @@ public class SimpleLootObject implements LootObject {
     public List<ItemStack> loot(String player) {
 
         List<ItemStack> loot = new ArrayList<>();
-
         // player not yet looted
         if (id != 0 && !RaidCraft.getTable(LootPlayersTable.class).hasLooted(player, id)) {
             for (LootTableEntry entry : getLootTable().loot()) {

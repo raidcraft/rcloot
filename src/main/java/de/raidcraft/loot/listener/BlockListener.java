@@ -29,7 +29,7 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (LootFactory.inst.getLootObject(event.getBlock()) != null) {
+        if (LootFactory.inst.getLootObject(event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
             LootChat.warn(event.getPlayer(), "Loot Objekte können nicht zerstört werden!");
         }
@@ -40,7 +40,7 @@ public class BlockListener implements Listener {
 
         List<Block> lootBlocks = new ArrayList<>();
         for (Block block : event.blockList()) {
-            if (LootFactory.inst.getLootObject(block) != null) {
+            if (LootFactory.inst.getLootObject(block.getLocation()) != null) {
                 lootBlocks.add(block);
             }
         }
@@ -53,11 +53,11 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onDispense(BlockDispenseEvent event) {
 
-        if (LootFactory.inst.getLootObject(event.getBlock()) == null) {
+        if (LootFactory.inst.getLootObject(event.getBlock().getLocation()) == null) {
             return;
         }
 
-        LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock());
+        LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock().getLocation());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
 

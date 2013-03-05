@@ -9,7 +9,6 @@ import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -92,9 +91,8 @@ public class LootObjectsTable extends Table {
                 if (world == null) {
                     continue;
                 }
-                Block host = world.getBlockAt(resultSet.getInt("x")
-                        , resultSet.getInt("y"), resultSet.getInt("z"));
-                lootObject.setHost(host);
+                Location hostLocation = new Location(world, resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"));
+                lootObject.setHostLocation(hostLocation);
                 if (lootObject instanceof TreasureLootObject) {
                     try {
                         lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
@@ -144,10 +142,10 @@ public class LootObjectsTable extends Table {
             String query = "INSERT INTO " + getTableName() + " (loot_table_id, world, x, y, z, cooldown, creator, created, enabled, reward_level, public_chest) " +
                     "VALUES (" +
                     "'" + object.getLootTable().getId() + "'" + "," +
-                    "'" + object.getHost().getLocation().getWorld().getName() + "'" + "," +
-                    "'" + object.getHost().getLocation().getBlockX() + "'" + "," +
-                    "'" + object.getHost().getLocation().getBlockY() + "'" + "," +
-                    "'" + object.getHost().getLocation().getBlockZ() + "'" + "," +
+                    "'" + object.getHostLocation().getWorld().getName() + "'" + "," +
+                    "'" + object.getHostLocation().getBlockX() + "'" + "," +
+                    "'" + object.getHostLocation().getBlockY() + "'" + "," +
+                    "'" + object.getHostLocation().getBlockZ() + "'" + "," +
                     "'" + cooldown + "'" + "," +
                     "'" + object.getCreator() + "'" + "," +
                     "'" + object.getCreated() + "'" + "," +

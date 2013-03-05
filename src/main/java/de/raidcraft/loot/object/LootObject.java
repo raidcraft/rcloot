@@ -1,7 +1,7 @@
 package de.raidcraft.loot.object;
 
 import de.raidcraft.loot.table.LootTable;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -33,9 +33,9 @@ public interface LootObject {
 
     public void assignLootTable(LootTable lootTable);
 
-    public Block getHost();
+    public Location getHostLocation();
 
-    public void setHost(Block block);
+    public void setHostLocation(Location block);
 
     public List<ItemStack> loot(String player);
 }

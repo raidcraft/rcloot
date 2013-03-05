@@ -77,9 +77,11 @@ public class AutomaticPlacer implements Component {
     }
 
     public void save() {
-        config.lastRunning = running;
-        config.lastProcessed = checkedLocations;
-        config.save();
+        if(running) {
+            config.lastRunning = running;
+            config.lastProcessed = checkedLocations;
+            config.save();
+        }
     }
 
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {

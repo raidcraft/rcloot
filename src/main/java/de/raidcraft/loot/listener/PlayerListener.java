@@ -62,7 +62,7 @@ public class PlayerListener implements Listener {
                 && (event.getClickedBlock().getType() == Material.DISPENSER
                 || event.getClickedBlock().getType() == Material.CHEST)) {
 
-            LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock());
+            LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
                 LootChat.info(event.getPlayer(), LootFactory.inst.getObjectInfo(event.getPlayer(), existingLootObject));
@@ -122,7 +122,7 @@ public class PlayerListener implements Listener {
                             , settingStorage.getRewardLevel());
                 }
 
-                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.inst.getLootObject(event.getClickedBlock()));
+                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.inst.getLootObject(event.getClickedBlock().getLocation()));
 
                 createMode.remove(event.getPlayer().getName());   // remove create action from cache
                 event.setCancelled(true);
@@ -160,7 +160,7 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (LootFactory.inst.getLootObject(block) == null) {
+        if (LootFactory.inst.getLootObject(block.getLocation()) == null) {
             return;
         }
 
@@ -177,7 +177,7 @@ public class PlayerListener implements Listener {
         }
 
         List<ItemStack> loot;
-        LootObject lootObject = LootFactory.inst.getLootObject(block);
+        LootObject lootObject = LootFactory.inst.getLootObject(block.getLocation());
 
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {

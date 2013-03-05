@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
-import org.bukkit.block.Block;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class SimpleLootObject implements LootObject {
 
     private int id = 0;
     private LootTable lootTable;
-    private Block host;
+    private Location hostLocation;
     private String creator;
     private long creationDate;
     private boolean enabled;
@@ -85,15 +85,15 @@ public class SimpleLootObject implements LootObject {
     }
 
     @Override
-    public Block getHost() {
+    public Location getHostLocation() {
 
-        return host;
+        return hostLocation;
     }
 
     @Override
-    public void setHost(Block block) {
+    public void setHostLocation(Location block) {
 
-        this.host = block;
+        this.hostLocation = block;
     }
 
     @Override

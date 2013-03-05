@@ -41,7 +41,7 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
 
     private void deleteLootObject(PlayerInteractEvent event, boolean destroy) {
 
-        LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock());
+        LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock().getLocation());
         if (existingLootObject == null) {
             return;
         }
@@ -49,19 +49,19 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
 
         if (destroy) {
-            Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(existingLootObject.getHost());
+            Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(existingLootObject.getHostLocation().getBlock());
             if (otherChestBlock != null) {
                 ((Chest) otherChestBlock.getState()).getInventory().setContents(new ItemStack[]{});
                 otherChestBlock.setType(Material.AIR);
             } else {
-                if (existingLootObject.getHost().getState() instanceof Chest) {
-                    ((Chest) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
+                if (existingLootObject.getHostLocation().getBlock().getState() instanceof Chest) {
+                    ((Chest) existingLootObject.getHostLocation().getBlock().getState()).getInventory().setContents(new ItemStack[]{});
                 }
-                if (existingLootObject.getHost().getState() instanceof Dispenser) {
-                    ((Dispenser) existingLootObject.getHost().getState()).getInventory().setContents(new ItemStack[]{});
+                if (existingLootObject.getHostLocation().getBlock().getState() instanceof Dispenser) {
+                    ((Dispenser) existingLootObject.getHostLocation().getBlock().getState()).getInventory().setContents(new ItemStack[]{});
                 }
             }
-            existingLootObject.getHost().setType(Material.AIR);
+            existingLootObject.getHostLocation().getBlock().setType(Material.AIR);
         }
     }
 }

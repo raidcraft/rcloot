@@ -42,13 +42,6 @@ public class LootPlugin extends BasePlugin implements Component {
         // register auto chest placer
         new AutomaticPlacer();
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                Bukkit.broadcastMessage("Objects loaded: " + LootFactory.INST.loadedObjects.size());
-            }
-        }, 5*20, 10*20);
-
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
             public void run() {

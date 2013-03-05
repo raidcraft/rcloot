@@ -2,7 +2,6 @@ package de.raidcraft.loot.commands;
 
 import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.autoplacer.AutomaticPlacer;
@@ -59,12 +58,12 @@ public class LootCommands {
 //        if(context.getString(0).equalsIgnoreCase("delete")) {
 //
 //            int i = 0;
-//            Map<Integer, Map<Integer, List<LootObject>>> lootObjectsCopy = new HashMap<>(LootFactory.inst.getLootObjects());
+//            Map<Integer, Map<Integer, List<LootObject>>> lootObjectsCopy = new HashMap<>(LootFactory.INST.getLootObjects());
 //            for(Map.Entry<Block, LootObject> entry : lootObjectsCopy.entrySet()) {
 //                if(entry.getValue().getCreator().contains("AutomaticPlacer")) {
 //                    i++;
 //                    entry.getKey().setType(Material.AIR);
-//                    LootFactory.inst.deleteLootObject(entry.getValue(), false);
+//                    LootFactory.INST.deleteLootObject(entry.getValue(), false);
 //
 //                    if(i % 100 == 0) {
 //                        Bukkit.broadcastMessage("LCAP removed: " + i);
@@ -105,7 +104,6 @@ public class LootCommands {
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
             RaidCraft.getComponent(LootPlugin.class).reload();
-            LootFactory.inst.loadLootObjects();
             AutomaticPlacer.INST.config.reload();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }

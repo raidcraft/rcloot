@@ -62,7 +62,7 @@ public class LocationChecker {
                 }
 
                 surfaceLocation.getBlock().setType(Material.CHEST);
-                LootFactory.inst.createTreasureLootObject("AutomaticPlacerSurface", surfaceLocation.getBlock(), treasureLevel, false);
+                LootFactory.INST.createTreasureLootObject("AutomaticPlacerSurface", surfaceLocation.getBlock(), treasureLevel, false);
             }
         }
 
@@ -100,7 +100,7 @@ public class LocationChecker {
                     treasureLevel = 2;
                 }
                 caveLocation.getBlock().setType(Material.CHEST);
-                LootFactory.inst.createTreasureLootObject("AutomaticPlacerCave", caveLocation.getBlock(), treasureLevel, false);
+                LootFactory.INST.createTreasureLootObject("AutomaticPlacerCave", caveLocation.getBlock(), treasureLevel, false);
             }
         }
 

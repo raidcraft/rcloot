@@ -1,6 +1,7 @@
 package de.raidcraft.loot;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.database.Database;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
@@ -14,6 +15,7 @@ import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import de.raidcraft.util.DateUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,9 +34,9 @@ import java.util.Map;
 public class LootFactory {
 
     public final static String ANY = "ANY";
-    public final static LootFactory inst = new LootFactory();
+    public final static LootFactory INST = new LootFactory();
     // sort loot objects by x and z coordinates
-    private Map<Integer, Map<Integer, List<LootObject>>> lootObjects = new HashMap<>();
+    public Map<Chunk, Map<Block, LootObject>> loadedObjects = new HashMap<>();
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
 
@@ -49,21 +51,15 @@ public class LootFactory {
 
     public LootObject getLootObject(Location location) {
 
-        if(!lootObjects.containsKey(location.getBlockX())) {
+        if(!loadedObjects.containsKey(location.getChunk())) {
             return null;
         }
 
-        if(!lootObjects.get(location.getBlockX()).containsKey(location.getBlockZ())) {
+        if(!loadedObjects.get(location.getChunk()).containsKey(location.getBlock())) {
             return null;
         }
 
-        // get the correct object
-        for(LootObject lootObject : lootObjects.get(location.getBlockX()).get(location.getBlockZ())) {
-            if(lootObject.getHostLocation().getBlockY() == location.getBlockY()) {
-                return lootObject;
-            }
-        }
-        return null;
+        return loadedObjects.get(location.getChunk()).get(location.getBlock());
     }
 
     private LootTable createLootTable(ItemStack[] items, int minLoot, int maxLoot) {
@@ -100,7 +96,7 @@ public class LootFactory {
     public void createTreasureLootObject(String creator, Block block, int rewardLevel, boolean chat) {
 
         Player player = Bukkit.getPlayer(creator);
-        LootObject existingLootObject = LootFactory.inst.getLootObject(block.getLocation());
+        LootObject existingLootObject = LootFactory.INST.getLootObject(block.getLocation());
         if (existingLootObject != null) {
             if (player != null && chat) {
                 LootChat.alreadyLootObject(player);
@@ -223,14 +219,8 @@ public class LootFactory {
 
     public void addLootObject(LootObject lootObject) {
 
-        if (lootObjects.containsKey(lootObject.getHostLocation())) {
-            return;
-        }
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
         if (otherChestBlock != null) {
-            if (lootObjects.containsKey(otherChestBlock)) {
-                return;
-            }
             addLootObjectToMap(otherChestBlock.getLocation(), lootObject);
         }
 
@@ -241,16 +231,23 @@ public class LootFactory {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
         if (otherChestBlock != null) {
-            lootObjects.remove(otherChestBlock);
+            if(loadedObjects.containsKey(otherChestBlock.getChunk())) {
+                loadedObjects.get(otherChestBlock.getChunk()).remove(otherChestBlock);
+            }
         }
-        lootObjects.remove(lootObject.getHostLocation());
+        if(loadedObjects.containsKey(lootObject.getHostLocation().getChunk())) {
+            loadedObjects.get(lootObject.getHostLocation().getChunk()).remove(lootObject.getHostLocation().getBlock());
+        }
     }
 
-    public void loadLootObjects() {
-
-        lootObjects.clear();
-        for (LootObject lootObject : RaidCraft.getTable(LootObjectsTable.class).getAllObjects()) {
-            addLootObject(lootObject);
+    private void addLootObjectToMap(Location location, LootObject lootObject) {
+        if(!loadedObjects.containsKey(location.getChunk())) {
+            Map<Block, LootObject> lootObjects = new HashMap<>();
+            lootObjects.put(location.getBlock(), lootObject);
+            loadedObjects.put(location.getChunk(), lootObjects);
+        }
+        else {
+            loadedObjects.get(location.getChunk()).put(location.getBlock(), lootObject);
         }
     }
 
@@ -277,21 +274,13 @@ public class LootFactory {
         return info;
     }
 
-    private void addLootObjectToMap(Location location, LootObject lootObject) {
-
-        if(!lootObjects.containsKey(location.getBlockX())) {
-            lootObjects.put(location.getBlockX(), new HashMap<Integer, List<LootObject>>());
+    public void loadObjects(Chunk chunk) {
+        for(LootObject lootObject : Database.getTable(LootObjectsTable.class).getAllObjectsByChunk(chunk)) {
+            addLootObject(lootObject);
         }
-
-        if(!lootObjects.get(location.getBlockX()).containsKey(location.getBlockZ())) {
-            lootObjects.get(location.getBlockX()).put(location.getBlockZ(), new ArrayList<LootObject>());
-        }
-
-        lootObjects.get(location.getBlockX()).get(location.getBlockZ()).add(lootObject);
     }
 
-    public Map<Integer, Map<Integer, List<LootObject>>> getLootObjects() {
-
-        return lootObjects;
+    public void unloadObjects(Chunk chunk) {
+        loadedObjects.remove(chunk);
     }
 }

@@ -62,10 +62,10 @@ public class PlayerListener implements Listener {
                 && (event.getClickedBlock().getType() == Material.DISPENSER
                 || event.getClickedBlock().getType() == Material.CHEST)) {
 
-            LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock().getLocation());
+            LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                LootChat.info(event.getPlayer(), LootFactory.inst.getObjectInfo(event.getPlayer(), existingLootObject));
+                LootChat.info(event.getPlayer(), LootFactory.INST.getObjectInfo(event.getPlayer(), existingLootObject));
             }
 
             // no storage found
@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
                     if (existingLootObject == null) {
                         LootChat.warn(event.getPlayer(), "Der angeklickte Block ist kein Loot-Objekt!");
                     } else {
-                        LootFactory.inst.deleteLootObject(existingLootObject, true);
+                        LootFactory.INST.deleteLootObject(existingLootObject, true);
                         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
                     }
                     createMode.remove(event.getPlayer().getName());   // remove create action from cache
@@ -96,7 +96,7 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
-                    LootFactory.inst.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    LootFactory.INST.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown()
                             , settingStorage.getDrops());
@@ -104,25 +104,25 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
                     // create public loot object
-                    LootFactory.inst.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    LootFactory.INST.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
                     // create default loot object
-                    LootFactory.inst.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    LootFactory.INST.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getDrops());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
                     // create treasure loot object
-                    LootFactory.inst.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    LootFactory.INST.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , settingStorage.getRewardLevel());
                 }
 
-                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.inst.getLootObject(event.getClickedBlock().getLocation()));
+                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.INST.getLootObject(event.getClickedBlock().getLocation()));
 
                 createMode.remove(event.getPlayer().getName());   // remove create action from cache
                 event.setCancelled(true);
@@ -160,7 +160,7 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (LootFactory.inst.getLootObject(block.getLocation()) == null) {
+        if (LootFactory.INST.getLootObject(block.getLocation()) == null) {
             return;
         }
 
@@ -177,7 +177,7 @@ public class PlayerListener implements Listener {
         }
 
         List<ItemStack> loot;
-        LootObject lootObject = LootFactory.inst.getLootObject(block.getLocation());
+        LootObject lootObject = LootFactory.INST.getLootObject(block.getLocation());
 
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {

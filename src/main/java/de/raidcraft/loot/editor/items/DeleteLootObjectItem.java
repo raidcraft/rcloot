@@ -41,11 +41,11 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
 
     private void deleteLootObject(PlayerInteractEvent event, boolean destroy) {
 
-        LootObject existingLootObject = LootFactory.inst.getLootObject(event.getClickedBlock().getLocation());
+        LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
         if (existingLootObject == null) {
             return;
         }
-        LootFactory.inst.deleteLootObject(existingLootObject, true);
+        LootFactory.INST.deleteLootObject(existingLootObject, true);
         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
 
         if (destroy) {

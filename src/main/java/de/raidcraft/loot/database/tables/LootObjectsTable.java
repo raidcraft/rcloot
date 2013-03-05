@@ -7,6 +7,7 @@ import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -59,6 +60,69 @@ public class LootObjectsTable extends Table {
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + ";").executeQuery();
+
+            while (resultSet.next()) {
+                int cooldown = resultSet.getInt("cooldown");
+                int rewardLevel = resultSet.getInt("reward_level");
+                boolean publicChest = resultSet.getBoolean("public_chest");
+
+                LootObject lootObject;
+                if (cooldown != -1) {
+                    if(publicChest) {
+                        lootObject = new SimplePublicLootObject();
+                        ((SimplePublicLootObject) lootObject).setCooldown(cooldown);
+                    }
+                    else {
+                        lootObject = new SimpleTimedLootObject();
+                        ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
+                    }
+                } else {
+                    lootObject = new SimpleLootObject();
+                }
+                if (rewardLevel > 0) {
+                    lootObject = new SimpleTreasureLootObject();
+                    ((TreasureLootObject) lootObject).setRewardLevel(rewardLevel);
+                }
+                lootObject.setId(resultSet.getInt("id"));
+                lootObject.setCreator(resultSet.getString("creator"));
+                lootObject.setCreated(resultSet.getLong("created"));
+                lootObject.setEnabled(resultSet.getBoolean("enabled"));
+
+                World world = Bukkit.getWorld(resultSet.getString("world"));
+                if (world == null) {
+                    continue;
+                }
+                Location hostLocation = new Location(world, resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"));
+                lootObject.setHostLocation(hostLocation);
+                if (lootObject instanceof TreasureLootObject) {
+                    try {
+                        lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
+                                .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
+                    } catch (NoLinkedRewardTableException e) {
+                        RaidCraft.LOGGER.warning("[Loot] Try to load treasure object: " + e.getMessage());
+                        continue;
+                    }
+                } else {
+                    lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                }
+                lootObjects.add(lootObject);
+            }
+        } catch (SQLException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+        }
+        return lootObjects;
+    }
+
+    public List<LootObject> getAllObjectsByChunk(Chunk chunk) {
+
+        List<LootObject> lootObjects = new ArrayList<>();
+        try {
+            ResultSet resultSet = getConnection().prepareStatement(
+                    "SELECT * FROM " + getTableName() + " WHERE " +
+                            "x >= '" + (chunk.getX() * 16) + "' AND " +
+                            "x < '" + (chunk.getX() * 16 + 16) + "' AND " +
+                            "z >= '" + (chunk.getZ() * 16) + "' AND " +
+                            "z < '" + (chunk.getZ() * 16 + 16) + "'").executeQuery();
 
             while (resultSet.next()) {
                 int cooldown = resultSet.getInt("cooldown");

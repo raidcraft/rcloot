@@ -14,6 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (LootFactory.inst.getLootObject(event.getBlock().getLocation()) != null) {
+        if (LootFactory.INST.getLootObject(event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
             LootChat.warn(event.getPlayer(), "Loot Objekte können nicht zerstört werden!");
         }
@@ -40,7 +42,7 @@ public class BlockListener implements Listener {
 
         List<Block> lootBlocks = new ArrayList<>();
         for (Block block : event.blockList()) {
-            if (LootFactory.inst.getLootObject(block.getLocation()) != null) {
+            if (LootFactory.INST.getLootObject(block.getLocation()) != null) {
                 lootBlocks.add(block);
             }
         }
@@ -53,11 +55,11 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onDispense(BlockDispenseEvent event) {
 
-        if (LootFactory.inst.getLootObject(event.getBlock().getLocation()) == null) {
+        if (LootFactory.INST.getLootObject(event.getBlock().getLocation()) == null) {
             return;
         }
 
-        LootObject lootObject = LootFactory.inst.getLootObject(event.getBlock().getLocation());
+        LootObject lootObject = LootFactory.INST.getLootObject(event.getBlock().getLocation());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
 
@@ -83,5 +85,15 @@ public class BlockListener implements Listener {
                 block.setType(Material.CHEST);
             }
         }
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        LootFactory.INST.loadObjects(event.getChunk());
+    }
+
+    @EventHandler
+    public void onChunkUnload(ChunkUnloadEvent event) {
+        LootFactory.INST.unloadObjects(event.getChunk());
     }
 }

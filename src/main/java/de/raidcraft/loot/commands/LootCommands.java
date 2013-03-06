@@ -9,7 +9,6 @@ import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -33,28 +32,28 @@ public class LootCommands {
         //TODO probably add help
     }
 
-    @Command(
-            aliases = {"lcap"},
-            desc = "Place automatic chests"
-    )
-    @CommandPermissions("autoplace.cmd")
-    public void autoplace(CommandContext context, CommandSender sender) throws CommandException {
-
-        if(context.getString(0).equalsIgnoreCase("resume")) {
-            if(AutomaticPlacer.INST.config.lastRunning) {
-                Bukkit.broadcastMessage("Resume placement...");
-                AutomaticPlacer.INST.resume();
-            }
-            else {
-                Bukkit.broadcastMessage("Nothing to resume!");
-            }
-        }
-
-        if(context.getString(0).equalsIgnoreCase("start")) {
-            Player player = (Player)sender;
-            AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(1));
-        }
-
+//    @Command(
+//            aliases = {"lcap"},
+//            desc = "Place automatic chests"
+//    )
+//    @CommandPermissions("autoplace.cmd")
+//    public void autoplace(CommandContext context, CommandSender sender) throws CommandException {
+//
+//        if(context.getString(0).equalsIgnoreCase("resume")) {
+//            if(AutomaticPlacer.INST.config.lastRunning) {
+//                Bukkit.broadcastMessage("Resume placement...");
+//                AutomaticPlacer.INST.resume();
+//            }
+//            else {
+//                Bukkit.broadcastMessage("Nothing to resume!");
+//            }
+//        }
+//
+//        if(context.getString(0).equalsIgnoreCase("start")) {
+//            Player player = (Player)sender;
+//            AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(1));
+//        }
+//
 //        if(context.getString(0).equalsIgnoreCase("delete")) {
 //
 //            int i = 0;
@@ -72,7 +71,7 @@ public class LootCommands {
 //            }
 //            Bukkit.broadcastMessage("LCAP removed all ap chests!");
 //        }
-    }
+//    }
 
     @Command(
             aliases = {"autorefill", "infinite"},

@@ -65,7 +65,6 @@ public class BlockListener implements Listener {
 
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
 
-        dispenser.getInventory().clear();
         dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
     }
 

@@ -28,14 +28,13 @@ public class SimpleLootTableEntry implements LootTableEntry {
     @Override
     public ItemStack getItem() {
 
-        return item;
+        return item.clone();
     }
 
     @Override
     public void setItem(ItemStack item) {
 
-        this.item = new ItemStack(item.getType(), item.getAmount(), item.getDurability());
-        this.item.setItemMeta(item.getItemMeta());
+        this.item = item.clone();
     }
 
     @Override

@@ -37,7 +37,7 @@ public class SimpleTimedLootObject extends SimpleLootObject implements TimedLoot
 
         if ((RaidCraft.getTable(LootPlayersTable.class).getLastLooted(player, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
             for (LootTableEntry entry : getLootTable().loot()) {
-                loot.add(entry.getItem().clone());
+                loot.add(entry.getItem());
             }
 
             // remember loot if not infinite

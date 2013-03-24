@@ -66,7 +66,7 @@ public class BlockListener implements Listener {
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
         dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
         if(loot.size() == 1) {
-            dispenser.getInventory().addItem(loot.get(0));
+            dispenser.getInventory().addItem(loot.get(0).clone());
         }
     }
 

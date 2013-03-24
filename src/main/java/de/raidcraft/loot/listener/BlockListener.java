@@ -61,11 +61,13 @@ public class BlockListener implements Listener {
 
         LootObject lootObject = LootFactory.INST.getLootObject(event.getBlock().getLocation());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-        if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
+        if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
         Dispenser dispenser = (Dispenser) event.getBlock().getState();
-
         dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+        if(loot.size() == 1) {
+            dispenser.getInventory().addItem(loot.get(0));
+        }
     }
 
     public class TNTPlacerTask implements Runnable {

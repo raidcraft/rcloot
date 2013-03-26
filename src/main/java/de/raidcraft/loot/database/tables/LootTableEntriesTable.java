@@ -10,6 +10,7 @@ import de.raidcraft.util.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,7 +40,7 @@ public class LootTableEntriesTable extends Table {
                             "`item` VARCHAR( 32 ) NOT NULL ,\n" +
                             "`durability` INT( 11 ) NOT NULL ,\n" +
                             "`amount` INT( 11 ) NOT NULL , \n" +
-                            "`itemdata` TEXT( 300 ) NOT NULL , \n" +
+                            "`itemdata` TEXT NOT NULL , \n" +
                             "`chance` INT( 11 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
@@ -51,8 +52,14 @@ public class LootTableEntriesTable extends Table {
     public void addEntries(LootTable table) {
 
         for (LootTableEntry entry : table.getEntries()) {
-            ItemUtils.Serialization serialization = new ItemUtils.Serialization(entry.getItem());
-            String itemData = serialization.getSerializedItemData();
+            String itemData;
+            try {
+                itemData = ItemUtils.serializeItemMeta(entry.getItem().getItemMeta());
+            } catch (IOException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
+                return;
+            }
             // save entry if doesn't save yet
             if (entry.getId() == 0) {
                 try {
@@ -94,8 +101,19 @@ public class LootTableEntriesTable extends Table {
                         resultSet.getShort("durability")
                 );
 
-                ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
-                itemStack = serialization.getDeserializedItem(resultSet.getString("itemdata"));
+                String itemData = resultSet.getString("itemdata");
+
+                // convert old serialized item meta
+                if(itemData == null || itemData.length() == 0 || itemData.contains("|")) {
+                    ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
+                    ItemStack oldItem = serialization.getDeserializedItem(itemData);
+                    itemData = ItemUtils.serializeItemMeta(oldItem.getItemMeta());
+                    getConnection().prepareStatement(
+                            "UPDATE " + getTableName() + " SET itemdata = '" + itemData + "' " +
+                                    "WHERE id = '" + resultSet.getInt("id") + "';").executeUpdate();
+                }
+
+                itemStack.setItemMeta(ItemUtils.deserializeItemMeta(itemData));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
                 entry.setId(resultSet.getInt("id"));
@@ -103,8 +121,8 @@ public class LootTableEntriesTable extends Table {
                 entry.setItem(itemStack);
                 entries.add(entry);
             }
-        } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return entries;
     }

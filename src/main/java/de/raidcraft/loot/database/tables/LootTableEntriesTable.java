@@ -7,10 +7,11 @@ import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.table.SimpleLootTableEntry;
 import de.raidcraft.util.ItemUtils;
+import de.raidcraft.util.SerializationUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -53,13 +54,8 @@ public class LootTableEntriesTable extends Table {
 
         for (LootTableEntry entry : table.getEntries()) {
             String itemData;
-            try {
-                itemData = ItemUtils.serializeItemMeta(entry.getItem().getItemMeta());
-            } catch (IOException e) {
-                RaidCraft.LOGGER.warning(e.getMessage());
-                e.printStackTrace();
-                return;
-            }
+            itemData = SerializationUtil.toByteStream(entry.getItem().getItemMeta());
+
             // save entry if doesn't save yet
             if (entry.getId() == 0) {
                 try {
@@ -103,17 +99,17 @@ public class LootTableEntriesTable extends Table {
 
                 String itemData = resultSet.getString("itemdata");
 
-                // convert old serialized item meta
+//              convert old serialized item meta
                 if(itemData == null || itemData.length() == 0 || itemData.contains("|")) {
                     ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
                     ItemStack oldItem = serialization.getDeserializedItem(itemData);
-                    itemData = ItemUtils.serializeItemMeta(oldItem.getItemMeta());
+                    itemData = SerializationUtil.toByteStream(oldItem.getItemMeta());
                     getConnection().prepareStatement(
                             "UPDATE " + getTableName() + " SET itemdata = '" + itemData + "' " +
                                     "WHERE id = '" + resultSet.getInt("id") + "';").executeUpdate();
                 }
 
-                itemStack.setItemMeta(ItemUtils.deserializeItemMeta(itemData));
+                itemStack.setItemMeta((ItemMeta)SerializationUtil.fromByteStream(itemData));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
                 entry.setId(resultSet.getInt("id"));

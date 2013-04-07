@@ -87,6 +87,7 @@ public class PlayerListener implements Listener {
                 if (existingLootObject != null) {
                     // warn player and request deletion via command -> exit
                     LootChat.warn(event.getPlayer(), "Dies ist bereits ein Loot-Objekt und muss erst per Befehl gelöscht werden!");
+                    createMode.remove(event.getPlayer().getName());
                     event.setCancelled(true);
                     return;
                 }

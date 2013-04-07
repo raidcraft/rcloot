@@ -275,6 +275,9 @@ public class LootFactory {
     }
 
     public void loadObjects(Chunk chunk) {
+
+        if(loadedObjects.containsKey(chunk)) return;
+
         for(LootObject lootObject : Database.getTable(LootObjectsTable.class).getAllObjectsByChunk(chunk)) {
             addLootObject(lootObject);
         }

@@ -109,7 +109,7 @@ public class LootTableEntriesTable extends Table {
                                     "WHERE id = '" + resultSet.getInt("id") + "';").executeUpdate();
                 }
 
-                itemStack.setItemMeta((ItemMeta)SerializationUtil.fromByteStream(itemData));
+                itemStack.setItemMeta((ItemMeta)SerializationUtil.fromByteStream(itemData, itemStack.getType()));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
                 entry.setId(resultSet.getInt("id"));

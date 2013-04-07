@@ -115,6 +115,7 @@ public class LootObjectsTable extends Table {
 
     public List<LootObject> getAllObjectsByChunk(Chunk chunk) {
 
+        RaidCraft.LOGGER.info("[LOOT] X: " + chunk.getX() + " | Z: " + chunk.getZ());
         List<LootObject> lootObjects = new ArrayList<>();
         try {
             ResultSet resultSet = getConnection().prepareStatement(

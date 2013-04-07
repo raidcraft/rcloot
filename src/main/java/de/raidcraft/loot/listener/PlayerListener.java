@@ -62,8 +62,6 @@ public class PlayerListener implements Listener {
                 && (event.getClickedBlock().getType() == Material.DISPENSER
                 || event.getClickedBlock().getType() == Material.CHEST)) {
 
-            LootFactory.INST.loadObjects(event.getPlayer().getLocation().getChunk());
-
             LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {

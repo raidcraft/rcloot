@@ -54,7 +54,7 @@ public class LootTableEntriesTable extends Table {
 
         for (LootTableEntry entry : table.getEntries()) {
             String itemData;
-            itemData = SerializationUtil.toByteStream_fixed(entry.getItem().getItemMeta());
+            itemData = SerializationUtil.toByteStream(entry.getItem().getItemMeta());
 
             // save entry if doesn't save yet
             if (entry.getId() == 0) {
@@ -103,7 +103,7 @@ public class LootTableEntriesTable extends Table {
                 if(itemData == null || itemData.length() == 0 || itemData.contains("|")) {
                     ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
                     ItemStack oldItem = serialization.getDeserializedItem(itemData);
-                    itemData = SerializationUtil.toByteStream_fixed(oldItem.getItemMeta());
+                    itemData = SerializationUtil.toByteStream(oldItem.getItemMeta());
                     getConnection().prepareStatement(
                             "UPDATE " + getTableName() + " SET itemdata = '" + itemData + "' " +
                                     "WHERE id = '" + resultSet.getInt("id") + "';").executeUpdate();

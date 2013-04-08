@@ -1,5 +1,6 @@
 package de.raidcraft.loot.listener;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
@@ -10,6 +11,7 @@ import de.raidcraft.loot.object.TreasureLootObject;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -61,6 +63,10 @@ public class PlayerListener implements Listener {
         if (event.getClickedBlock() != null
                 && (event.getClickedBlock().getType() == Material.DISPENSER
                 || event.getClickedBlock().getType() == Material.CHEST)) {
+
+            Chunk chunk = event.getPlayer().getLocation().getChunk();
+            LootFactory.INST.loadObjects(event.getPlayer().getLocation().getChunk());
+            RaidCraft.LOGGER.info("Loo: x: " + chunk.getX() + " | z: " + chunk.getZ());
 
             LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
 

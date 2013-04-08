@@ -64,9 +64,9 @@ public class PlayerListener implements Listener {
                 && (event.getClickedBlock().getType() == Material.DISPENSER
                 || event.getClickedBlock().getType() == Material.CHEST)) {
 
-            Chunk chunk = event.getPlayer().getLocation().getChunk();
-            LootFactory.INST.loadObjects(event.getPlayer().getLocation().getChunk());
-            RaidCraft.LOGGER.info("Loo: x: " + chunk.getX() + " | z: " + chunk.getZ());
+            Chunk chunk = event.getClickedBlock().getLocation().getChunk();
+            LootFactory.INST.loadObjects(chunk);
+            RaidCraft.LOGGER.info("Loot Debug: x: " + chunk.getX() + " | z: " + chunk.getZ());
 
             LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
 

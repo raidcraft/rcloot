@@ -1,6 +1,5 @@
 package de.raidcraft.loot.listener;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
@@ -66,7 +65,6 @@ public class PlayerListener implements Listener {
 
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             LootFactory.INST.loadObjects(chunk);
-            RaidCraft.LOGGER.info("Loot Debug: x: " + chunk.getX() + " | z: " + chunk.getZ());
 
             LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
 

@@ -119,6 +119,7 @@ public class LootObjectsTable extends Table {
         try {
             ResultSet resultSet = getConnection().prepareStatement(
                     "SELECT * FROM " + getTableName() + " WHERE " +
+                            "world = '" + chunk.getWorld().getName() + "' AND " +
                             "x >= '" + (chunk.getX() * 16) + "' AND " +
                             "x < '" + (chunk.getX() * 16 + 16) + "' AND " +
                             "z >= '" + (chunk.getZ() * 16) + "' AND " +
@@ -171,7 +172,7 @@ public class LootObjectsTable extends Table {
                 lootObjects.add(lootObject);
             }
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
         return lootObjects;
     }

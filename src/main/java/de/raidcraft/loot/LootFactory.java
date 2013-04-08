@@ -277,7 +277,6 @@ public class LootFactory {
     public void loadObjects(Chunk chunk) {
 
         if(loadedObjects.containsKey(chunk)) {
-            RaidCraft.LOGGER.info("Loot Debug: already contain chunk!");
             return;
         }
 

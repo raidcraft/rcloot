@@ -50,7 +50,7 @@ public class LootObjectsTable extends Table {
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -108,7 +108,7 @@ public class LootObjectsTable extends Table {
                 lootObjects.add(lootObject);
             }
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
         return lootObjects;
     }
@@ -226,7 +226,6 @@ public class LootObjectsTable extends Table {
                 object.setId(rs.getInt(1));
             }
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -248,7 +247,7 @@ public class LootObjectsTable extends Table {
                 return true;
             }
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
         return false;
     }
@@ -259,7 +258,6 @@ public class LootObjectsTable extends Table {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }

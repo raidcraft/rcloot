@@ -1,6 +1,5 @@
 package de.raidcraft.loot.database.tables;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 
@@ -32,7 +31,7 @@ public class LootPlayersTable extends Table {
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -48,7 +47,7 @@ public class LootPlayersTable extends Table {
                             ");"
             ).execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -63,7 +62,7 @@ public class LootPlayersTable extends Table {
             }
             return false;
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
         return true;
     }
@@ -78,7 +77,7 @@ public class LootPlayersTable extends Table {
                 return resultSet.getLong("timestamp");
             }
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
             return System.currentTimeMillis();
         }
         return 0;

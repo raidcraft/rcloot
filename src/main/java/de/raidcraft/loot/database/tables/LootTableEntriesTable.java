@@ -1,6 +1,5 @@
 package de.raidcraft.loot.database.tables;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
@@ -46,7 +45,7 @@ public class LootTableEntriesTable extends Table {
                             "PRIMARY KEY ( `id` )\n" +
                             ")").execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -76,7 +75,6 @@ public class LootTableEntriesTable extends Table {
                         entry.setId(rs.getInt(1));
                     }
                 } catch (SQLException e) {
-                    RaidCraft.LOGGER.warning(e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -129,7 +127,6 @@ public class LootTableEntriesTable extends Table {
             getConnection().prepareStatement(
                     "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';").execute();
         } catch (SQLException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
             e.printStackTrace();
         }
     }

@@ -33,7 +33,7 @@ public class LootObjectsTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            executeUpdate(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`loot_table_id` INT( 11 ) NOT NULL ,\n" +
@@ -48,7 +48,7 @@ public class LootObjectsTable extends Table {
                             "`reward_level` INT( 11 ) DEFAULT 0,\n" +
                             "`public_chest` TINYINT( 1 ) DEFAULT 0, " +
                             "PRIMARY KEY ( `id` )\n" +
-                            ")").execute();
+                            ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,8 +58,8 @@ public class LootObjectsTable extends Table {
 
         List<LootObject> lootObjects = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + ";").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + ";");
 
             while (resultSet.next()) {
                 int cooldown = resultSet.getInt("cooldown");
@@ -117,13 +117,13 @@ public class LootObjectsTable extends Table {
 
         List<LootObject> lootObjects = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName() + " WHERE " +
                             "world = '" + chunk.getWorld().getName() + "' AND " +
                             "x >= '" + (chunk.getX() * 16) + "' AND " +
                             "x < '" + (chunk.getX() * 16 + 16) + "' AND " +
                             "z >= '" + (chunk.getZ() * 16) + "' AND " +
-                            "z < '" + (chunk.getZ() * 16 + 16) + "'").executeQuery();
+                            "z < '" + (chunk.getZ() * 16 + 16) + "'");
 
             while (resultSet.next()) {
                 int cooldown = resultSet.getInt("cooldown");
@@ -233,7 +233,7 @@ public class LootObjectsTable extends Table {
     public boolean isNearLootObject(Location location, int radiusXZ, int radiusY) {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
+            ResultSet resultSet = executeQuery(
                     "SELECT * FROM `" + getTableName() + "` WHERE " +
                     "x > '" + (location.getBlockX() - radiusXZ) + "' AND " +
                     "x < '" + (location.getBlockX() + radiusXZ) + "' AND " +
@@ -241,7 +241,7 @@ public class LootObjectsTable extends Table {
                     "z < '" + (location.getBlockZ() + radiusXZ) + "' AND " +
                     "y > '" + (location.getBlockY() - radiusY) + "' AND " +
                     "y < '" + (location.getBlockY() + radiusY) + "'"
-            ).executeQuery();
+            );
 
             while (resultSet.next()) {
                 return true;
@@ -255,8 +255,8 @@ public class LootObjectsTable extends Table {
     public void deleteObject(LootObject object) {
 
         try {
-            getConnection().prepareStatement(
-                    "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';").execute();
+            executeUpdate(
+                    "DELETE FROM " + getTableName() + " WHERE id = '" + object.getId() + "';");
         } catch (SQLException e) {
             e.printStackTrace();
         }

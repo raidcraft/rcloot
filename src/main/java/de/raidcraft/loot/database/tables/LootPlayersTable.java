@@ -22,14 +22,14 @@ public class LootPlayersTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            executeUpdate(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`object_id` INT( 11 ) NOT NULL ,\n" +
                             "`player` VARCHAR( 32 ) NOT NULL ,\n" +
                             "`timestamp` BIGINT( 20 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
-                            ")").execute();
+                            ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,14 +38,14 @@ public class LootPlayersTable extends Table {
     public void addEntry(String player, int objectId, long timestamp) {
 
         try {
-            getConnection().prepareStatement(
+            executeUpdate(
                     "INSERT INTO " + getTableName() + " (object_id, player, timestamp) " +
                             "VALUES (" +
                             "'" + objectId + "'" + "," +
                             "'" + player + "'" + "," +
                             "'" + timestamp + "'" +
                             ");"
-            ).execute();
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -54,8 +54,8 @@ public class LootPlayersTable extends Table {
     public boolean hasLooted(String player, int objectId) {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';");
 
             while (resultSet.next()) {
                 return true;
@@ -70,8 +70,8 @@ public class LootPlayersTable extends Table {
     public long getLastLooted(String player, int objectId) {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
 
             while (resultSet.next()) {
                 return resultSet.getLong("timestamp");

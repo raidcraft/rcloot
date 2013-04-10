@@ -28,13 +28,13 @@ public class LootTablesTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            executeUpdate(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`min_loot` INT( 11 ) NOT NULL ,\n" +
                             "`max_loot` INT( 11 ) NOT NULL ,\n" +
                             "PRIMARY KEY ( `id` )\n" +
-                            ")").execute();
+                            ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -69,8 +69,8 @@ public class LootTablesTable extends Table {
     public LootTable getLootTable(int id) {
 
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';");
 
             while (resultSet.next()) {
                 SimpleLootTable table = new SimpleLootTable();
@@ -90,8 +90,8 @@ public class LootTablesTable extends Table {
 
         List<LootTable> tables = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + ";").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + ";");
 
             while (resultSet.next()) {
                 SimpleLootTable table = new SimpleLootTable();
@@ -110,8 +110,8 @@ public class LootTablesTable extends Table {
     public void deleteTable(LootTable table) {
 
         try {
-            getConnection().prepareStatement(
-                    "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';").execute();
+            executeUpdate(
+                    "DELETE FROM " + getTableName() + " WHERE id = '" + table.getId() + "';");
             RaidCraft.getTable(LootTableEntriesTable.class).deleteEntries(table);
         } catch (SQLException e) {
             e.printStackTrace();

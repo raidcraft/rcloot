@@ -33,7 +33,7 @@ public class LootTableEntriesTable extends Table {
     public void createTable() {
 
         try {
-            getConnection().prepareStatement(
+            executeUpdate(
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`loot_table_id` INT( 11 ) NOT NULL ,\n" +
@@ -43,7 +43,7 @@ public class LootTableEntriesTable extends Table {
                             "`itemdata` TEXT NOT NULL , \n" +
                             "`chance` INT( 11 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
-                            ")").execute();
+                            ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -85,8 +85,8 @@ public class LootTableEntriesTable extends Table {
 
         List<LootTableEntry> entries = new ArrayList<>();
         try {
-            ResultSet resultSet = getConnection().prepareStatement(
-                    "SELECT * FROM " + getTableName() + " WHERE loot_table_id = '" + lootTable.getId() + "';").executeQuery();
+            ResultSet resultSet = executeQuery(
+                    "SELECT * FROM " + getTableName() + " WHERE loot_table_id = '" + lootTable.getId() + "';");
 
             while (resultSet.next()) {
                 ItemStack itemStack = new ItemStack(
@@ -102,9 +102,9 @@ public class LootTableEntriesTable extends Table {
                     ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
                     ItemStack oldItem = serialization.getDeserializedItem(itemData);
                     itemData = SerializationUtil.toByteStream(oldItem.getItemMeta());
-                    getConnection().prepareStatement(
+                    executeUpdate(
                             "UPDATE " + getTableName() + " SET itemdata = '" + itemData + "' " +
-                                    "WHERE id = '" + resultSet.getInt("id") + "';").executeUpdate();
+                                    "WHERE id = '" + resultSet.getInt("id") + "';");
                 }
 
                 itemStack.setItemMeta((ItemMeta)SerializationUtil.fromByteStream(itemData, itemStack.getType()));
@@ -124,8 +124,8 @@ public class LootTableEntriesTable extends Table {
     public void deleteEntries(LootTable table) {
 
         try {
-            getConnection().prepareStatement(
-                    "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';").execute();
+            executeUpdate(
+                    "DELETE FROM " + getTableName() + " WHERE loot_table_id = '" + table.getId() + "';");
         } catch (SQLException e) {
             e.printStackTrace();
         }

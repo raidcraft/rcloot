@@ -58,8 +58,10 @@ public class LootPlayersTable extends Table {
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';");
 
             while (resultSet.next()) {
+                resultSet.close();
                 return true;
             }
+            resultSet.close();
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,8 +76,10 @@ public class LootPlayersTable extends Table {
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
 
             while (resultSet.next()) {
+                resultSet.close();
                 return resultSet.getLong("timestamp");
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
             return System.currentTimeMillis();

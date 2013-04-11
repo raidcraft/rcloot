@@ -74,6 +74,7 @@ public class LootTableEntriesTable extends Table {
                     if (rs != null && rs.next()) {
                         entry.setId(rs.getInt(1));
                     }
+                    rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -115,6 +116,7 @@ public class LootTableEntriesTable extends Table {
                 entry.setItem(itemStack);
                 entries.add(entry);
             }
+            resultSet.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

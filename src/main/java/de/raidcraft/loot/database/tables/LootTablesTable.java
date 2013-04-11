@@ -60,7 +60,8 @@ public class LootTablesTable extends Table {
                 table.setId(rs.getInt(1));
             }
             RaidCraft.getTable(LootTableEntriesTable.class).addEntries(table);
-
+            statement.close();
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,6 +81,7 @@ public class LootTablesTable extends Table {
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 return table;
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,6 +103,7 @@ public class LootTablesTable extends Table {
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

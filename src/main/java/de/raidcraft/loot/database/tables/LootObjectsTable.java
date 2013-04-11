@@ -107,6 +107,7 @@ public class LootObjectsTable extends Table {
                 }
                 lootObjects.add(lootObject);
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,6 +172,7 @@ public class LootObjectsTable extends Table {
                 }
                 lootObjects.add(lootObject);
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -225,6 +227,8 @@ public class LootObjectsTable extends Table {
             if (rs != null && rs.next()) {
                 object.setId(rs.getInt(1));
             }
+            statement.close();
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -244,8 +248,10 @@ public class LootObjectsTable extends Table {
             );
 
             while (resultSet.next()) {
+                resultSet.close();
                 return true;
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

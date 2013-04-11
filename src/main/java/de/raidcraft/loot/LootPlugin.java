@@ -4,7 +4,6 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.loot.autoplacer.AutomaticPlacer;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
@@ -52,7 +51,7 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public void disable() {
 
-        AutomaticPlacer.INST.save();
+//        AutomaticPlacer.INST.save();
     }
 
     @Override

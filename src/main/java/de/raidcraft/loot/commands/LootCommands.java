@@ -4,7 +4,6 @@ import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.autoplacer.AutomaticPlacer;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
@@ -103,7 +102,7 @@ public class LootCommands {
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
             RaidCraft.getComponent(LootPlugin.class).reload();
-            AutomaticPlacer.INST.config.reload();
+//            AutomaticPlacer.INST.config.reload();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
 

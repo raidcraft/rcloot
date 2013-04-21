@@ -76,8 +76,9 @@ public class LootPlayersTable extends Table {
                     "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
 
             while (resultSet.next()) {
+                long ts = resultSet.getLong("timestamp");
                 resultSet.close();
-                return resultSet.getLong("timestamp");
+                return ts;
             }
             resultSet.close();
         } catch (SQLException e) {

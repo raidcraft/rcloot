@@ -79,6 +79,7 @@ public class LootTablesTable extends Table {
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
+                resultSet.close();
                 return table;
             }
             resultSet.close();

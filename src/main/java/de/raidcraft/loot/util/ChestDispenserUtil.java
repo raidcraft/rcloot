@@ -22,32 +22,54 @@ public class ChestDispenserUtil {
 
     public static Block getOtherChestBlock(Block block, boolean allDirections) {
 
-        if (block.getRelative(1, 0, 0).getType() == Material.CHEST)
-            return block.getRelative(1, 0, 0);
-        if (block.getRelative(-1, 0, 0).getType() == Material.CHEST)
-            return block.getRelative(-1, 0, 0);
-        if (block.getRelative(0, 0, 1).getType() == Material.CHEST)
-            return block.getRelative(0, 0, 1);
-        if (block.getRelative(0, 0, -1).getType() == Material.CHEST)
-            return block.getRelative(0, 0, -1);
+        Block otherBlock;
+
+        otherBlock = block.getRelative(1, 0, 0);
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            return otherBlock;
+        otherBlock = block.getRelative(-1, 0, 0);
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            return otherBlock;
+        otherBlock = block.getRelative(0, 0, 1);
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            return otherBlock;
+        otherBlock = block.getRelative(0, 0, -1);
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            return otherBlock;
 
         if (allDirections) {
-            if (block.getRelative(1, 0, 1).getType() == Material.CHEST)
-                return block.getRelative(1, 0, 1);
-            if (block.getRelative(1, 0, -1).getType() == Material.CHEST)
-                return block.getRelative(1, 0, -1);
-            if (block.getRelative(-1, 0, 1).getType() == Material.CHEST)
-                return block.getRelative(-1, 0, 1);
-            if (block.getRelative(-1, 0, -1).getType() == Material.CHEST)
-                return block.getRelative(-1, 0, -1);
-            if (block.getRelative(2, 0, 0).getType() == Material.CHEST)
-                return block.getRelative(2, 0, 0);
-            if (block.getRelative(-2, 0, 0).getType() == Material.CHEST)
-                return block.getRelative(-2, 0, 0);
-            if (block.getRelative(0, 0, 2).getType() == Material.CHEST)
-                return block.getRelative(0, 0, 2);
-            if (block.getRelative(0, 0, -2).getType() == Material.CHEST)
-                return block.getRelative(0, 0, -2);
+            otherBlock = block.getRelative(1, 0, 1);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(1, 0, -1);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(-1, 0, 1);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(-1, 0, -1);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(2, 0, 0);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(-2, 0, 0);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(0, 0, 2);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
+            otherBlock = block.getRelative(0, 0, -2);
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+                return otherBlock;
+
         }
 
         return null;
@@ -56,8 +78,9 @@ public class ChestDispenserUtil {
     public static boolean isChestOrDispenser(Block block) {
 
         if (block != null
-                && (block.getType() == Material.DISPENSER
-                || block.getType() == Material.CHEST)) {
+            && (block.getType() == Material.DISPENSER
+            || block.getType() == Material.CHEST
+            || block.getType() == Material.TRAPPED_CHEST)) {
             return true;
         }
         return false;

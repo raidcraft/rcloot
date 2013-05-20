@@ -61,7 +61,8 @@ public class PlayerListener implements Listener {
         // if dispenser or chest clicked
         if (event.getClickedBlock() != null
                 && (event.getClickedBlock().getType() == Material.DISPENSER
-                || event.getClickedBlock().getType() == Material.CHEST)) {
+                || event.getClickedBlock().getType() == Material.CHEST
+                || event.getClickedBlock().getType() == Material.TRAPPED_CHEST)) {
 
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             LootFactory.INST.loadObjects(chunk);

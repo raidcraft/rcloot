@@ -18,8 +18,9 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: Philip
@@ -40,10 +41,10 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onExplosion(EntityExplodeEvent event) {
 
-        List<Block> lootBlocks = new ArrayList<>();
+        Map<Block, Material> lootBlocks = new HashMap<>();
         for (Block block : event.blockList()) {
             if (LootFactory.INST.getLootObject(block.getLocation()) != null) {
-                lootBlocks.add(block);
+                lootBlocks.put(block, block.getType());
             }
         }
         if (lootBlocks.size() > 0) {
@@ -72,9 +73,9 @@ public class BlockListener implements Listener {
 
     public class TNTPlacerTask implements Runnable {
 
-        List<Block> chestBlocks;
+        Map<Block, Material> chestBlocks;
 
-        public TNTPlacerTask(List<Block> chestBlocks) {
+        public TNTPlacerTask(Map<Block, Material> chestBlocks) {
 
             this.chestBlocks = chestBlocks;
         }
@@ -82,8 +83,8 @@ public class BlockListener implements Listener {
         @Override
         public void run() {
 
-            for (Block block : chestBlocks) {
-                block.setType(Material.CHEST);
+            for (Map.Entry<Block, Material> entry : chestBlocks.entrySet()) {
+                entry.getKey().setType(entry.getValue());
             }
         }
     }

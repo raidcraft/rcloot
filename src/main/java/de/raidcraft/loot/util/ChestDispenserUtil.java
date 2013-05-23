@@ -75,12 +75,13 @@ public class ChestDispenserUtil {
         return null;
     }
 
-    public static boolean isChestOrDispenser(Block block) {
+    public static boolean isLootableBlock(Block block) {
 
         if (block != null
             && (block.getType() == Material.DISPENSER
             || block.getType() == Material.CHEST
-            || block.getType() == Material.TRAPPED_CHEST)) {
+            || block.getType() == Material.TRAPPED_CHEST
+            || block.getType() == Material.DROPPER)) {
             return true;
         }
         return false;
@@ -120,4 +121,6 @@ public class ChestDispenserUtil {
             block.getRelative(0, 0, 1).setType(Material.CHEST);
         }
     }
+
+
 }

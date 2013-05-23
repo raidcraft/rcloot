@@ -47,7 +47,7 @@ public class TreasureLevel3Item extends SimpleEditorItem {
     @Override
     public void actionLeftClick(PlayerInteractEvent event) {
 
-        if (!ChestDispenserUtil.isChestOrDispenser(event.getClickedBlock())) {
+        if (!ChestDispenserUtil.isLootableBlock(event.getClickedBlock())) {
             return;
         }
 

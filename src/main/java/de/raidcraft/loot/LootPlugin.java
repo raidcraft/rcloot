@@ -11,6 +11,7 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.loot.table.LootTableCache;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 
 /**
@@ -22,6 +23,8 @@ public class LootPlugin extends BasePlugin implements Component {
 
     public static LootPlugin INST;
     public LocalConfiguration config;
+
+    private LootTableCache lootTableCache;
 
     @Override
     public void enable() {
@@ -36,6 +39,8 @@ public class LootPlugin extends BasePlugin implements Component {
         registerCommands(LootCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BlockListener());
+
+        lootTableCache = new LootTableCache();
 
         // register auto chest placer
 //        new AutomaticPlacer();
@@ -58,6 +63,7 @@ public class LootPlugin extends BasePlugin implements Component {
     public void reload() {
 
         config.reload();
+        lootTableCache.clearCache();
     }
 
     public void loadConfig() {
@@ -91,5 +97,10 @@ public class LootPlugin extends BasePlugin implements Component {
 
             super(plugin, "config.yml");
         }
+    }
+
+    public LootTableCache getLootTableCache() {
+
+        return lootTableCache;
     }
 }

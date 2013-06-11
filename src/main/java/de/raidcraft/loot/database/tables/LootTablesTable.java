@@ -2,6 +2,7 @@ package de.raidcraft.loot.database.tables;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
 import de.raidcraft.loot.table.SimpleLootTable;
@@ -69,17 +70,24 @@ public class LootTablesTable extends Table {
 
     public LootTable getLootTable(int id) {
 
+        // check first if table already cached
+        LootTable table = RaidCraft.getComponent(LootPlugin.class).getLootTableCache().getTable(id);
+        if(table != null) {
+            return table;
+        }
         try {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';");
 
             while (resultSet.next()) {
-                SimpleLootTable table = new SimpleLootTable();
+                table = new SimpleLootTable();
                 table.setId(resultSet.getInt("id"));
                 table.setMinLootItems(resultSet.getInt("min_loot"));
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 resultSet.close();
+                // cache new table
+                RaidCraft.getComponent(LootPlugin.class).getLootTableCache().addTable(table);
                 return table;
             }
             resultSet.close();

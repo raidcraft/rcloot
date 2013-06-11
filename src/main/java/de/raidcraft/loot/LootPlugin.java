@@ -22,7 +22,6 @@ import de.raidcraft.loot.util.TreasureRewardLevel;
  */
 public class LootPlugin extends BasePlugin implements Component {
 
-    public static LootPlugin INST;
     public LocalConfiguration config;
 
     private LootFactory lootFactory;
@@ -31,8 +30,6 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public void enable() {
 
-        INST = this;
-        loadConfig();
         registerTable(LootObjectsTable.class, new LootObjectsTable());
         registerTable(LootPlayersTable.class, new LootPlayersTable());
         registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
@@ -57,6 +54,8 @@ public class LootPlugin extends BasePlugin implements Component {
 //                AutomaticPlacer.INST.resume();
 //            }
 //        }, 10*20);
+
+        reload();
     }
 
     @Override
@@ -68,8 +67,8 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public void reload() {
 
-        config.reload();
-        lootObjectStorage.clear();
+        loadConfig();
+        lootObjectStorage.reload();
     }
 
     public void loadConfig() {

@@ -1,11 +1,14 @@
 package de.raidcraft.loot.table;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -100,8 +103,10 @@ public class LootObjectStorage {
         sortedObjects.get(worldName).get(x).get(y).remove(z);
     }
 
-    public void clear() {
+    public void reload() {
 
         sortedObjects.clear();
+        List<LootObject> lootObjects = RaidCraft.getTable(LootObjectsTable.class).getAllObjects();
+        RaidCraft.LOGGER.info("[RCLoot] Es wurden " + lootObjects.size() + " in den Cache geladen!");
     }
 }

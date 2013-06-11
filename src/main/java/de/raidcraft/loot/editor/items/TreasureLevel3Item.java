@@ -1,6 +1,5 @@
 package de.raidcraft.loot.editor.items;
 
-import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;
@@ -41,7 +40,7 @@ public class TreasureLevel3Item extends SimpleEditorItem {
         }
 
         // create treasure loot object
-        LootFactory.INST.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);
+        lootFactory.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class TreasureLevel3Item extends SimpleEditorItem {
         }
 
         // create treasure loot object
-        LootFactory.INST.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock(), REWARD_LEVEL, true);
+        lootFactory.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock(), REWARD_LEVEL, true);
     }
 
 }

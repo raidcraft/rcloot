@@ -1,12 +1,15 @@
 package de.raidcraft.loot.listener;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.PublicLootObject;
 import de.raidcraft.loot.object.TimedLootObject;
 import de.raidcraft.loot.object.TreasureLootObject;
+import de.raidcraft.loot.table.LootObjectStorage;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
@@ -61,13 +64,13 @@ public class PlayerListener implements Listener {
         // if dispenser or chest clicked
         if (ChestDispenserUtil.isLootableBlock(event.getClickedBlock())) {
 
+            LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
+            LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
             Chunk chunk = event.getClickedBlock().getLocation().getChunk();
-            LootFactory.INST.loadObjects(chunk);
-
-            LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
+            LootObject existingLootObject = lootObjectStorage.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                LootChat.info(event.getPlayer(), LootFactory.INST.getObjectInfo(event.getPlayer(), existingLootObject));
+                LootChat.info(event.getPlayer(), lootFactory.getObjectInfo(event.getPlayer(), existingLootObject));
             }
 
             // no storage found
@@ -79,7 +82,7 @@ public class PlayerListener implements Listener {
                     if (existingLootObject == null) {
                         LootChat.warn(event.getPlayer(), "Der angeklickte Block ist kein Loot-Objekt!");
                     } else {
-                        LootFactory.INST.deleteLootObject(existingLootObject, true);
+                        lootFactory.deleteLootObject(existingLootObject, true);
                         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
                     }
                     createMode.remove(event.getPlayer().getName());   // remove create action from cache
@@ -99,7 +102,7 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
-                    LootFactory.INST.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown()
                             , settingStorage.getDrops());
@@ -107,25 +110,25 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
                     // create public loot object
-                    LootFactory.INST.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
                     // create default loot object
-                    LootFactory.INST.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , items
                             , settingStorage.getDrops());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
                     // create treasure loot object
-                    LootFactory.INST.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
                             , settingStorage.getRewardLevel());
                 }
 
-                LootChat.successfullyCreatedLootObject(event.getPlayer(), LootFactory.INST.getLootObject(event.getClickedBlock().getLocation()));
+                LootChat.successfullyCreatedLootObject(event.getPlayer(), lootObjectStorage.getLootObject(event.getClickedBlock().getLocation()));
 
                 createMode.remove(event.getPlayer().getName());   // remove create action from cache
                 event.setCancelled(true);
@@ -163,7 +166,9 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (LootFactory.INST.getLootObject(block.getLocation()) == null) {
+        LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
+
+        if (lootObjectStorage.getLootObject(block.getLocation()) == null) {
             return;
         }
 
@@ -180,7 +185,7 @@ public class PlayerListener implements Listener {
         }
 
         List<ItemStack> loot;
-        LootObject lootObject = LootFactory.INST.getLootObject(block.getLocation());
+        LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());
 
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {

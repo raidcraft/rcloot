@@ -32,7 +32,7 @@ public class AutomaticPlacer implements Component {
 
     private LocationChecker locationChecker;
 
-    public LocalConfiguration config = new LocalConfiguration(LootPlugin.INST);
+    public LocalConfiguration config = new LocalConfiguration(RaidCraft.getComponent(LootPlugin.class));
 
     {
         badGroundMaterials.add(Material.WATER);

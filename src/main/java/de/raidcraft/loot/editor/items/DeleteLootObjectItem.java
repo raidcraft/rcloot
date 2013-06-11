@@ -1,7 +1,10 @@
 package de.raidcraft.loot.editor.items;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.table.LootObjectStorage;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;
@@ -41,11 +44,13 @@ public class DeleteLootObjectItem extends SimpleEditorItem {
 
     private void deleteLootObject(PlayerInteractEvent event, boolean destroy) {
 
-        LootObject existingLootObject = LootFactory.INST.getLootObject(event.getClickedBlock().getLocation());
+        LootObjectStorage storage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
+        LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
+        LootObject existingLootObject = storage.getLootObject(event.getClickedBlock().getLocation());
         if (existingLootObject == null) {
             return;
         }
-        LootFactory.INST.deleteLootObject(existingLootObject, true);
+        lootFactory.deleteLootObject(existingLootObject, true);
         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
 
         if (destroy) {

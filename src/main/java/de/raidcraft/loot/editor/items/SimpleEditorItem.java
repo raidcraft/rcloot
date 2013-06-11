@@ -1,5 +1,8 @@
 package de.raidcraft.loot.editor.items;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.editor.EditorItem;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.event.block.Action;
@@ -12,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
  * Description:
  */
 public abstract class SimpleEditorItem implements EditorItem {
+
+    protected LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
 
     @Override
     public final void run(PlayerInteractEvent event) {

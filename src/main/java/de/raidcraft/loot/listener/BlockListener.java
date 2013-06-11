@@ -14,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -32,7 +30,7 @@ public class BlockListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (LootFactory.INST.getLootObject(event.getBlock().getLocation()) != null) {
+        if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
             LootChat.warn(event.getPlayer(), "Loot Objekte können nicht zerstört werden!");
         }
@@ -43,7 +41,7 @@ public class BlockListener implements Listener {
 
         Map<Block, Material> lootBlocks = new HashMap<>();
         for (Block block : event.blockList()) {
-            if (LootFactory.INST.getLootObject(block.getLocation()) != null) {
+            if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(block.getLocation()) != null) {
                 lootBlocks.put(block, block.getType());
             }
         }
@@ -56,11 +54,11 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onDispense(BlockDispenseEvent event) {
 
-        if (LootFactory.INST.getLootObject(event.getBlock().getLocation()) == null) {
+        if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation()) == null) {
             return;
         }
 
-        LootObject lootObject = LootFactory.INST.getLootObject(event.getBlock().getLocation());
+        LootObject lootObject = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation());
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
@@ -87,15 +85,5 @@ public class BlockListener implements Listener {
                 entry.getKey().setType(entry.getValue());
             }
         }
-    }
-
-    @EventHandler
-    public void onChunkLoad(ChunkLoadEvent event) {
-        LootFactory.INST.loadObjects(event.getChunk());
-    }
-
-    @EventHandler
-    public void onChunkUnload(ChunkUnloadEvent event) {
-        LootFactory.INST.unloadObjects(event.getChunk());
     }
 }

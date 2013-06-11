@@ -1,6 +1,7 @@
 package de.raidcraft.loot.util;
 
-import de.raidcraft.loot.LootFactory;
+import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.object.LootObject;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class LootChat {
 
     public static void successfullyCreatedLootObject(Player player, LootObject lootObject) {
         LootChat.success(player, "Es wurde erfolgreich ein Loot-Objekt erstellt! ");
-        LootChat.info(player, LootFactory.INST.getObjectInfo(player, lootObject));
+        LootChat.info(player, RaidCraft.getComponent(LootPlugin.class).getLootFactory().getObjectInfo(player, lootObject));
     }
 
     public static void occupiedByOtherChest(Player player) {

@@ -2,10 +2,8 @@ package de.raidcraft.loot.database.tables;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
-import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
-import de.raidcraft.loot.table.LootTableCache;
 import de.raidcraft.loot.table.SimpleLootTable;
 
 import java.sql.ResultSet;
@@ -71,11 +69,8 @@ public class LootTablesTable extends Table {
 
     public LootTable getLootTable(int id) {
 
-        // check first if table already cached
-        LootTable table = RaidCraft.getComponent(LootPlugin.class).getLootTableCache().getTable(id);
-        if(table != null) {
-            return table;
-        }
+        LootTable table;
+
         try {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName() + " WHERE id = '" + id + "';");
@@ -87,8 +82,6 @@ public class LootTablesTable extends Table {
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 resultSet.close();
-                // cache new table
-                RaidCraft.getComponent(LootPlugin.class).getLootTableCache().addTable(table);
                 return table;
             }
             resultSet.close();
@@ -100,11 +93,10 @@ public class LootTablesTable extends Table {
 
     public List<LootTable> getAllLootTables() {
 
-        LootTableCache cache = RaidCraft.getComponent(LootPlugin.class).getLootTableCache();
         List<LootTable> tables = new ArrayList<>();
         try {
             ResultSet resultSet = executeQuery(
-                    "SELECT * FROM " + getTableName() + " WHERE id NOT IN(" + cache.getIdStringList() + ");");
+                    "SELECT * FROM " + getTableName() + ";");
 
             while (resultSet.next()) {
                 SimpleLootTable table = new SimpleLootTable();
@@ -113,8 +105,6 @@ public class LootTablesTable extends Table {
                 table.setMaxLootItems(resultSet.getInt("max_loot"));
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
-                // cache new table
-                RaidCraft.getComponent(LootPlugin.class).getLootTableCache().addTable(table);
             }
             resultSet.close();
         } catch (SQLException e) {

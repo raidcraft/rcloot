@@ -30,6 +30,8 @@ public class AutomaticPlacer implements Component {
     public int checkerTaskId = 0;
     public boolean running = false;
 
+    private LocationChecker locationChecker;
+
     public LocalConfiguration config = new LocalConfiguration(LootPlugin.INST);
 
     {
@@ -66,6 +68,8 @@ public class AutomaticPlacer implements Component {
     }
 
     public AutomaticPlacer() {
+
+        locationChecker = new LocationChecker(RaidCraft.getComponent(LootPlugin.class));
         INST = this;
         config.load(true);
     }
@@ -195,7 +199,7 @@ public class AutomaticPlacer implements Component {
                 }
 
                 Location nextLocation = locations.pop();
-                LocationChecker.INST.checkNextLocation(nextLocation);
+                locationChecker.checkNextLocation(nextLocation);
             }
         }
     }

@@ -1,7 +1,7 @@
 package de.raidcraft.loot.autoplacer;
 
 import de.raidcraft.api.database.Database;
-import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.util.WorldGuardManager;
 import org.bukkit.Bukkit;
@@ -18,8 +18,13 @@ import java.util.List;
  */
 public class LocationChecker {
 
-    public final static LocationChecker INST = new LocationChecker();
     public Chunk currentChunk = null;
+    private LootPlugin plugin;
+
+    public LocationChecker(LootPlugin plugin) {
+
+        this.plugin = plugin;
+    }
 
     public void checkNextLocation(Location location) {
 
@@ -62,7 +67,7 @@ public class LocationChecker {
                 }
 
                 surfaceLocation.getBlock().setType(Material.CHEST);
-                LootFactory.INST.createTreasureLootObject("AutomaticPlacerSurface", surfaceLocation.getBlock(), treasureLevel, false);
+                plugin.getLootFactory().createTreasureLootObject("AutomaticPlacerSurface", surfaceLocation.getBlock(), treasureLevel, false);
             }
         }
 
@@ -100,7 +105,7 @@ public class LocationChecker {
                     treasureLevel = 2;
                 }
                 caveLocation.getBlock().setType(Material.CHEST);
-                LootFactory.INST.createTreasureLootObject("AutomaticPlacerCave", caveLocation.getBlock(), treasureLevel, false);
+                plugin.getLootFactory().createTreasureLootObject("AutomaticPlacerCave", caveLocation.getBlock(), treasureLevel, false);
             }
         }
 

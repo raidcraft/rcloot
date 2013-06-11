@@ -5,11 +5,7 @@ import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
-import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.object.PublicLootObject;
-import de.raidcraft.loot.object.TimedLootObject;
-import de.raidcraft.loot.object.TreasureLootObject;
-import de.raidcraft.loot.object.LootObjectStorage;
+import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
@@ -167,8 +163,8 @@ public class PlayerListener implements Listener {
         }
 
         LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
-
-        if (lootObjectStorage.getLootObject(block.getLocation()) == null) {
+        LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());
+        if (lootObject == null) {
             return;
         }
 
@@ -185,7 +181,6 @@ public class PlayerListener implements Listener {
         }
 
         List<ItemStack> loot;
-        LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());
 
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {
@@ -276,5 +271,6 @@ public class PlayerListener implements Listener {
         }
         editorMode.remove(event.getPlayer().getName());
         adminMode.remove(event.getPlayer().getName());
+        createMode.remove(event.getPlayer().getName());
     }
 }

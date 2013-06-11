@@ -15,15 +15,15 @@ import java.util.Map;
  */
 public class LootObjectStorage {
 
-    private Map<String, Map<Integer, Map<Integer, Map<Integer, LootObject>>>> sortedObjects = new HashMap<>();
+    private Map<Location, LootObject> sortedObjects = new HashMap<>();
 
     public void registerLootObject(LootObject lootObject) {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
         if (otherChestBlock != null) {
-            removeLootObjectHost(otherChestBlock.getLocation(), lootObject);
+            removeLootObjectHost(otherChestBlock.getLocation());
         }
-        removeLootObjectHost(lootObject.getHostLocation(), lootObject);
+        removeLootObjectHost(lootObject.getHostLocation());
     }
 
     public void unregisterLootObject(LootObject lootObject) {
@@ -37,75 +37,36 @@ public class LootObjectStorage {
 
     public LootObject getLootObject(Location location) {
 
-        String worldName = location.getWorld().getName();
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
+        LootObject lootObject = sortedObjects.get(location);
 
-        if(sortedObjects.containsKey(worldName)) {
-            if(sortedObjects.get(worldName).containsKey(x)) {
-                if(sortedObjects.get(worldName).get(x).containsKey(y)) {
-                    if(sortedObjects.get(worldName).get(x).get(y).containsKey(z)) {
-                        return sortedObjects.get(worldName).get(x).get(y).get(z);
-                    }
-                }
+        Block otherBlock = ChestDispenserUtil.getOtherChestBlock(location.getBlock());
+        if(otherBlock != null) {
+            if(lootObject != null) {
+                addLootObjectHost(otherBlock.getLocation(), lootObject);
             }
+            lootObject = sortedObjects.get(otherBlock.getLocation());
         }
-        return null;
+
+        return lootObject;
     }
 
     private void addLootObjectHost(Location hostLocation, LootObject lootObject) {
 
-        String worldName = lootObject.getHostLocation().getWorld().getName();
-        int x = hostLocation.getBlockX();
-        int y = hostLocation.getBlockY();
-        int z = hostLocation.getBlockZ();
-
-        if(!sortedObjects.containsKey(worldName)) {
-            sortedObjects.put(worldName, new HashMap<Integer, Map<Integer, Map<Integer, LootObject>>>());
-        }
-
-        if(!sortedObjects.get(worldName).containsKey(x)) {
-            sortedObjects.get(worldName).put(x, new HashMap<Integer, Map<Integer, LootObject>>());
-        }
-
-        if(!sortedObjects.get(worldName).get(x).containsKey(y)) {
-            sortedObjects.get(worldName).get(x).put(y, new HashMap<Integer, LootObject>());
-        }
-
-        sortedObjects.get(worldName).get(x).get(y).put(z, lootObject);
+        sortedObjects.put(hostLocation, lootObject);
     }
 
-    private void removeLootObjectHost(Location hostLocation, LootObject lootObject) {
+    private void removeLootObjectHost(Location hostLocation) {
 
-        String worldName = lootObject.getHostLocation().getWorld().getName();
-        int x = hostLocation.getBlockX();
-        int y = hostLocation.getBlockY();
-        int z = hostLocation.getBlockZ();
-
-        if(!sortedObjects.containsKey(worldName)) {
-            return;
-        }
-
-        if(!sortedObjects.get(worldName).containsKey(x)) {
-            return;
-        }
-
-        if(!sortedObjects.get(worldName).get(x).containsKey(y)) {
-            return;
-        }
-
-        if(!sortedObjects.get(worldName).get(x).get(y).containsKey(z)) {
-            return;
-        }
-
-        sortedObjects.get(worldName).get(x).get(y).remove(z);
+        sortedObjects.remove(hostLocation);
     }
 
     public void reload() {
 
         sortedObjects.clear();
         List<LootObject> lootObjects = RaidCraft.getTable(LootObjectsTable.class).getAllObjects();
-        RaidCraft.LOGGER.info("[RCLoot] Es wurden " + lootObjects.size() + " in den Cache geladen!");
+        for(LootObject lootObject : lootObjects) {
+            addLootObjectHost(lootObject.getHostLocation(), lootObject);
+        }
+        RaidCraft.LOGGER.info("[RCLoot] Es wurden " + lootObjects.size() + " Loot-Ojekte in den Cache geladen!");
     }
 }

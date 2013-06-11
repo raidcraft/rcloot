@@ -6,6 +6,7 @@ import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.loot.table.LootTableCache;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.command.CommandSender;
@@ -228,6 +229,17 @@ public class LootCommands {
 
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setRewardLevel(rewardLevel));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+        }
+
+        @Command(
+                aliases = {"cache"},
+                desc = "Shows cache infos"
+        )
+        @CommandPermissions("loot.admin")
+        public void cache(CommandContext context, CommandSender sender) throws CommandException {
+
+            LootTableCache cache = RaidCraft.getComponent(LootPlugin.class).getLootTableCache();
+            LootChat.info((Player) sender, "Es werden derzeit " + cache.getCacheSize() + " Tables gecached.");
         }
     }
 }

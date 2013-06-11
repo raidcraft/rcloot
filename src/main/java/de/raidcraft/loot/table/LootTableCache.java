@@ -36,4 +36,9 @@ public class LootTableCache {
         }
         return list;
     }
+
+    public int getCacheSize() {
+
+        return cachedTables.size();
+    }
 }

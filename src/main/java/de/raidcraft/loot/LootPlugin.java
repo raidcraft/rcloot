@@ -12,7 +12,8 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
-import de.raidcraft.loot.table.LootObjectStorage;
+import de.raidcraft.loot.object.LootObjectStorage;
+import de.raidcraft.loot.table.LootTableCache;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 
 /**
@@ -26,6 +27,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
     private LootFactory lootFactory;
     private LootObjectStorage lootObjectStorage;
+    private LootTableCache lootTableCache;
 
     @Override
     public void enable() {
@@ -41,6 +43,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
         lootFactory = new LootFactory(this);
         lootObjectStorage = new LootObjectStorage();
+        lootTableCache = new LootTableCache();
 
         // load all tables in cache
         RaidCraft.getTable(LootTablesTable.class).getAllLootTables();
@@ -112,5 +115,10 @@ public class LootPlugin extends BasePlugin implements Component {
     public LootObjectStorage getLootObjectStorage() {
 
         return lootObjectStorage;
+    }
+
+    public LootTableCache getLootTableCache() {
+
+        return lootTableCache;
     }
 }

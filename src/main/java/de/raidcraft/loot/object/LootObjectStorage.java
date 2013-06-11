@@ -1,8 +1,7 @@
-package de.raidcraft.loot.table;
+package de.raidcraft.loot.object;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
-import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

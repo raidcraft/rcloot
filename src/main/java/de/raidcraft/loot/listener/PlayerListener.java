@@ -9,7 +9,7 @@ import de.raidcraft.loot.object.LootObject;
 import de.raidcraft.loot.object.PublicLootObject;
 import de.raidcraft.loot.object.TimedLootObject;
 import de.raidcraft.loot.object.TreasureLootObject;
-import de.raidcraft.loot.table.LootObjectStorage;
+import de.raidcraft.loot.object.LootObjectStorage;
 import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;

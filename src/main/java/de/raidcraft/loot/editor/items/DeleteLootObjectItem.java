@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.object.LootObject;
-import de.raidcraft.loot.table.LootObjectStorage;
+import de.raidcraft.loot.object.LootObjectStorage;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;

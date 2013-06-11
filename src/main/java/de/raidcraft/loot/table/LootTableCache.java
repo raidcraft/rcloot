@@ -27,7 +27,7 @@ public class LootTableCache {
 
     public String getIdStringList() {
 
-        String list = "";
+        String list = "0";
         for(int id : cachedTables.keySet()) {
             if(list.length() > 0) {
                 list += ",";

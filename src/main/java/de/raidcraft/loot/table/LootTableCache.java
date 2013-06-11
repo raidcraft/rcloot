@@ -25,4 +25,15 @@ public class LootTableCache {
         return cachedTables.get(id);
     }
 
+    public String getIdStringList() {
+
+        String list = "";
+        for(int id : cachedTables.keySet()) {
+            if(list.length() > 0) {
+                list += ",";
+            }
+            list += id;
+        }
+        return list;
+    }
 }

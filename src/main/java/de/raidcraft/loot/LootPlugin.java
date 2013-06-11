@@ -1,5 +1,6 @@
 package de.raidcraft.loot;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
@@ -41,6 +42,9 @@ public class LootPlugin extends BasePlugin implements Component {
         registerEvents(new BlockListener());
 
         lootTableCache = new LootTableCache();
+
+        // load all tables in cache
+        RaidCraft.getTable(LootTablesTable.class).getAllLootTables();
 
         // register auto chest placer
 //        new AutomaticPlacer();

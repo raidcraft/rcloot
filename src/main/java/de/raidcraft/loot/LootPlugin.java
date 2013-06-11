@@ -41,8 +41,8 @@ public class LootPlugin extends BasePlugin implements Component {
         registerEvents(new PlayerListener());
         registerEvents(new BlockListener());
 
-        lootFactory = new LootFactory(this);
         lootObjectStorage = new LootObjectStorage();
+        lootFactory = new LootFactory(this);
         lootTableCache = new LootTableCache();
 
         // load all tables in cache

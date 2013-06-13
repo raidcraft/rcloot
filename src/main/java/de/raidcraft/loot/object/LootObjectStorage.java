@@ -17,7 +17,7 @@ public class LootObjectStorage {
 
     private Map<Location, LootObject> sortedObjects = new HashMap<>();
 
-    public void registerLootObject(LootObject lootObject) {
+    public void unregisterLootObject(LootObject lootObject) {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
         if (otherChestBlock != null) {
@@ -26,7 +26,7 @@ public class LootObjectStorage {
         removeLootObjectHost(lootObject.getHostLocation());
     }
 
-    public void unregisterLootObject(LootObject lootObject) {
+    public void registerLootObject(LootObject lootObject) {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
         if (otherChestBlock != null) {

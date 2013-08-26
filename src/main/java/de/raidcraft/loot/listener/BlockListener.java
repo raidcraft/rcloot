@@ -9,11 +9,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dispenser;
+import org.bukkit.block.Dropper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -62,10 +64,17 @@ public class BlockListener implements Listener {
         List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
-        Dispenser dispenser = (Dispenser) event.getBlock().getState();
-        dispenser.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+        Inventory inventory;
+        if(event.getBlock().getState() instanceof Dispenser) {
+            inventory = ((Dispenser) event.getBlock().getState()).getInventory();
+        }
+        else {
+            inventory = ((Dropper) event.getBlock().getState()).getInventory();
+        }
+
+        inventory.setContents(loot.toArray(new ItemStack[loot.size()]));
         if(loot.size() == 1) {
-            dispenser.getInventory().addItem(loot.get(0).clone());
+            inventory.addItem(loot.get(0).clone());
         }
     }
 

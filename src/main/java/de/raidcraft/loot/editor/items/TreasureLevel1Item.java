@@ -1,5 +1,7 @@
 package de.raidcraft.loot.editor.items;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Material;
@@ -46,7 +48,7 @@ public class TreasureLevel1Item extends SimpleEditorItem {
     @Override
     public void actionLeftClick(PlayerInteractEvent event) {
 
-        if (!ChestDispenserUtil.isLootableBlock(event.getClickedBlock())) {
+        if (RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getClickedBlock().getType()) == null) {
             return;
         }
 

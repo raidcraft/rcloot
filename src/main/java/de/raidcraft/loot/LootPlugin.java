@@ -12,6 +12,11 @@ import de.raidcraft.loot.database.tables.LootTableEntriesTable;
 import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
+import de.raidcraft.loot.loothost.LootHostManager;
+import de.raidcraft.loot.loothost.hosts.ChestHost;
+import de.raidcraft.loot.loothost.hosts.DispenserHost;
+import de.raidcraft.loot.loothost.hosts.DropperHost;
+import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.object.LootObjectStorage;
 import de.raidcraft.loot.table.LootTableCache;
 import de.raidcraft.loot.util.TreasureRewardLevel;
@@ -28,6 +33,7 @@ public class LootPlugin extends BasePlugin implements Component {
     private LootFactory lootFactory;
     private LootObjectStorage lootObjectStorage;
     private LootTableCache lootTableCache;
+    private LootHostManager lootHostManager;
 
     @Override
     public void enable() {
@@ -44,6 +50,13 @@ public class LootPlugin extends BasePlugin implements Component {
         lootObjectStorage = new LootObjectStorage();
         lootFactory = new LootFactory(this);
         lootTableCache = new LootTableCache();
+        lootHostManager = new LootHostManager(this);
+
+        // register all default hosts
+        lootHostManager.registerLootHost(new ChestHost());
+        lootHostManager.registerLootHost(new TrappedChestHost());
+        lootHostManager.registerLootHost(new DropperHost());
+        lootHostManager.registerLootHost(new DispenserHost());
 
         // load all tables in cache
         RaidCraft.getTable(LootTablesTable.class).getAllLootTables();
@@ -120,5 +133,10 @@ public class LootPlugin extends BasePlugin implements Component {
     public LootTableCache getLootTableCache() {
 
         return lootTableCache;
+    }
+
+    public LootHostManager getLootHostManager() {
+
+        return lootHostManager;
     }
 }

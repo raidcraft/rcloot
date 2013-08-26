@@ -5,15 +5,12 @@ import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.editor.EditorModeFactory;
+import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.object.*;
 import de.raidcraft.loot.table.LootTableEntry;
-import de.raidcraft.loot.util.ChestDispenserUtil;
 import de.raidcraft.loot.util.LootChat;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,12 +54,12 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        // if dispenser or chest clicked
-        if (ChestDispenserUtil.isLootableBlock(event.getClickedBlock())) {
+        // if lootable block clicked
+        LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getClickedBlock().getType());
+        if (lootHost != null) {
 
             LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
             LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
-            Chunk chunk = event.getClickedBlock().getLocation().getChunk();
             LootObject existingLootObject = lootObjectStorage.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
@@ -94,7 +91,7 @@ public class PlayerListener implements Listener {
                 }
 
                 // get items in object
-                ItemStack[] items = ChestDispenserUtil.getItems(event.getClickedBlock());
+                ItemStack[] items = lootHost.getContents(event.getClickedBlock());
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
@@ -139,28 +136,10 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
 
-        if (event.getInventory().getType() != InventoryType.DISPENSER
-                && event.getInventory().getType() != InventoryType.CHEST) {
-            return;
-        }
+        LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getInventory());
+        if(lootHost == null) return;
 
-        if (!(event.getInventory().getHolder() instanceof BlockState)
-                && !(event.getInventory().getHolder() instanceof DoubleChest)) {
-            return;
-        }
-
-        Block block;
-        boolean singleChest = false;
-
-        if (event.getInventory().getHolder() instanceof DoubleChest) {
-            DoubleChest doubleChest = (DoubleChest) event.getInventory().getHolder();
-            block = doubleChest.getLocation().getBlock();
-        } else {
-            block = ((BlockState) event.getInventory().getHolder()).getBlock();
-            if (block.getType() == Material.CHEST) {
-                singleChest = true;
-            }
-        }
+        Block block = lootHost.getBlock(event.getInventory());
 
         LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
         LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());
@@ -174,7 +153,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (event.getInventory().getType() == InventoryType.DISPENSER && !entity.hasPermission("loot.admin")) {
+        if (!lootHost.canBeOpened() && !entity.hasPermission("loot.admin")) {
             LootChat.warn((Player) entity, "Du hast keine Rechte um Loot-Dispenser zu öffnen!");
             event.setCancelled(true);
             return;
@@ -218,7 +197,7 @@ public class PlayerListener implements Listener {
         event.getInventory().clear();
 
         // halve the loot if single chest (smaller chance for single treasure chests)
-        if ((lootObject instanceof TreasureLootObject) && singleChest && loot.size() > 1 && !admin) {
+        if ((lootObject instanceof TreasureLootObject) && lootHost.halfTreasureChance(event.getInventory()) && loot.size() > 1 && !admin) {
             loot = loot.subList(0, loot.size() / 2);
         }
 

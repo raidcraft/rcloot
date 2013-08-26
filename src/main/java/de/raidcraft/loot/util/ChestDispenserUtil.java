@@ -3,10 +3,7 @@ package de.raidcraft.loot.util;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Author: Philip
@@ -73,33 +70,6 @@ public class ChestDispenserUtil {
         }
 
         return null;
-    }
-
-    public static boolean isLootableBlock(Block block) {
-
-        if (block != null
-            && (block.getType() == Material.DISPENSER
-            || block.getType() == Material.CHEST
-            || block.getType() == Material.TRAPPED_CHEST
-            || block.getType() == Material.DROPPER)) {
-            return true;
-        }
-        return false;
-    }
-
-    public static ItemStack[] getItems(Block block) {
-
-        ItemStack[] items = new ItemStack[]{null};
-
-        if (block.getState() instanceof Chest) {
-            items = ((Chest) block.getState()).getInventory().getContents();
-            ((Chest) block.getState()).getInventory().clear();
-        }
-        if (block.getState() instanceof Dispenser) {
-            items = ((Dispenser) block.getState()).getInventory().getContents();
-        }
-
-        return items;
     }
 
     public static void pasteDoublechest(Player player, Block block) {

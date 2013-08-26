@@ -38,7 +38,7 @@ public class TrappedChestHost implements LootHost {
     @Override
     public boolean validateInventory(Inventory inventory) {
 
-        if(inventory.getType() == InventoryType.CHEST) {
+        if(inventory.getType() == InventoryType.CHEST && inventory.getName().endsWith("Chest")) {
             return true;
         }
         return false;

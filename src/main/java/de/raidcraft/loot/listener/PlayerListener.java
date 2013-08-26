@@ -44,6 +44,8 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
+        if(event.getClickedBlock() == null) return;
+
         // editor mode
         if (editorMode.contains(event.getPlayer().getName())
                 && event.getItem() != null

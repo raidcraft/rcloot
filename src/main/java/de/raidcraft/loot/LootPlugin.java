@@ -6,10 +6,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.loot.commands.LootCommands;
-import de.raidcraft.loot.database.tables.LootObjectsTable;
-import de.raidcraft.loot.database.tables.LootPlayersTable;
-import de.raidcraft.loot.database.tables.LootTableEntriesTable;
-import de.raidcraft.loot.database.tables.LootTablesTable;
+import de.raidcraft.loot.database.tables.*;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.loothost.LootHostManager;
@@ -18,8 +15,11 @@ import de.raidcraft.loot.loothost.hosts.DispenserHost;
 import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.object.LootObjectStorage;
-import de.raidcraft.loot.table.LootTableCache;
+import de.raidcraft.loot.table.LootTableManager;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: Philip
@@ -32,7 +32,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
     private LootFactory lootFactory;
     private LootObjectStorage lootObjectStorage;
-    private LootTableCache lootTableCache;
+    private LootTableManager lootTableCache;
     private LootHostManager lootHostManager;
 
     @Override
@@ -49,7 +49,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
         lootObjectStorage = new LootObjectStorage();
         lootFactory = new LootFactory(this);
-        lootTableCache = new LootTableCache();
+        lootTableCache = new LootTableManager();
         lootHostManager = new LootHostManager(this);
 
         // register all default hosts
@@ -85,6 +85,15 @@ public class LootPlugin extends BasePlugin implements Component {
 
         loadConfig();
         lootObjectStorage.reload();
+    }
+
+    @Override
+    public List<Class<?>> getDatabaseClasses() {
+
+        List<Class<?>> databases = new ArrayList<>();
+        databases.add(TLootTableAlias.class);
+
+        return databases;
     }
 
     public void loadConfig() {
@@ -130,7 +139,7 @@ public class LootPlugin extends BasePlugin implements Component {
         return lootObjectStorage;
     }
 
-    public LootTableCache getLootTableCache() {
+    public LootTableManager getLootTableCache() {
 
         return lootTableCache;
     }

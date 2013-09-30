@@ -5,7 +5,7 @@ import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
-import de.raidcraft.loot.table.LootTableCache;
+import de.raidcraft.loot.table.LootTableManager;
 import de.raidcraft.loot.table.SimpleLootTable;
 
 import java.sql.ResultSet;
@@ -100,7 +100,7 @@ public class LootTablesTable extends Table {
 
     public List<LootTable> getAllLootTables() {
 
-        LootTableCache cache = RaidCraft.getComponent(LootPlugin.class).getLootTableCache();
+        LootTableManager cache = RaidCraft.getComponent(LootPlugin.class).getLootTableCache();
         List<LootTable> tables = new ArrayList<>();
         try {
             ResultSet resultSet = executeQuery(

@@ -1,12 +1,16 @@
 package de.raidcraft.loot.table;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.database.tables.TLootTableAlias;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Philip Urban
  */
-public class LootTableCache {
+public class LootTableManager {
 
     private Map<Integer, LootTable> cachedTables = new HashMap<>();
 
@@ -23,6 +27,16 @@ public class LootTableCache {
     public LootTable getTable(int id) {
 
         return cachedTables.get(id);
+    }
+
+    public LootTable getTable(String alias) {
+
+        TLootTableAlias tLootTableAlias = RaidCraft.getDatabase(LootPlugin.class)
+                .find(TLootTableAlias.class).where().ieq("alias", alias).findUnique();
+        if(tLootTableAlias != null) {
+            return getTable(tLootTableAlias.getLootTableId());
+        }
+        return null;
     }
 
     public String getIdStringList() {

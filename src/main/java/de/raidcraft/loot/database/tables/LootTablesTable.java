@@ -72,7 +72,7 @@ public class LootTablesTable extends Table {
     public LootTable getLootTable(int id) {
 
         // check first if table already cached
-        LootTable table = RaidCraft.getComponent(LootPlugin.class).getLootTableCache().getTable(id);
+        LootTable table = RaidCraft.getComponent(LootPlugin.class).getLootTableManager().getTable(id);
         if(table != null) {
             return table;
         }
@@ -88,7 +88,7 @@ public class LootTablesTable extends Table {
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 resultSet.close();
                 // cache new table
-                RaidCraft.getComponent(LootPlugin.class).getLootTableCache().addTable(table);
+                RaidCraft.getComponent(LootPlugin.class).getLootTableManager().addTable(table);
                 return table;
             }
             resultSet.close();
@@ -100,7 +100,7 @@ public class LootTablesTable extends Table {
 
     public List<LootTable> getAllLootTables() {
 
-        LootTableManager cache = RaidCraft.getComponent(LootPlugin.class).getLootTableCache();
+        LootTableManager cache = RaidCraft.getComponent(LootPlugin.class).getLootTableManager();
         List<LootTable> tables = new ArrayList<>();
         try {
             ResultSet resultSet = executeQuery(
@@ -114,7 +114,7 @@ public class LootTablesTable extends Table {
                 table.setEntries(RaidCraft.getTable(LootTableEntriesTable.class).getEntries(table));
                 tables.add(table);
                 // cache new table
-                RaidCraft.getComponent(LootPlugin.class).getLootTableCache().addTable(table);
+                RaidCraft.getComponent(LootPlugin.class).getLootTableManager().addTable(table);
             }
             resultSet.close();
         } catch (SQLException e) {

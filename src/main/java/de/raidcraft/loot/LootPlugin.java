@@ -32,7 +32,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
     private LootFactory lootFactory;
     private LootObjectStorage lootObjectStorage;
-    private LootTableManager lootTableCache;
+    private LootTableManager lootTableManager;
     private LootHostManager lootHostManager;
 
     @Override
@@ -49,7 +49,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
         lootObjectStorage = new LootObjectStorage();
         lootFactory = new LootFactory(this);
-        lootTableCache = new LootTableManager();
+        lootTableManager = new LootTableManager();
         lootHostManager = new LootHostManager(this);
 
         // register all default hosts
@@ -139,9 +139,9 @@ public class LootPlugin extends BasePlugin implements Component {
         return lootObjectStorage;
     }
 
-    public LootTableManager getLootTableCache() {
+    public LootTableManager getLootTableManager() {
 
-        return lootTableCache;
+        return lootTableManager;
     }
 
     public LootHostManager getLootHostManager() {

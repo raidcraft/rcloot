@@ -62,7 +62,7 @@ public class LootFactory {
         }
         TLootTable tLootTable = new TLootTable();
         plugin.getDatabase().save(tLootTable);
-        LootTable lootTable = new DatabaseLootTable(tLootTable);
+        LootTable lootTable = new DatabaseLootTable(tLootTable.getId());
         lootTable.setEntries(tableEntries);
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
         lootTable.save();

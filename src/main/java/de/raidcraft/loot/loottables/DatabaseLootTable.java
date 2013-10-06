@@ -23,6 +23,11 @@ public class DatabaseLootTable extends AbstractLootTable {
         load(lootTable);
     }
 
+    public DatabaseLootTable(int id) {
+
+        super(id);
+    }
+
     private void load(TLootTable table) {
 
         setMinLootItems(table.getMinLoot());

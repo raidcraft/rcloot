@@ -18,8 +18,7 @@ public class TLootTable {
 
     @Id
     private int id;
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "loot_table_id")
+    @OneToOne(mappedBy = "loot_table_id", cascade = CascadeType.REMOVE)
     private TLootTableAlias alias;
     private int minLoot;
     private int maxLoot;

@@ -16,6 +16,7 @@ import de.raidcraft.loot.loothost.hosts.DispenserHost;
 import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.tables.TLootTable;
+import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.tables.TLootTableQuality;
 import de.raidcraft.loot.util.TreasureRewardLevel;
@@ -92,6 +93,7 @@ public class LootPlugin extends BasePlugin implements Component {
         tables.add(TLootTable.class);
         tables.add(TLootTableEntry.class);
         tables.add(TLootTableQuality.class);
+        tables.add(TLootTableAlias.class);
         return tables;
     }
 

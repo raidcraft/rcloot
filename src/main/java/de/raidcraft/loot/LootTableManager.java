@@ -42,9 +42,9 @@ public class LootTableManager {
     public void addTable(LootTable table) {
 
         cachedTables.put(table.getId(), table);
-        TLootTableAlias alias = plugin.getDatabase().find(TLootTable.class, table.getId()).getAlias();
+        TLootTableAlias alias = plugin.getDatabase().find(TLootTable.class, table.getId()).getLootTableAlias();
         if (alias != null) {
-            aliasTables.put(alias.getAlias(), table.getId());
+            aliasTables.put(alias.getTableAlias(), table.getId());
         }
     }
 

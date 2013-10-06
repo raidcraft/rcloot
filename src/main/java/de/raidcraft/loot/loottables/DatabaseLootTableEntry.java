@@ -15,8 +15,7 @@ public class DatabaseLootTableEntry extends AbstractLootTableEntry {
 
         super(entry.getId());
         setItem(entry.getItem());
-        setMinAmount(entry.getMinAmount());
-        setMaxAmount(entry.getMaxAmount());
+        setAmount(entry.getAmount());
         setChance(entry.getChance());
     }
 
@@ -27,8 +26,7 @@ public class DatabaseLootTableEntry extends AbstractLootTableEntry {
         TLootTableEntry entry = database.find(TLootTableEntry.class, getId());
         entry.setChance(getChance());
         entry.setItem(RaidCraft.getItemIdString(getItem()));
-        entry.setMaxAmount(getMaxAmount());
-        entry.setMinAmount(getMinAmount());
+        entry.setAmount(getAmount());
         database.save(entry);
     }
 }

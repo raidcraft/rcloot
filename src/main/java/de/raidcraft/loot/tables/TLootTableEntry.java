@@ -23,8 +23,7 @@ public class TLootTableEntry {
     private TLootTable lootTable;
     @NotNull
     private String item;
-    private int minAmount = 1;
-    private int maxAmount = minAmount;
+    private int amount = 1;
     private double chance = 1.0;
 
     public int getId() {
@@ -57,24 +56,14 @@ public class TLootTableEntry {
         this.item = item;
     }
 
-    public int getMinAmount() {
+    public int getAmount() {
 
-        return minAmount;
+        return amount;
     }
 
-    public void setMinAmount(int minAmount) {
+    public void setAmount(int amount) {
 
-        this.minAmount = minAmount;
-    }
-
-    public int getMaxAmount() {
-
-        return maxAmount;
-    }
-
-    public void setMaxAmount(int maxAmount) {
-
-        this.maxAmount = maxAmount;
+        this.amount = amount;
     }
 
     public double getChance() {

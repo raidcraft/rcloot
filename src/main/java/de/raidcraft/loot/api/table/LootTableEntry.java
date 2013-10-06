@@ -17,13 +17,9 @@ public interface LootTableEntry {
 
     public void setItem(String id);
 
-    public int getMinAmount();
+    public int getAmount();
 
-    public void setMinAmount(int minAmount);
-
-    public int getMaxAmount();
-
-    public void setMaxAmount(int maxAmount);
+    public void setAmount(int amount);
 
     public double getChance();
 

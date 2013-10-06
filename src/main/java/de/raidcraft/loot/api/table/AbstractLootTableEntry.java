@@ -13,8 +13,7 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
 
     private final int id;
     private ItemStack item;
-    private int minAmount;
-    private int maxAmount;
+    private int amount;
     private double chance;
 
     public AbstractLootTableEntry(int id) {
@@ -31,13 +30,16 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
     @Override
     public ItemStack getItem() {
 
-        return item.clone();
+        ItemStack clone = item.clone();
+        clone.setAmount(getAmount());
+        return clone;
     }
 
     @Override
     public void setItem(ItemStack item) {
 
         this.item = item.clone();
+        setAmount(item.getAmount());
     }
 
     @Override
@@ -51,27 +53,15 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
     }
 
     @Override
-    public int getMinAmount() {
+    public int getAmount() {
 
-        return minAmount;
+        return amount;
     }
 
     @Override
-    public void setMinAmount(int minAmount) {
+    public void setAmount(int amount) {
 
-        this.minAmount = minAmount;
-    }
-
-    @Override
-    public int getMaxAmount() {
-
-        return maxAmount;
-    }
-
-    @Override
-    public void setMaxAmount(int maxAmount) {
-
-        this.maxAmount = maxAmount;
+        this.amount = amount;
     }
 
     @Override

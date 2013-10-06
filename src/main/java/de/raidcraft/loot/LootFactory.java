@@ -60,6 +60,12 @@ public class LootFactory {
                 itemCount++;
             }
         }
+        TLootTable tLootTable = new TLootTable();
+        plugin.getDatabase().save(tLootTable);
+        LootTable lootTable = new DatabaseLootTable(tLootTable);
+        lootTable.setEntries(tableEntries);
+        lootTable.setMinMaxLootItems(minLoot, maxLoot);
+        lootTable.save();
         // then create and add loot entries
         for (ItemStack item : items) {
             if (item == null) {
@@ -68,20 +74,15 @@ public class LootFactory {
             TLootTableEntry tableEntry = new TLootTableEntry();
             tableEntry.setItem(RaidCraft.getItemIdString(item));
             tableEntry.setChance((int) ((1. / (double) itemCount) * 100.));
+            tableEntry.setLootTable(tLootTable);
             plugin.getDatabase().save(tableEntry);
             DatabaseLootTableEntry entry = new DatabaseLootTableEntry(tableEntry);
             tableEntries.add(entry);
         }
-        TLootTable tLootTable = new TLootTable();
-        plugin.getDatabase().save(tLootTable);
-        LootTable lootTable = new DatabaseLootTable(tLootTable);
-        lootTable.setEntries(tableEntries);
-        lootTable.setMinMaxLootItems(minLoot, maxLoot);
-        lootTable.save();
         if (alias != null && alias.equals("")) {
             TLootTableAlias lootAlias = new TLootTableAlias();
             lootAlias.setTableAlias(alias);
-            lootAlias.setLootTable(plugin.getDatabase().find(TLootTable.class, lootTable.getId()));
+            lootAlias.setLootTable(tLootTable);
             plugin.getDatabase().save(lootAlias);
         }
         return lootTable;

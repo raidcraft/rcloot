@@ -21,7 +21,7 @@ public class TLootTableAlias {
     private TLootTable lootTable;
     @NotNull
     @Column(unique = true)
-    private String alias;
+    private String tableAlias;
 
     public int getId() {
 
@@ -43,13 +43,13 @@ public class TLootTableAlias {
         this.lootTable = lootTable;
     }
 
-    public String getAlias() {
+    public String getTableAlias() {
 
-        return alias;
+        return tableAlias;
     }
 
-    public void setAlias(String alias) {
+    public void setTableAlias(String tableAlias) {
 
-        this.alias = alias;
+        this.tableAlias = tableAlias;
     }
 }

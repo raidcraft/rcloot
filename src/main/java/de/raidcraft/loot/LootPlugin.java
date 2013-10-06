@@ -6,7 +6,10 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.loot.commands.LootCommands;
-import de.raidcraft.loot.database.tables.*;
+import de.raidcraft.loot.database.tables.LootObjectsTable;
+import de.raidcraft.loot.database.tables.LootPlayersTable;
+import de.raidcraft.loot.database.tables.LootTableEntriesTable;
+import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.loothost.LootHostManager;
@@ -16,6 +19,10 @@ import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.object.LootObjectStorage;
 import de.raidcraft.loot.table.LootTableManager;
+import de.raidcraft.loot.tables.TLootTable;
+import de.raidcraft.loot.tables.TLootTableAlias;
+import de.raidcraft.loot.tables.TLootTableEntry;
+import de.raidcraft.loot.tables.TLootTableQuality;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 
 import java.util.ArrayList;
@@ -90,10 +97,12 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public List<Class<?>> getDatabaseClasses() {
 
-        List<Class<?>> databases = new ArrayList<>();
-        databases.add(TLootTableAlias.class);
-
-        return databases;
+        List<Class<?>> tables = new ArrayList<>();
+        tables.add(TLootTableAlias.class);
+        tables.add(TLootTable.class);
+        tables.add(TLootTableEntry.class);
+        tables.add(TLootTableQuality.class);
+        return tables;
     }
 
     public void loadConfig() {

@@ -2,7 +2,7 @@ package de.raidcraft.loot.table;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.database.tables.TLootTableAlias;
+import de.raidcraft.loot.tables.TLootTableAlias;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class LootTableManager {
         TLootTableAlias tLootTableAlias = RaidCraft.getDatabase(LootPlugin.class)
                 .find(TLootTableAlias.class).where().ieq("alias", alias).findUnique();
         if(tLootTableAlias != null) {
-            return getTable(tLootTableAlias.getLootTableId());
+            return getTable(tLootTableAlias.getLootTable().getId());
         }
         return null;
     }

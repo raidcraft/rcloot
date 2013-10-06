@@ -2,10 +2,13 @@ package de.raidcraft.loot;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
-import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
-import de.raidcraft.loot.object.*;
-import de.raidcraft.loot.table.*;
+import de.raidcraft.loot.api.object.*;
+import de.raidcraft.loot.api.table.*;
+import de.raidcraft.loot.loottables.DatabaseLootTable;
+import de.raidcraft.loot.loottables.DatabaseLootTableEntry;
+import de.raidcraft.loot.tables.TLootTable;
+import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import de.raidcraft.util.DateUtil;
@@ -40,7 +43,7 @@ public class LootFactory {
         RaidCraft.getTable(LootObjectsTable.class).deleteObject(lootObject);
 
         if (andTable && !(lootObject instanceof TreasureLootObject)) {
-            RaidCraft.getTable(LootTablesTable.class).deleteTable(lootObject.getLootTable());
+            lootObject.getLootTable().delete();
         }
 
         lootObjectStorage.unregisterLootObject(lootObject);
@@ -61,14 +64,19 @@ public class LootFactory {
             if (item == null) {
                 continue;
             }
-            LootTableEntry tableEntry = new SimpleLootTableEntry();
-            tableEntry.setItem(item);
+            TLootTableEntry tableEntry = new TLootTableEntry();
+            tableEntry.setItem(RaidCraft.getItemIdString(item));
             tableEntry.setChance((int) ((1. / (double) itemCount) * 100.));
-            tableEntries.add(tableEntry);
+            plugin.getDatabase().save(tableEntry);
+            DatabaseLootTableEntry entry = new DatabaseLootTableEntry(tableEntry);
+            tableEntries.add(entry);
         }
-        LootTable lootTable = new SimpleLootTable();
+        TLootTable tLootTable = new TLootTable();
+        plugin.getDatabase().save(tLootTable);
+        LootTable lootTable = new DatabaseLootTable(tLootTable);
         lootTable.setEntries(tableEntries);
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
+        lootTable.save();
         return lootTable;
     }
 
@@ -92,7 +100,7 @@ public class LootFactory {
         SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
 
         try {
-            LootTable lootTable = RaidCraft.getTable(LootTablesTable.class).getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
+            LootTable lootTable = plugin.getLootTableManager().getTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
             if (lootTable == null) {
                 throw new LootTableNotExistsException("[Loot] Cannot load loot table");
             }

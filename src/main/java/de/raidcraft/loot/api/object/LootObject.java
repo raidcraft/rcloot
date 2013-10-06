@@ -1,6 +1,6 @@
-package de.raidcraft.loot.object;
+package de.raidcraft.loot.api.object;
 
-import de.raidcraft.loot.table.LootTable;
+import de.raidcraft.loot.api.table.LootTable;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 

@@ -18,7 +18,6 @@ public class TLootTableAlias {
     @Id
     private int id;
     @OneToOne
-    @Column(name = "loot_table_id")
     private TLootTable lootTable;
     @NotNull
     @Column(unique = true)

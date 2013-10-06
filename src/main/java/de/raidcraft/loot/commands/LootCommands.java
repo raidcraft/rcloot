@@ -1,6 +1,10 @@
 package de.raidcraft.loot.commands;
 
-import com.sk89q.minecraft.util.commands.*;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
+import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
@@ -227,6 +231,20 @@ public class LootCommands {
             }
 
             PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setRewardLevel(rewardLevel));
+            LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+        }
+
+        @Command(
+                aliases = {"createtable", "create"},
+                desc = "Creates a loot table with an alias",
+                min = 2,
+                usage = "<alias> <minLoot> [maxLoot]"
+        )
+        @CommandPermissions("loot.create")
+        public void createTable(CommandContext args, CommandSender sender) {
+
+            int minLoot = args.getInteger(1);
+            PlayerListener.createLootTable.put(sender.getName(), new LootTableCreation(args.getString(0), minLoot, args.getInteger(2, minLoot)));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
     }

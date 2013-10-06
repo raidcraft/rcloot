@@ -8,6 +8,7 @@ import de.raidcraft.loot.api.table.*;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTableEntry;
 import de.raidcraft.loot.tables.TLootTable;
+import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
@@ -49,7 +50,7 @@ public class LootFactory {
         lootObjectStorage.unregisterLootObject(lootObject);
     }
 
-    private LootTable createLootTable(ItemStack[] items, int minLoot, int maxLoot) {
+    public LootTable createLootTable(String alias, ItemStack[] items, int minLoot, int maxLoot) {
 
         List<LootTableEntry> tableEntries = new ArrayList<>();
         // at first, count total items
@@ -77,7 +78,18 @@ public class LootFactory {
         lootTable.setEntries(tableEntries);
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
         lootTable.save();
+        if (alias != null && alias.equals("")) {
+            TLootTableAlias lootAlias = new TLootTableAlias();
+            lootAlias.setAlias(alias);
+            lootAlias.setLootTable(tLootTable);
+            plugin.getDatabase().save(lootAlias);
+        }
         return lootTable;
+    }
+
+    public LootTable createLootTable(ItemStack[] items, int minLoot, int maxLoot) {
+
+        return createLootTable(null, items, minLoot, maxLoot);
     }
 
     public void createTreasureLootObject(String creator, Block block, int rewardLevel) {

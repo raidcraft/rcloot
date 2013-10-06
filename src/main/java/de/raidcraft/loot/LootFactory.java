@@ -81,7 +81,7 @@ public class LootFactory {
         if (alias != null && alias.equals("")) {
             TLootTableAlias lootAlias = new TLootTableAlias();
             lootAlias.setTableAlias(alias);
-            lootAlias.setLootTable(tLootTable);
+            lootAlias.setLootTable(plugin.getDatabase().find(TLootTable.class, lootTable.getId()));
             plugin.getDatabase().save(lootAlias);
         }
         return lootTable;

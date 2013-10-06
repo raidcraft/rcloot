@@ -67,6 +67,7 @@ public class PlayerListener implements Listener {
                     creation.getMaxAmount());
             table.save();
             event.getPlayer().sendMessage(ChatColor.GREEN + "Loot Table was created with the id: " + table.getId());
+            event.setCancelled(true);
         }
     }
 

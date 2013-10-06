@@ -1,5 +1,6 @@
 package de.raidcraft.loot.database.tables;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.table.LootTable;
@@ -99,22 +100,27 @@ public class LootTableEntriesTable extends Table {
                 String itemData = resultSet.getString("itemdata");
 
 //              convert old serialized item meta
+                int id = resultSet.getInt("id");
                 if(itemData == null || itemData.length() == 0 || itemData.contains("|")) {
                     ItemUtils.Serialization serialization = new ItemUtils.Serialization(itemStack);
                     ItemStack oldItem = serialization.getDeserializedItem(itemData);
                     itemData = SerializationUtil.toByteStream(oldItem.getItemMeta());
                     executeUpdate(
                             "UPDATE " + getTableName() + " SET itemdata = '" + itemData + "' " +
-                                    "WHERE id = '" + resultSet.getInt("id") + "';");
+                                    "WHERE id = '" + id + "';");
                 }
 
                 itemStack.setItemMeta((ItemMeta)SerializationUtil.fromByteStream(itemData, itemStack.getType()));
 
                 SimpleLootTableEntry entry = new SimpleLootTableEntry();
-                entry.setId(resultSet.getInt("id"));
+                entry.setId(id);
                 entry.setChance(resultSet.getInt("chance"));
                 entry.setItem(itemStack);
                 entries.add(entry);
+
+                // this converts the entry into an raidcraft conform item id string
+                String itemIdString = RaidCraft.getItemIdString(itemStack);
+                executeUpdate("UPDATE " + getTableName() + " SET item_id_string='" + itemIdString + "' WHERE id=" + id + ";");
             }
             resultSet.close();
         } catch (Exception e) {

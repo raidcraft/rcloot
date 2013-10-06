@@ -5,11 +5,10 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
-import de.raidcraft.loot.database.tables.LootTableEntriesTable;
-import de.raidcraft.loot.database.tables.LootTablesTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.loothost.LootHostManager;
@@ -17,8 +16,6 @@ import de.raidcraft.loot.loothost.hosts.ChestHost;
 import de.raidcraft.loot.loothost.hosts.DispenserHost;
 import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
-import de.raidcraft.loot.object.LootObjectStorage;
-import de.raidcraft.loot.table.LootTableManager;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
@@ -47,8 +44,6 @@ public class LootPlugin extends BasePlugin implements Component {
 
         registerTable(LootObjectsTable.class, new LootObjectsTable());
         registerTable(LootPlayersTable.class, new LootPlayersTable());
-        registerTable(LootTableEntriesTable.class, new LootTableEntriesTable());
-        registerTable(LootTablesTable.class, new LootTablesTable());
 
         registerCommands(LootCommands.class);
         registerEvents(new PlayerListener());
@@ -56,7 +51,7 @@ public class LootPlugin extends BasePlugin implements Component {
 
         lootObjectStorage = new LootObjectStorage();
         lootFactory = new LootFactory(this);
-        lootTableManager = new LootTableManager();
+        lootTableManager = new LootTableManager(this);
         lootHostManager = new LootHostManager(this);
 
         // register all default hosts
@@ -65,9 +60,7 @@ public class LootPlugin extends BasePlugin implements Component {
         lootHostManager.registerLootHost(new DropperHost());
         lootHostManager.registerLootHost(new DispenserHost());
 
-        // load all tables in cache
-        RaidCraft.getTable(LootTablesTable.class).getAllLootTables();
-
+        lootTableManager.load();
         // register auto chest placer
 //        new AutomaticPlacer();
 
@@ -98,10 +91,10 @@ public class LootPlugin extends BasePlugin implements Component {
     public List<Class<?>> getDatabaseClasses() {
 
         List<Class<?>> tables = new ArrayList<>();
-        tables.add(TLootTableAlias.class);
         tables.add(TLootTable.class);
         tables.add(TLootTableEntry.class);
         tables.add(TLootTableQuality.class);
+        tables.add(TLootTableAlias.class);
         return tables;
     }
 

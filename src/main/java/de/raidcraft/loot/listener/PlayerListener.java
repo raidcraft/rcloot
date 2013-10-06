@@ -4,11 +4,19 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
+import de.raidcraft.loot.api.object.LootObject;
+import de.raidcraft.loot.api.object.LootObjectStorage;
+import de.raidcraft.loot.api.object.PublicLootObject;
+import de.raidcraft.loot.api.object.TimedLootObject;
+import de.raidcraft.loot.api.object.TreasureLootObject;
+import de.raidcraft.loot.api.table.LootTable;
+import de.raidcraft.loot.api.table.LootTableEntry;
+import de.raidcraft.loot.commands.LootTableCreation;
 import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.loothost.LootHost;
-import de.raidcraft.loot.object.*;
-import de.raidcraft.loot.table.LootTableEntry;
 import de.raidcraft.loot.util.LootChat;
+import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -25,7 +33,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +43,32 @@ import java.util.Map;
  */
 public class PlayerListener implements Listener {
 
-    public static Map<String, SettingStorage> createMode = new HashMap<>();
+    public static Map<String, SettingStorage> createMode = new CaseInsensitiveMap<>();
+    public static Map<String, LootTableCreation> createLootTable = new CaseInsensitiveMap<>();
     public static List<String> editorMode = new ArrayList<>();
     public static List<String> adminMode = new ArrayList<>();
-    private Map<String, LootObject> inventoryLocks = new HashMap<>();
+    private Map<String, LootObject> inventoryLocks = new CaseInsensitiveMap<>();
+
+    @EventHandler(ignoreCancelled = true)
+    public void onLootTableCreate(PlayerInteractEvent event) {
+
+        if (!createLootTable.containsKey(event.getPlayer().getName()) || event.getClickedBlock() == null) {
+            return;
+        }
+        // if lootable block clicked
+        LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getClickedBlock().getType());
+        if (lootHost != null) {
+            LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
+            LootTableCreation creation = createLootTable.remove(event.getPlayer().getName());
+            LootTable table = lootFactory.createLootTable(
+                    creation.getAlias(),
+                    lootHost.getContents(event.getClickedBlock()),
+                    creation.getMinAmount(),
+                    creation.getMaxAmount());
+            table.save();
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Loot Table was created with the id: " + table.getId());
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {

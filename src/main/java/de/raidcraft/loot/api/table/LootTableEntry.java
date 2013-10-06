@@ -1,4 +1,4 @@
-package de.raidcraft.loot.table;
+package de.raidcraft.loot.api.table;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -9,15 +9,21 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface LootTableEntry {
 
-    public void setId(int id);
-
     public int getId();
 
     public ItemStack getItem();
 
     public void setItem(ItemStack item);
 
-    public int getChance();
+    public void setItem(String id);
 
-    public void setChance(int chance);
+    public int getAmount();
+
+    public void setAmount(int amount);
+
+    public double getChance();
+
+    public void setChance(double chance);
+
+    public void save();
 }

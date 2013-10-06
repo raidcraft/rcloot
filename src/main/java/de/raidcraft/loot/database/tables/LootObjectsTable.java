@@ -2,9 +2,11 @@ package de.raidcraft.loot.database.tables;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
+import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.LootTableManager;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.object.*;
+import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -92,18 +94,18 @@ public class LootObjectsTable extends Table {
                 if (world == null) {
                     continue;
                 }
+                LootTableManager lootTableManager = RaidCraft.getComponent(LootPlugin.class).getLootTableManager();
                 Location hostLocation = new Location(world, resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHostLocation(hostLocation);
                 if (lootObject instanceof TreasureLootObject) {
                     try {
-                        lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
-                                .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
+                        lootObject.assignLootTable(lootTableManager.getTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
                     } catch (NoLinkedRewardTableException e) {
                         RaidCraft.LOGGER.warning("[Loot] Try to load treasure object: " + e.getMessage());
                         continue;
                     }
                 } else {
-                    lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                    lootObject.assignLootTable(lootTableManager.getTable(resultSet.getInt("loot_table_id")));
                 }
                 lootObjects.add(lootObject);
             }
@@ -157,18 +159,18 @@ public class LootObjectsTable extends Table {
                 if (world == null) {
                     continue;
                 }
+                LootTableManager lootTableManager = RaidCraft.getComponent(LootPlugin.class).getLootTableManager();
                 Location hostLocation = new Location(world, resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"));
                 lootObject.setHostLocation(hostLocation);
                 if (lootObject instanceof TreasureLootObject) {
                     try {
-                        lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class)
-                                .getLootTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
+                        lootObject.assignLootTable(lootTableManager.getTable(TreasureRewardLevel.getLinkedTable(rewardLevel)));
                     } catch (NoLinkedRewardTableException e) {
                         RaidCraft.LOGGER.warning("[Loot] Try to load treasure object: " + e.getMessage());
                         continue;
                     }
                 } else {
-                    lootObject.assignLootTable(RaidCraft.getTable(LootTablesTable.class).getLootTable(resultSet.getInt("loot_table_id")));
+                    lootObject.assignLootTable(lootTableManager.getTable(resultSet.getInt("loot_table_id")));
                 }
                 lootObjects.add(lootObject);
             }
@@ -188,7 +190,7 @@ public class LootObjectsTable extends Table {
 
         // save table if not done yet
         if (object.getLootTable().getId() == 0) {
-            RaidCraft.getTable(LootTablesTable.class).addLootTable(object.getLootTable());
+            object.getLootTable().save();
         }
 
         int cooldown = -1;

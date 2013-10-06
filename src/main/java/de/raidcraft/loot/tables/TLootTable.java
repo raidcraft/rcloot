@@ -19,7 +19,7 @@ public class TLootTable {
     @Id
     private int id;
     @OneToOne(mappedBy = "lootTable", cascade = CascadeType.REMOVE)
-    private TLootTableAlias alias;
+    private TLootTableAlias lootTableAlias;
     private int minLoot;
     private int maxLoot;
     @OneToMany(cascade = CascadeType.REMOVE)
@@ -39,14 +39,14 @@ public class TLootTable {
         this.id = id;
     }
 
-    public TLootTableAlias getAlias() {
+    public TLootTableAlias getLootTableAlias() {
 
-        return alias;
+        return lootTableAlias;
     }
 
-    public void setAlias(TLootTableAlias alias) {
+    public void setLootTableAlias(TLootTableAlias lootTableAlias) {
 
-        this.alias = alias;
+        this.lootTableAlias = lootTableAlias;
     }
 
     public int getMinLoot() {

@@ -1,4 +1,4 @@
-package de.raidcraft.loot.object;
+package de.raidcraft.loot.api.object;
 
 /**
  * @author Philip

@@ -3,7 +3,7 @@ package de.raidcraft.loot.listener;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.api.object.LootObject;
 import de.raidcraft.loot.util.LootChat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -1,9 +1,9 @@
-package de.raidcraft.loot.object;
+package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
-import de.raidcraft.loot.table.LootTableEntry;
+import de.raidcraft.loot.api.table.LootTableEntry;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class SimpleTimedLootObject extends SimpleLootObject implements TimedLoot
             }
 
             // remember loot if not infinite
-            if (cooldown != 0 || player != LootFactory.ANY) {
+            if (cooldown != 0 || player.equals(LootFactory.ANY)) {
                 RaidCraft.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis() / 1000);
             }
         }

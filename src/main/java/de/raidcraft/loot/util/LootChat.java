@@ -2,7 +2,7 @@ package de.raidcraft.loot.util;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.object.LootObject;
+import de.raidcraft.loot.api.object.LootObject;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

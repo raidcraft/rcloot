@@ -36,6 +36,7 @@ public class LootTableManager {
     public void reload() {
 
         cachedTables.clear();
+        aliasTables.clear();
         load();
     }
 

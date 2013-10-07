@@ -83,7 +83,8 @@ public class LootPlugin extends BasePlugin implements Component {
     public void reload() {
 
         loadConfig();
-        lootObjectStorage.reload();
+        getLootTableManager().reload();
+        getLootObjectStorage().reload();
     }
 
     @Override

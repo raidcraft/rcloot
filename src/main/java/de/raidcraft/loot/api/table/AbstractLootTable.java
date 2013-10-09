@@ -1,9 +1,8 @@
 package de.raidcraft.loot.api.table;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.loot.util.QualityLootTable;
 import de.raidcraft.util.MathUtil;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,12 +126,14 @@ public abstract class AbstractLootTable implements LootTable {
     public List<LootTableEntry> loot() {
 
         // lets set up our quality checks :D
-        Map<ItemQuality, Integer> qualityAmounts = new EnumMap<>(ItemQuality.class);
-        Map<ItemQuality, Integer> addedQualityAmounts = new EnumMap<>(ItemQuality.class);
+        List<QualityLootTable> qualityLootTables = new ArrayList<>();
         if (!qualities.isEmpty()) {
             for (LootTableQuality quality : getQualities()) {
                 if (Math.random() < quality.getChance()) {
-                    qualityAmounts.put(quality.getQuality(), MathUtil.RANDOM.nextInt(quality.getMaxAmount()) + quality.getMinAmount());
+                    QualityLootTable qualityLootTable = new QualityLootTable(quality.getQuality(),
+                            getEntries(),
+                            MathUtil.RANDOM.nextInt(quality.getMaxAmount()) + quality.getMinAmount());
+                    qualityLootTables.add(qualityLootTable);
                 }
             }
         }
@@ -148,43 +149,22 @@ public abstract class AbstractLootTable implements LootTable {
 
         int lootAmount = (int) (Math.random() * (getMaxLootItems() - getMinLootItems()) + getMinLootItems());
 
-        for (LootTableEntry entry : lootTableEntries) {
-            // lets check if we reached our wanted loot amount
-            if (lootAmount < loot.size()) {
-                break;
+        if (qualityLootTables.isEmpty()) {
+            for (LootTableEntry entry : lootTableEntries) {
+                if (lootAmount < loot.size()) {
+                    break;
+                }
+                if (Math.random() < entry.getChance()) {
+                    loot.add(entry);
+                }
             }
-
-            ItemStack item = entry.getItem();
-            // we now need to check the the chance of the individual qualities and then the chance of the item
-            // so if a loot table has a chance of 10% to drop rare items and hits that 10%
-            // and then also checks the dropchance of each item of that quality
-            if (!qualityAmounts.isEmpty() && RaidCraft.isCustomItem(item)) {
-                ItemQuality itemQuality = RaidCraft.getCustomItem(item).getItem().getQuality();
-                if (!qualityAmounts.containsKey(itemQuality)) {
-                    // we dont add this item quality into the loot table
-                    continue;
+        } else {
+            // loot our quality tables
+            for (QualityLootTable lootTable : qualityLootTables) {
+                if (lootAmount < loot.size()) {
+                    break;
                 }
-                // the quality was already added once, lets check if we can add more
-                if (addedQualityAmounts.containsKey(itemQuality) && qualityAmounts.get(itemQuality) < addedQualityAmounts.get(itemQuality)) {
-                    // we have already added enough items of this quality, lets go on
-                    continue;
-                }
-                // now we are good to go and need to check the chance of our item
-                if (Math.random() < entry.getChance()) {
-                    // lets add the item
-                    loot.add(entry);
-                    // also increase the added quality amount
-                    if (!addedQualityAmounts.containsKey(itemQuality)) {
-                        addedQualityAmounts.put(itemQuality, 1);
-                    } else {
-                        addedQualityAmounts.put(itemQuality, addedQualityAmounts.get(itemQuality) + 1);
-                    }
-                }
-            } else {
-                // here we simply check the chance of an item to be dropped and add it
-                if (Math.random() < entry.getChance()) {
-                    loot.add(entry);
-                }
+                loot.addAll(lootTable.loot());
             }
         }
 

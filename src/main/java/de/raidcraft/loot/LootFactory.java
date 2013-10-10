@@ -85,6 +85,8 @@ public class LootFactory {
             lootAlias.setLootTable(tLootTable);
             plugin.getDatabase().save(lootAlias);
         }
+        // add the loot table to the cache
+        plugin.getLootTableManager().addTable(lootTable);
         return lootTable;
     }
 

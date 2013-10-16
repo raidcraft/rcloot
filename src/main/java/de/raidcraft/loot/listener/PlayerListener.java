@@ -16,6 +16,7 @@ import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,6 +29,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -48,6 +50,7 @@ public class PlayerListener implements Listener {
     public static List<String> editorMode = new ArrayList<>();
     public static List<String> adminMode = new ArrayList<>();
     private Map<String, LootObject> inventoryLocks = new CaseInsensitiveMap<>();
+    private Map<String, List<LootTableEntry>> createLootTableEntries = new CaseInsensitiveMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onLootTableCreate(PlayerInteractEvent event) {
@@ -68,6 +71,31 @@ public class PlayerListener implements Listener {
             table.save();
             event.getPlayer().sendMessage(ChatColor.GREEN + "Loot Table was created with the id: " + table.getId());
             event.setCancelled(true);
+            // lets store the loot table entry creation
+            if (table.getEntries().size() > 0) {
+                createLootTableEntries.put(event.getPlayer().getName(), new ArrayList<>(table.getEntries()));
+                event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
+                        + ItemUtils.toString(table.getEntries().get(0).getItem()) + " an: ");
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+
+        if (createLootTableEntries.containsKey(event.getPlayer().getName())) {
+            LootTableEntry entry = createLootTableEntries.get(event.getPlayer().getName()).get(0);
+            double chance = Double.parseDouble(event.getMessage());
+            entry.setChance(chance);
+            entry.save();
+            createLootTableEntries.get(event.getPlayer().getName()).remove(0);
+            if (createLootTableEntries.get(event.getPlayer().getName()).size() > 0) {
+                event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
+                        + ItemUtils.toString(createLootTableEntries.get(event.getPlayer().getName()).get(0).getItem()) + " an: ");
+            } else {
+                event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte setzte nun noch falls gewollt die Qualitäts Chancen in der Datenbank.");
+                createLootTableEntries.remove(event.getPlayer().getName());
+            }
         }
     }
 

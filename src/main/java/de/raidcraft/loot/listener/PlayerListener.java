@@ -84,18 +84,23 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         if (createLootTableEntries.containsKey(event.getPlayer().getName())) {
-            LootTableEntry entry = createLootTableEntries.get(event.getPlayer().getName()).get(0);
-            double chance = Double.parseDouble(event.getMessage());
-            entry.setChance(chance);
-            entry.save();
-            createLootTableEntries.get(event.getPlayer().getName()).remove(0);
-            if (createLootTableEntries.get(event.getPlayer().getName()).size() > 0) {
-                event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
-                        + ItemUtils.toString(createLootTableEntries.get(event.getPlayer().getName()).get(0).getItem()) + " an: ");
-            } else {
-                event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte setzte nun noch falls gewollt die Qualitäts Chancen in der Datenbank.");
-                createLootTableEntries.remove(event.getPlayer().getName());
+            try {
+                LootTableEntry entry = createLootTableEntries.get(event.getPlayer().getName()).get(0);
+                double chance = Double.parseDouble(event.getMessage());
+                entry.setChance(chance);
+                entry.save();
+                createLootTableEntries.get(event.getPlayer().getName()).remove(0);
+                if (createLootTableEntries.get(event.getPlayer().getName()).size() > 0) {
+                    event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
+                            + ItemUtils.toString(createLootTableEntries.get(event.getPlayer().getName()).get(0).getItem()) + " an: ");
+                } else {
+                    event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte setzte nun noch falls gewollt die Qualitäts Chancen in der Datenbank.");
+                    createLootTableEntries.remove(event.getPlayer().getName());
+                }
+            } catch (NumberFormatException e) {
+                event.getPlayer().sendMessage(ChatColor.RED + "Du musst eine Chance in Dezimal Notation angeben, z.B. 10% = 0.10");
             }
+            event.setCancelled(true);
         }
     }
 

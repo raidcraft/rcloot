@@ -149,16 +149,16 @@ public abstract class AbstractLootTable implements LootTable {
 
         int lootAmount = MathUtil.RANDOM.nextInt(getMaxLootItems()) + getMinLootItems();
 
-        if (qualityLootTables.isEmpty()) {
-            for (LootTableEntry entry : lootTableEntries) {
-                if (lootAmount < loot.size()) {
-                    break;
-                }
-                if (Math.random() < entry.getChance()) {
-                    loot.add(entry);
-                }
+        for (LootTableEntry entry : lootTableEntries) {
+            if (lootAmount < loot.size()) {
+                break;
             }
-        } else {
+            if (Math.random() < entry.getChance()) {
+                loot.add(entry);
+            }
+        }
+
+        if (!qualityLootTables.isEmpty()) {
             // loot our quality tables
             for (QualityLootTable lootTable : qualityLootTables) {
                 if (lootAmount < loot.size()) {

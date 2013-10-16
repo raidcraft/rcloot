@@ -147,7 +147,7 @@ public abstract class AbstractLootTable implements LootTable {
             return loot;
         }
 
-        int lootAmount = (int) (Math.random() * (getMaxLootItems() - getMinLootItems()) + getMinLootItems());
+        int lootAmount = MathUtil.RANDOM.nextInt(getMaxLootItems()) + getMinLootItems();
 
         if (qualityLootTables.isEmpty()) {
             for (LootTableEntry entry : lootTableEntries) {

@@ -4,6 +4,8 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.items.ItemQuality;
+import de.raidcraft.api.items.ItemType;
 import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
@@ -20,9 +22,12 @@ import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.tables.TLootTableQuality;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: Philip
@@ -125,9 +130,35 @@ public class LootPlugin extends BasePlugin implements Component {
         @Setting("reward-level-table-6")
         public int rewardLevel6 = 0;
 
+        @Setting("level-table.upper-diff")
+        public int levelTableUpperDiff = 3;
+        @Setting("level-table.lower-diff")
+        public int levelTableLowerLevelDiff = 2;
+
         public LocalConfiguration(LootPlugin plugin) {
 
             super(plugin, "config.yml");
+        }
+
+        public List<ItemType> getLevelTableItemTypes() {
+
+            List<ItemType> types = new ArrayList<>();
+            for (String type : getStringList("level-table.item-types")) {
+                types.add(ItemType.fromString(type));
+            }
+            return types;
+        }
+
+        public Map<ItemQuality, Double> getLevelTableItemQualities() {
+
+            Map<ItemQuality, Double> types = new HashMap<>();
+            ConfigurationSection section = getConfigurationSection("level-table.item-qualities");
+            if (section != null) {
+                for (String type : section.getKeys(false)) {
+                    types.put(ItemQuality.fromString(type), section.getDouble(type));
+                }
+            }
+            return types;
         }
     }
 

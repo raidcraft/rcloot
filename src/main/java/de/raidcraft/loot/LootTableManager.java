@@ -2,6 +2,7 @@ package de.raidcraft.loot;
 
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
+import de.raidcraft.loot.loottables.LevelDependantLootTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -17,6 +18,7 @@ public class LootTableManager {
 
     private final LootPlugin plugin;
     private final Map<Integer, LootTable> cachedTables = new HashMap<>();
+    private final Map<Integer, LootTable> levelDependantTables = new HashMap<>();
     private final Map<String, Integer> aliasTables = new CaseInsensitiveMap<>();
 
     protected LootTableManager(LootPlugin plugin) {
@@ -60,6 +62,16 @@ public class LootTableManager {
             return getTable(aliasTables.get(alias));
         }
         return null;
+    }
+
+    public LootTable getLevelDependantLootTable(int level) {
+
+        if (levelDependantTables.containsKey(level)) {
+            return levelDependantTables.get(level);
+        }
+        LevelDependantLootTable lootTable = new LevelDependantLootTable(level);
+        levelDependantTables.put(lootTable.getLevel(), lootTable);
+        return lootTable;
     }
 
     public String getIdStringList() {

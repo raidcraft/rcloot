@@ -47,5 +47,10 @@
             <artifactId>raidcraft-api</artifactId>
             <version>${rc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>de.raidcraft</groupId>
+            <artifactId>items</artifactId>
+            <version>${rc.version}</version>
+        </dependency>
     </dependencies>
 </project>

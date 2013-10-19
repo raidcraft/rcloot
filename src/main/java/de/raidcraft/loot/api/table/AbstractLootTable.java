@@ -1,7 +1,10 @@
 package de.raidcraft.loot.api.table;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.loot.util.QualityLootTable;
+import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.MathUtil;
 
 import java.util.ArrayList;
@@ -68,6 +71,16 @@ public abstract class AbstractLootTable implements LootTable {
     public Set<LootTableQuality> getQualities() {
 
         return new HashSet<>(qualities.values());
+    }
+
+    protected boolean hasQuality(ItemQuality quality) {
+
+        for (LootTableQuality lootTableQuality : getQualities()) {
+            if (quality == lootTableQuality.getQuality()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -152,6 +165,12 @@ public abstract class AbstractLootTable implements LootTable {
         for (LootTableEntry entry : lootTableEntries) {
             if (lootAmount < loot.size()) {
                 break;
+            }
+            if (CustomItemUtil.isCustomItem(entry.getItem())) {
+                CustomItemStack customItem = RaidCraft.getCustomItem(entry.getItem());
+                if (hasQuality(customItem.getItem().getQuality())) {
+                    continue;
+                }
             }
             if (Math.random() < entry.getChance()) {
                 loot.add(entry);

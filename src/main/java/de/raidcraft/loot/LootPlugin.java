@@ -134,6 +134,10 @@ public class LootPlugin extends BasePlugin implements Component {
         public int levelTableUpperDiff = 3;
         @Setting("level-table.lower-diff")
         public int levelTableLowerLevelDiff = 2;
+        @Setting("level-table.min-loot")
+        public int levelTableMinLoot = 1;
+        @Setting("level-table.max-loot")
+        public int levelTableMaxLoot = 1;
 
         public LocalConfiguration(LootPlugin plugin) {
 

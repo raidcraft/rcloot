@@ -25,6 +25,7 @@ public class LevelDependantLootTable extends AbstractLootTable {
         super(-1);
         this.level = level;
         LootPlugin.LocalConfiguration config = RaidCraft.getComponent(LootPlugin.class).config;
+        setMinMaxLootItems(config.levelTableMinLoot, config.levelTableMaxLoot);
 
         Map<ItemQuality, Double> qualities = config.getLevelTableItemQualities();
         for (ItemQuality quality : qualities.keySet()) {

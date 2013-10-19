@@ -46,7 +46,7 @@ public class LevelDependantLootTable extends AbstractLootTable {
         for (CustomItem item : items) {
             if (types.contains(item.getType()) && qualities.containsKey(item.getQuality())) {
                 // lets check the item level
-                if (item.getItemLevel() - config.levelTableLowerLevelDiff > getLevel() && item.getItemLevel() + config.levelTableUpperDiff < getLevel()) {
+                if (item.getItemLevel() > getLevel() - config.levelTableLowerLevelDiff && item.getItemLevel() < getLevel() + config.levelTableUpperDiff) {
                     AbstractLootTableEntry entry = new AbstractLootTableEntry(-1) {
                         @Override
                         public void save() {

@@ -39,6 +39,7 @@ public class LootTableManager {
 
         cachedTables.clear();
         aliasTables.clear();
+        levelDependantTables.clear();
         load();
     }
 

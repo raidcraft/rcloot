@@ -41,10 +41,10 @@ public class LevelDependantLootTable extends AbstractLootTable {
             addQuality(tableQuality);
         }
 
-        List<ItemType> types = config.getLevelTableItemTypes();
+        Map<ItemType, Double> itemTypes = config.getLevelTableItemTypes();
         List<CustomItem> items = RaidCraft.getComponent(CustomItemManager.class).getLoadedCustomItems();
         for (CustomItem item : items) {
-            if (types.contains(item.getType()) && qualities.containsKey(item.getQuality())) {
+            if (itemTypes.containsKey(item.getType()) && qualities.containsKey(item.getQuality())) {
                 // lets check the item level
                 if (item.getItemLevel() > getLevel() - config.levelTableLowerLevelDiff && item.getItemLevel() < getLevel() + config.levelTableUpperDiff) {
                     AbstractLootTableEntry entry = new AbstractLootTableEntry(-1) {
@@ -53,7 +53,7 @@ public class LevelDependantLootTable extends AbstractLootTable {
                             // dont save
                         }
                     };
-                    entry.setChance(1);
+                    entry.setChance(itemTypes.get(item.getType()));
                     entry.setItem(item.createNewItem());
                 }
             }

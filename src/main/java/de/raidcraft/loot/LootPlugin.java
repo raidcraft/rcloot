@@ -144,25 +144,28 @@ public class LootPlugin extends BasePlugin implements Component {
             super(plugin, "config.yml");
         }
 
-        public List<ItemType> getLevelTableItemTypes() {
+        public Map<ItemType, Double> getLevelTableItemTypes() {
 
-            List<ItemType> types = new ArrayList<>();
-            for (String type : getStringList("level-table.item-types")) {
-                types.add(ItemType.fromString(type));
+            Map<ItemType, Double> types = new HashMap<>();
+            ConfigurationSection section = getConfigurationSection("level-table.item-types");
+            if (section != null) {
+                for (String type : section.getKeys(false)) {
+                    types.put(ItemType.fromString(type), section.getDouble(type));
+                }
             }
             return types;
         }
 
         public Map<ItemQuality, Double> getLevelTableItemQualities() {
 
-            Map<ItemQuality, Double> types = new HashMap<>();
+            Map<ItemQuality, Double> qualities = new HashMap<>();
             ConfigurationSection section = getConfigurationSection("level-table.item-qualities");
             if (section != null) {
                 for (String type : section.getKeys(false)) {
-                    types.put(ItemQuality.fromString(type), section.getDouble(type));
+                    qualities.put(ItemQuality.fromString(type), section.getDouble(type));
                 }
             }
-            return types;
+            return qualities;
         }
     }
 

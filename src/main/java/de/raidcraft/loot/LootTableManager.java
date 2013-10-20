@@ -1,12 +1,14 @@
 package de.raidcraft.loot;
 
 import de.raidcraft.loot.api.table.LootTable;
+import de.raidcraft.loot.exceptions.LootTableNotExistsException;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.LevelDependantLootTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,8 @@ public class LootTableManager {
 
     private final LootPlugin plugin;
     private final Map<Integer, LootTable> cachedTables = new HashMap<>();
-    private final Map<Integer, LootTable> levelDependantTables = new HashMap<>();
+    private final Map<String, Map<Integer, LootTable>> levelDependantTables = new CaseInsensitiveMap<>();
+    private final Map<String, RandomLootTableConfig> randomLootTableConfigs = new CaseInsensitiveMap<>();
     private final Map<String, Integer> aliasTables = new CaseInsensitiveMap<>();
 
     protected LootTableManager(LootPlugin plugin) {
@@ -32,6 +35,14 @@ public class LootTableManager {
         List<TLootTable> list = plugin.getDatabase().find(TLootTable.class).findList();
         for (TLootTable table : list) {
             addTable(new DatabaseLootTable(table));
+        }
+        // lets also load all our configured random loot tables
+        File path = new File(plugin.getDataFolder(), "random-tables");
+        path.mkdirs();
+        for (File file : path.listFiles()) {
+            String name = file.getName().replace(".yml", "");
+            levelDependantTables.put(name, new HashMap<Integer, LootTable>());
+            randomLootTableConfigs.put(name, plugin.configure(new RandomLootTableConfig(plugin, file), false));
         }
     }
 
@@ -65,13 +76,16 @@ public class LootTableManager {
         return null;
     }
 
-    public LootTable getLevelDependantLootTable(int level) {
+    public LootTable getLevelDependantLootTable(String name, int level) throws LootTableNotExistsException {
 
-        if (levelDependantTables.containsKey(level)) {
-            return levelDependantTables.get(level);
+        if (!randomLootTableConfigs.containsKey(name)) {
+            throw new LootTableNotExistsException("The random level loot table " + name + " does not exist!");
         }
-        LevelDependantLootTable lootTable = new LevelDependantLootTable(level);
-        levelDependantTables.put(lootTable.getLevel(), lootTable);
+        if (levelDependantTables.get(name).containsKey(level)) {
+            return levelDependantTables.get(name).get(level);
+        }
+        LevelDependantLootTable lootTable = new LevelDependantLootTable(randomLootTableConfigs.get(name), level);
+        levelDependantTables.get(name).put(level, lootTable);
         return lootTable;
     }
 

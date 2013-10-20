@@ -5,7 +5,7 @@ import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemManager;
 import de.raidcraft.api.items.ItemQuality;
 import de.raidcraft.api.items.ItemType;
-import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.RandomLootTableConfig;
 import de.raidcraft.loot.api.table.AbstractLootTable;
 import de.raidcraft.loot.api.table.AbstractLootTableEntry;
 import de.raidcraft.loot.api.table.AbstractLootTableQuality;
@@ -20,14 +20,13 @@ public class LevelDependantLootTable extends AbstractLootTable {
 
     private final int level;
 
-    public LevelDependantLootTable(int level) {
+    public LevelDependantLootTable(RandomLootTableConfig config, int level) {
 
         super(-1);
         this.level = level;
-        LootPlugin.LocalConfiguration config = RaidCraft.getComponent(LootPlugin.class).config;
-        setMinMaxLootItems(config.levelTableMinLoot, config.levelTableMaxLoot);
+        setMinMaxLootItems(config.getMinLoot(), config.getMaxLoot());
 
-        Map<ItemQuality, Double> qualities = config.getLevelTableItemQualities();
+        Map<ItemQuality, Double> qualities = config.getItemQualities();
         for (ItemQuality quality : qualities.keySet()) {
             AbstractLootTableQuality tableQuality = new AbstractLootTableQuality(-1, quality) {
                 @Override
@@ -41,12 +40,12 @@ public class LevelDependantLootTable extends AbstractLootTable {
             addQuality(tableQuality);
         }
 
-        Map<ItemType, Double> itemTypes = config.getLevelTableItemTypes();
+        Map<ItemType, Double> itemTypes = config.getItemTypes();
         List<CustomItem> items = RaidCraft.getComponent(CustomItemManager.class).getLoadedCustomItems();
         for (CustomItem item : items) {
             if (itemTypes.containsKey(item.getType()) && qualities.containsKey(item.getQuality())) {
                 // lets check the item level
-                if (item.getItemLevel() > getLevel() - config.levelTableLowerLevelDiff && item.getItemLevel() < getLevel() + config.levelTableUpperDiff) {
+                if (item.getItemLevel() > getLevel() - config.getLowerLevelDiff() && item.getItemLevel() < getLevel() + config.getUpperLevelDiff()) {
                     AbstractLootTableEntry entry = new AbstractLootTableEntry(-1) {
                         @Override
                         public void save() {

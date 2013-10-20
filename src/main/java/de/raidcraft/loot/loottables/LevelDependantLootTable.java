@@ -55,6 +55,7 @@ public class LevelDependantLootTable extends AbstractLootTable {
                     };
                     entry.setChance(itemTypes.get(item.getType()));
                     entry.setItem(item.createNewItem());
+                    addEntry(entry);
                 }
             }
         }

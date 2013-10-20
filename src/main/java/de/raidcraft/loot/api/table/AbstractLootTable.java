@@ -100,7 +100,7 @@ public abstract class AbstractLootTable implements LootTable {
 
         this.qualities.clear();
         for (LootTableQuality quality : qualities) {
-            this.qualities.put(quality.getQuality(), quality);
+            addQuality(quality);
         }
     }
 
@@ -138,6 +138,7 @@ public abstract class AbstractLootTable implements LootTable {
     @Override
     public List<LootTableEntry> loot() {
 
+        List<LootTableEntry> lootTableEntries = getEntries();
         // lets set up our quality checks :D
         List<QualityLootTable> qualityLootTables = new ArrayList<>();
         if (!qualities.isEmpty()) {
@@ -147,16 +148,18 @@ public abstract class AbstractLootTable implements LootTable {
                             getEntries(),
                             MathUtil.RANDOM.nextInt(quality.getMaxAmount()) + quality.getMinAmount());
                     qualityLootTables.add(qualityLootTable);
+                    lootTableEntries.removeAll(qualityLootTable.getLootTableEntries());
                 }
             }
         }
+        Collections.sort(qualityLootTables);
+        Collections.reverse(qualityLootTables);
 
         List<LootTableEntry> loot = new ArrayList<>();
-        List<LootTableEntry> lootTableEntries = getEntries();
         // bring some randomness into the loot seleciton
         Collections.shuffle(lootTableEntries);
 
-        if (lootTableEntries.isEmpty()) {
+        if (lootTableEntries.isEmpty() && qualityLootTables.isEmpty()) {
             return loot;
         }
 

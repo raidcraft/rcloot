@@ -11,28 +11,28 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public class QualityLootTable {
+public class QualityLootTable implements Comparable<QualityLootTable> {
 
     private final int amount;
     private final ItemQuality quality;
     private List<QualityLootTableEntry> entries = new ArrayList<>();
+    private List<LootTableEntry> lootTableEntries = new ArrayList<>();
 
     public QualityLootTable(ItemQuality quality, List<LootTableEntry> entries, int amount) {
 
         this.amount = amount;
         this.quality = quality;
-        List<LootTableEntry> matchingEntires = new ArrayList<>();
         double totalChance = 0.0;
         // first we sort out entries that dont match as custom items or our quality
         for (LootTableEntry entry : entries) {
             if (CustomItemUtil.isCustomItem(entry.getItem()) && RaidCraft.getCustomItem(entry.getItem()).getItem().getQuality() == quality) {
-                matchingEntires.add(entry);
+                lootTableEntries.add(entry);
                 totalChance += entry.getChance();
             }
         }
         double finalChance = 0.0;
         // now we need to calculate the relative chance of each entry related to the other entries
-        for (LootTableEntry entry : matchingEntires) {
+        for (LootTableEntry entry : lootTableEntries) {
             double relativeChance = entry.getChance() / totalChance;
             this.entries.add(new QualityLootTableEntry(entry, finalChance, finalChance += relativeChance));
         }
@@ -48,20 +48,35 @@ public class QualityLootTable {
         return quality;
     }
 
+    public List<QualityLootTableEntry> getEntries() {
+
+        return entries;
+    }
+
+    public List<LootTableEntry> getLootTableEntries() {
+
+        return lootTableEntries;
+    }
+
     public List<LootTableEntry> loot() {
 
         ArrayList<LootTableEntry> entries = new ArrayList<>();
-        double random = Math.random();
         int added = 0;
         for (QualityLootTableEntry entry : this.entries) {
             if (amount < added) {
                 break;
             }
-            if (entry.isWithinRange(random)) {
+            if (entry.isWithinRange(Math.random())) {
                 entries.add(entry.getEntry());
                 added++;
             }
         }
         return entries;
+    }
+
+    @Override
+    public int compareTo(QualityLootTable o) {
+
+        return o.getQuality().compareTo(getQuality());
     }
 }

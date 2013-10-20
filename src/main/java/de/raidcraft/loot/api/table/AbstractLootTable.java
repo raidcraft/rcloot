@@ -144,9 +144,11 @@ public abstract class AbstractLootTable implements LootTable {
         if (!qualities.isEmpty()) {
             for (LootTableQuality quality : getQualities()) {
                 if (Math.random() < quality.getChance()) {
+                    int amount = quality.getMaxAmount() == quality.getMinAmount() ?
+                            quality.getMaxAmount() : MathUtil.RANDOM.nextInt(quality.getMaxAmount()) + quality.getMinAmount();
                     QualityLootTable qualityLootTable = new QualityLootTable(quality.getQuality(),
                             getEntries(),
-                            MathUtil.RANDOM.nextInt(quality.getMaxAmount()) + quality.getMinAmount());
+                            amount);
                     qualityLootTables.add(qualityLootTable);
                     lootTableEntries.removeAll(qualityLootTable.getLootTableEntries());
                 }
@@ -163,7 +165,8 @@ public abstract class AbstractLootTable implements LootTable {
             return loot;
         }
 
-        int lootAmount = MathUtil.RANDOM.nextInt(getMaxLootItems()) + getMinLootItems();
+        int lootAmount = getMaxLootItems() == getMinLootItems() ?
+                getMaxLootItems() : MathUtil.RANDOM.nextInt(getMaxLootItems()) + getMinLootItems();
 
         for (LootTableEntry entry : lootTableEntries) {
             if (lootAmount < loot.size()) {

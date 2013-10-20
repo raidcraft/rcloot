@@ -50,6 +50,7 @@ public class LootTableManager {
 
         cachedTables.clear();
         aliasTables.clear();
+        randomLootTableConfigs.clear();
         levelDependantTables.clear();
         load();
     }

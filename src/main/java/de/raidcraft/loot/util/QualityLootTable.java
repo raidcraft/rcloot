@@ -62,13 +62,15 @@ public class QualityLootTable implements Comparable<QualityLootTable> {
 
         ArrayList<LootTableEntry> entries = new ArrayList<>();
         int added = 0;
+        double random = Math.random();
         for (QualityLootTableEntry entry : this.entries) {
-            if (amount < added) {
+            if (getAmount() <= added) {
                 break;
             }
-            if (entry.isWithinRange(Math.random())) {
+            if (entry.isWithinRange(random)) {
                 entries.add(entry.getEntry());
                 added++;
+                random = Math.random();
             }
         }
         return entries;

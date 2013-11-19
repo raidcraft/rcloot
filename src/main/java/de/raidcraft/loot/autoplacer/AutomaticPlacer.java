@@ -71,7 +71,7 @@ public class AutomaticPlacer implements Component {
 
         locationChecker = new LocationChecker(RaidCraft.getComponent(LootPlugin.class));
         INST = this;
-        config.load(true);
+        config.load();
     }
 
     public void resume() {

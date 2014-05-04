@@ -25,7 +25,7 @@
     <name>RCLoot</name>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@git.raid-craft.de:22109/${project.artifactId}.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@git.raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
     </scm>
 
     <parent>
@@ -42,11 +42,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>raidcraft-api</artifactId>
-            <version>${rc.version}</version>
-        </dependency>
         <dependency>
             <groupId>de.raidcraft</groupId>
             <artifactId>items</artifactId>

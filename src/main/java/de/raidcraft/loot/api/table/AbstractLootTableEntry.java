@@ -49,6 +49,7 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
             this.item = RaidCraft.getItem(id);
         } catch (CustomItemException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+            delete();
         }
     }
 
@@ -80,6 +81,8 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
         }
         this.chance = chance;
     }
+    
+    protected abstract void delete();
 
     @Override
     public boolean equals(Object o) {

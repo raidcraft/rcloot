@@ -32,7 +32,7 @@ public class DatabaseLootTable extends AbstractLootTable {
 
         setMinLootItems(table.getMinLoot());
         setMaxLootItems(table.getMaxLoot());
-        if (table.table.getLootTableEntries().size() < 1) {
+        if (table.getLootTableEntries().size() < 1) {
             delete();
             return;
         }

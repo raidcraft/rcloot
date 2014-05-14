@@ -51,6 +51,11 @@ public class LevelDependantLootTable extends AbstractLootTable {
                         public void save() {
                             // dont save
                         }
+                        
+                        @Override
+                        protected void delete() {
+                            // dont delete
+                        }
                     };
                     entry.setChance(itemTypes.get(item.getType()));
                     entry.setItem(item.createNewItem());

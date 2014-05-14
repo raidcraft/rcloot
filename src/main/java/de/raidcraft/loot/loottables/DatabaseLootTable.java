@@ -32,6 +32,10 @@ public class DatabaseLootTable extends AbstractLootTable {
 
         setMinLootItems(table.getMinLoot());
         setMaxLootItems(table.getMaxLoot());
+        if (table.table.getLootTableEntries().size() < 1) {
+            delete();
+            return;
+        }
         // lets load up all our sub tables
         for (TLootTableEntry entry : table.getLootTableEntries()) {
             addEntry(new DatabaseLootTableEntry(entry));
@@ -65,6 +69,8 @@ public class DatabaseLootTable extends AbstractLootTable {
 
         EbeanServer database = RaidCraft.getDatabase(LootPlugin.class);
         TLootTable tLootTable = database.find(TLootTable.class, getId());
+        RaidCraft.getComponent(LootPlugin.class).getLogger().info(
+            "deleted loot table (" + tLootTable.getId() + ")");
         database.delete(tLootTable);
     }
 }

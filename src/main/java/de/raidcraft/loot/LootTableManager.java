@@ -34,7 +34,10 @@ public class LootTableManager {
 
         List<TLootTable> list = plugin.getDatabase().find(TLootTable.class).findList();
         for (TLootTable table : list) {
-            addTable(new DatabaseLootTable(table));
+            DatabaseLootTable lootTable = new DatabaseLootTable(table);
+            if (plugin.getDatabase().find(TLootTable.class, table.getId()) != null) {
+                addTable(lootTable);
+            }
         }
         // lets also load all our configured random loot tables
         File path = new File(plugin.getDataFolder(), "random-tables");
@@ -58,7 +61,9 @@ public class LootTableManager {
     public void addTable(LootTable table) {
 
         cachedTables.put(table.getId(), table);
-        TLootTableAlias alias = plugin.getDatabase().find(TLootTable.class, table.getId()).getLootTableAlias();
+        TLootTable tLootTable = plugin.getDatabase().find(TLootTable.class, table.getId());
+        if (tLootTable == null) return;
+        TLootTableAlias alias = tLootTable.getLootTableAlias();
         if (alias != null) {
             aliasTables.put(alias.getTableAlias(), table.getId());
         }

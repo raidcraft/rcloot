@@ -49,9 +49,8 @@ public class ChestHost implements LootHost {
 
         Block block;
 
-        if (inventory.getHolder() instanceof DoubleChest) {
-            DoubleChest doubleChest = (DoubleChest) inventory.getHolder();
-            block = doubleChest.getLocation().getBlock();
+        if (inventory.getHolder() instanceof Chest) {
+            block = ((Chest) inventory.getHolder()).getBlock();
         } else {
             block = ((BlockState) inventory.getHolder()).getBlock();
         }

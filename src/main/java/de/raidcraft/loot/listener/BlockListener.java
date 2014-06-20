@@ -72,10 +72,11 @@ public class BlockListener implements Listener {
             inventory = ((Dropper) event.getBlock().getState()).getInventory();
         }
 
-        inventory.setContents(loot.toArray(new ItemStack[loot.size()]));
-        if(loot.size() == 1) {
-            inventory.addItem(loot.get(0).clone());
-        }
+        loot.stream().forEach(l -> {
+            if(event.getItem().getType().name().equals(l.getType().name())) {
+                inventory.addItem(event.getItem());
+            }
+        });
     }
 
     public class TNTPlacerTask implements Runnable {

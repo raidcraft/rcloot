@@ -10,6 +10,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Philip Urban
  */
@@ -38,24 +40,19 @@ public class ChestHost implements LootHost {
     @Override
     public boolean validateInventory(Inventory inventory) {
 
-        if(inventory.getType() == InventoryType.CHEST && inventory.getName().toLowerCase().contains("chest")) {
-            return true;
-        }
-        return false;
+        return inventory.getType() == InventoryType.CHEST && inventory.getName().toLowerCase().contains("chest");
     }
 
     @Override
+    @Nullable
     public Block getBlock(Inventory inventory) {
 
-        Block block;
-
-        if (inventory.getHolder() instanceof Chest) {
-            block = ((Chest) inventory.getHolder()).getBlock();
-        } else {
-            block = ((BlockState) inventory.getHolder()).getBlock();
+        if (inventory.getHolder() instanceof BlockState) {
+            return ((BlockState) inventory.getHolder()).getBlock();
+        } else if (inventory.getHolder() instanceof DoubleChest) {
+            return ((DoubleChest) inventory.getHolder()).getLocation().getBlock();
         }
-
-        return block;
+        return null;
     }
 
     @Override

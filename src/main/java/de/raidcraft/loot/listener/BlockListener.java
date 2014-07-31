@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Author: Philip
@@ -62,7 +61,7 @@ public class BlockListener implements Listener {
         }
 
         LootObject lootObject = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation());
-        List<ItemStack> loot = lootObject.loot(UUID.fromString(LootFactory.ANY));
+        List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
         if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
         Inventory inventory;

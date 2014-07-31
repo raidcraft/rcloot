@@ -38,7 +38,7 @@ public class SimplePublicLootObject extends SimpleLootObject implements TimedLoo
         // no cooldown -> fill chest
         if ((RaidCraft.getTable(LootPlayersTable.class)
                 // TODO: refactor
-                .getLastLooted(UUID.fromString(LootFactory.ANY),
+                .getLastLooted(LootFactory.ANY,
                         getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
 
             for (LootTableEntry entry : getLootTable().loot()) {
@@ -49,8 +49,8 @@ public class SimplePublicLootObject extends SimpleLootObject implements TimedLoo
             if (cooldown != 0) {
                 RaidCraft.getTable(LootPlayersTable.class)
                         // TODO: refactor
-                        .addEntry(UUID.fromString(LootFactory.ANY),
-                                getId(), System.currentTimeMillis() / 1000);
+                        .addEntry(LootFactory.ANY,
+                        getId(), System.currentTimeMillis() / 1000);
             }
         }
         return content;

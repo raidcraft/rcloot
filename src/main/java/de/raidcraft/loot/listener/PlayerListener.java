@@ -37,7 +37,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Author: Philip
@@ -296,7 +295,7 @@ public class PlayerListener implements Listener {
 
             // fill dispenser otherwise the dispenser event won't be called
             if (event.getInventory().getType() == InventoryType.DISPENSER) {
-                List<ItemStack> loot = lootObject.loot(UUID.fromString(LootFactory.ANY));
+                List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
                 event.getInventory().clear();
                 if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
                 for (ItemStack item : loot) {

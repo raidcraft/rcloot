@@ -38,7 +38,9 @@ import java.util.UUID;
  */
 public class LootFactory {
 
-    public final static String ANY = "ANY";
+    public final static UUID ANY = UUID.fromString("000000f5-2100-41cc-a05d-3ed7da445841");
+    public final static UUID AutomaticPlacerSurface = UUID.fromString("000000ef-b1a0-4173-9775-e5c1352a0cf9");
+    public final static UUID AutomaticPlacerCave= UUID.fromString("0000008f-00ae-4368-bb33-b6c965a1f3a3");
 
     private LootObjectStorage lootObjectStorage;
     private LootPlugin plugin;

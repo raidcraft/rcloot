@@ -15,7 +15,6 @@ import de.raidcraft.loot.commands.LootTableCreation;
 import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,8 +34,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -45,12 +46,12 @@ import java.util.Map;
  */
 public class PlayerListener implements Listener {
 
-    public static Map<String, SettingStorage> createMode = new CaseInsensitiveMap<>();
-    public static Map<String, LootTableCreation> createLootTable = new CaseInsensitiveMap<>();
-    public static List<String> editorMode = new ArrayList<>();
-    public static List<String> adminMode = new ArrayList<>();
-    private Map<String, LootObject> inventoryLocks = new CaseInsensitiveMap<>();
-    private Map<String, List<LootTableEntry>> createLootTableEntries = new CaseInsensitiveMap<>();
+    public static Map<UUID, SettingStorage> createMode = new HashMap<>();
+    public static Map<UUID, LootTableCreation> createLootTable = new HashMap<>();
+    public static List<UUID> editorMode = new ArrayList<>();
+    public static List<UUID> adminMode = new ArrayList<>();
+    private Map<UUID, LootObject> inventoryLocks = new HashMap<>();
+    private Map<UUID, List<LootTableEntry>> createLootTableEntries = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onLootTableCreate(PlayerInteractEvent event) {
@@ -73,7 +74,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             // lets store the loot table entry creation
             if (table.getEntries().size() > 0) {
-                createLootTableEntries.put(event.getPlayer().getName(), new ArrayList<>(table.getEntries()));
+                createLootTableEntries.put(event.getPlayer().getUniqueId(), new ArrayList<>(table.getEntries()));
                 event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
                         + ItemUtils.toString(table.getEntries().get(0).getItem()) + " an: ");
             }
@@ -244,7 +245,7 @@ public class PlayerListener implements Listener {
         }
 
         // lock loot object
-        inventoryLocks.put(entity.getName(), lootObject);
+        inventoryLocks.put(entity.getUniqueId(), lootObject);
         boolean admin = false;
         if (adminMode.contains(entity.getName())) {
             admin = true;
@@ -310,11 +311,11 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuiet(PlayerQuitEvent event) {
 
-        if (inventoryLocks.containsKey(event.getPlayer().getName())) {
-            inventoryLocks.remove(event.getPlayer().getName());
+        if (inventoryLocks.containsKey(event.getPlayer().getUniqueId())) {
+            inventoryLocks.remove(event.getPlayer().getUniqueId());
         }
-        editorMode.remove(event.getPlayer().getName());
-        adminMode.remove(event.getPlayer().getName());
-        createMode.remove(event.getPlayer().getName());
+        editorMode.remove(event.getPlayer().getUniqueId());
+        adminMode.remove(event.getPlayer().getUniqueId());
+        createMode.remove(event.getPlayer().getUniqueId());
     }
 }

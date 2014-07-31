@@ -1,14 +1,17 @@
 package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
+import de.raidcraft.loot.database.tables.LootPlayersTable;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -17,36 +20,20 @@ import java.util.List;
  */
 public class SimpleLootObject implements LootObject {
 
+    @Setter
+    @Getter
     private int id = 0;
+    @Getter
     private LootTable lootTable;
     private Location hostLocation;
-    private String creator;
+    @Setter
+    @Getter
+    private UUID creator;
     private long creationDate;
+    @Setter
+    @Getter
     private boolean enabled;
 
-    @Override
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    @Override
-    public int getId() {
-
-        return id;
-    }
-
-    @Override
-    public void setCreator(String creator) {
-
-        this.creator = creator;
-    }
-
-    @Override
-    public String getCreator() {
-
-        return creator;
-    }
 
     @Override
     public void setCreated(long created) {
@@ -60,23 +47,6 @@ public class SimpleLootObject implements LootObject {
         return creationDate;
     }
 
-    @Override
-    public void setEnabled(boolean enabled) {
-
-        this.enabled = enabled;
-    }
-
-    @Override
-    public boolean isEnabled() {
-
-        return enabled;
-    }
-
-    @Override
-    public LootTable getLootTable() {
-
-        return lootTable;
-    }
 
     @Override
     public void assignLootTable(LootTable lootTable) {
@@ -97,7 +67,7 @@ public class SimpleLootObject implements LootObject {
     }
 
     @Override
-    public List<ItemStack> loot(String player) {
+    public List<ItemStack> loot(UUID player) {
 
         List<ItemStack> loot = new ArrayList<>();
         // player not yet looted
@@ -107,7 +77,8 @@ public class SimpleLootObject implements LootObject {
             }
 
             // remember loot
-            RaidCraft.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis() / 1000);
+            RaidCraft.getTable(LootPlayersTable.class)
+                    .addEntry(player, id, System.currentTimeMillis() / 1000);
         }
         return loot;
     }

@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -160,7 +161,7 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
-                    lootFactory.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTimedLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown()
                             , settingStorage.getDrops());
@@ -168,21 +169,21 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
                     // create public loot object
-                    lootFactory.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createPublicLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
                     // create default loot object
-                    lootFactory.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createDefaultLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getDrops());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
                     // create treasure loot object
-                    lootFactory.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTreasureLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , settingStorage.getRewardLevel());
                 }
 
@@ -236,7 +237,7 @@ public class PlayerListener implements Listener {
 
         // fill public loot chest if cooldown over
         if(lootObject instanceof PublicLootObject) {
-            loot = lootObject.loot(entity.getName());
+            loot = lootObject.loot(entity.getUniqueId());
             if(loot.size() > 0) {
                 event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
             }
@@ -256,7 +257,7 @@ public class PlayerListener implements Listener {
                 loot.add(entry.getItem());
             }
         } else {
-            loot = lootObject.loot(entity.getName());
+            loot = lootObject.loot(entity.getUniqueId());
         }
         // set loot
         event.getInventory().clear();
@@ -295,7 +296,7 @@ public class PlayerListener implements Listener {
 
             // fill dispenser otherwise the dispenser event won't be called
             if (event.getInventory().getType() == InventoryType.DISPENSER) {
-                List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
+                List<ItemStack> loot = lootObject.loot(UUID.fromString(LootFactory.ANY));
                 event.getInventory().clear();
                 if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
                 for (ItemStack item : loot) {

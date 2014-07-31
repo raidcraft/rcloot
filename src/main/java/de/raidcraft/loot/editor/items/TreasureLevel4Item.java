@@ -42,7 +42,7 @@ public class TreasureLevel4Item extends SimpleEditorItem {
         }
 
         // create treasure loot object
-        lootFactory.createTreasureLootObject(event.getPlayer().getName(), newChestBlock, REWARD_LEVEL, true);
+        lootFactory.createTreasureLootObject(event.getPlayer().getUniqueId(), newChestBlock, REWARD_LEVEL, true);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TreasureLevel4Item extends SimpleEditorItem {
         }
 
         // create treasure loot object
-        lootFactory.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock(), REWARD_LEVEL, true);
+        lootFactory.createTreasureLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock(), REWARD_LEVEL, true);
     }
 
 }

@@ -5,6 +5,7 @@ import de.raidcraft.loot.database.LootDatabase;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -27,6 +28,7 @@ public class LootPlayersTable extends Table {
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`object_id` INT( 11 ) NOT NULL ,\n" +
                             "`player` VARCHAR( 32 ) NOT NULL ,\n" +
+                            "`player_id` VARCHAR( 32 ) NOT NULL ,\n" +
                             "`timestamp` BIGINT( 20 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")");
@@ -35,11 +37,11 @@ public class LootPlayersTable extends Table {
         }
     }
 
-    public void addEntry(String player, int objectId, long timestamp) {
+    public void addEntry(UUID player, int objectId, long timestamp) {
 
         try {
             executeUpdate(
-                    "INSERT INTO " + getTableName() + " (object_id, player, timestamp) " +
+                    "INSERT INTO " + getTableName() + " (object_id, player_id, timestamp) " +
                             "VALUES (" +
                             "'" + objectId + "'" + "," +
                             "'" + player + "'" + "," +
@@ -51,11 +53,13 @@ public class LootPlayersTable extends Table {
         }
     }
 
-    public boolean hasLooted(String player, int objectId) {
+    public boolean hasLooted(UUID player, int objectId) {
 
         try {
             ResultSet resultSet = executeQuery(
-                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "';");
+                    "SELECT * FROM " + getTableName()
+                            + " WHERE player_id = '" + player
+                            + "' AND object_id = '" + objectId + "';");
 
             while (resultSet.next()) {
                 resultSet.close();
@@ -69,11 +73,13 @@ public class LootPlayersTable extends Table {
         return true;
     }
 
-    public long getLastLooted(String player, int objectId) {
+    public long getLastLooted(UUID player, int objectId) {
 
         try {
             ResultSet resultSet = executeQuery(
-                    "SELECT * FROM " + getTableName() + " WHERE player = '" + player + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
+                    "SELECT * FROM " + getTableName()
+                            + " WHERE player_id = '" + player
+                            + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
 
             while (resultSet.next()) {
                 long ts = resultSet.getLong("timestamp");

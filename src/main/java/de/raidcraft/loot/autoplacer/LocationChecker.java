@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Philip
@@ -67,7 +68,7 @@ public class LocationChecker {
                 }
 
                 surfaceLocation.getBlock().setType(Material.CHEST);
-                plugin.getLootFactory().createTreasureLootObject("AutomaticPlacerSurface", surfaceLocation.getBlock(), treasureLevel, false);
+                plugin.getLootFactory().createTreasureLootObject(UUID.fromString("AutomaticPlacerSurface"), surfaceLocation.getBlock(), treasureLevel, false);
             }
         }
 
@@ -105,7 +106,7 @@ public class LocationChecker {
                     treasureLevel = 2;
                 }
                 caveLocation.getBlock().setType(Material.CHEST);
-                plugin.getLootFactory().createTreasureLootObject("AutomaticPlacerCave", caveLocation.getBlock(), treasureLevel, false);
+                plugin.getLootFactory().createTreasureLootObject(UUID.fromString("AutomaticPlacerCave"), caveLocation.getBlock(), treasureLevel, false);
             }
         }
 

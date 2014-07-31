@@ -30,7 +30,6 @@ public class TLootTable {
     private List<TLootTableQuality> lootTableQualities;
 
     public int getId() {
-
         return id;
     }
 

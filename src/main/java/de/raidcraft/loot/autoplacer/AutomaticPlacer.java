@@ -75,13 +75,15 @@ public class AutomaticPlacer implements Component {
     }
 
     public void resume() {
-        if(config.lastRunning) {
+
+        if (config.lastRunning) {
             run(Bukkit.getWorld(config.lastWorld), config.lastMaxCoord);
         }
     }
 
     public void save() {
-        if(running) {
+
+        if (running) {
             config.lastRunning = running;
             config.lastProcessed = checkedLocations;
             config.save();
@@ -101,13 +103,17 @@ public class AutomaticPlacer implements Component {
         @Setting("treasure-2-chance")
         public int treasure2Chance = 30;
         @Setting("bad-regions")
-        public String[] badRegions = new String[] { "rcmap", "greed_global", "itemfarm_" };
+        public String[] badRegions = new String[]{"rcmap", "greed_global", "itemfarm_"};
 
         // resume information
-        @Setting("last-running") public boolean lastRunning = false;
-        @Setting("last-processed") public int lastProcessed = 0;
-        @Setting("last-max-cord") public int lastMaxCoord = 0;
-        @Setting("last-world") public String lastWorld = "";
+        @Setting("last-running")
+        public boolean lastRunning = false;
+        @Setting("last-processed")
+        public int lastProcessed = 0;
+        @Setting("last-max-cord")
+        public int lastMaxCoord = 0;
+        @Setting("last-world")
+        public String lastWorld = "";
 
         public LocalConfiguration(LootPlugin plugin) {
 
@@ -130,7 +136,7 @@ public class AutomaticPlacer implements Component {
 
         Stack<Location> locations = spiralCalculator.getLocations();
         Stack<Location> flippedStack = new Stack<>();
-        while(!locations.isEmpty()) {
+        while (!locations.isEmpty()) {
             flippedStack.push(locations.pop());
         }
         locations = flippedStack;
@@ -157,11 +163,11 @@ public class AutomaticPlacer implements Component {
             this.amountPerRun = amountPerRun;
 
             // cut off already processed location if resume
-            if(config.lastRunning) {
+            if (config.lastRunning) {
                 config.lastRunning = false;
                 config.save();
                 checkedLocations = config.lastProcessed;
-                for(int i = 0; i < config.lastProcessed; i++) {
+                for (int i = 0; i < config.lastProcessed; i++) {
                     locations.pop();
                 }
             }
@@ -172,26 +178,25 @@ public class AutomaticPlacer implements Component {
 
             // skip if no memory available
             Runtime runtime = Runtime.getRuntime();
-            int availableMemory = (int)((runtime.maxMemory() - runtime.totalMemory() + runtime.freeMemory()) / 1048576);
-            if(availableMemory < 1512) {
-                if(stopped == false) {
+            int availableMemory = (int) ((runtime.maxMemory() - runtime.totalMemory() + runtime.freeMemory()) / 1048576);
+            if (availableMemory < 1512) {
+                if (stopped == false) {
                     Bukkit.broadcastMessage("LCAP stopped placement due to low memory! (" + availableMemory + "MB free)");
                 }
                 stopped = true;
                 return;
             }
-            if(stopped && availableMemory > 2048) {
+            if (stopped && availableMemory > 2048) {
                 stopped = false;
                 Bukkit.broadcastMessage("LCAP placement task resumed (" + availableMemory + "MB free)");
-            }
-            else if(stopped) {
+            } else if (stopped) {
                 return;
             }
 
-            for(int i = 0; i < amountPerRun; i++) {
+            for (int i = 0; i < amountPerRun; i++) {
 
                 // cancel task if all location processed
-                if(locations.isEmpty()) {
+                if (locations.isEmpty()) {
                     Bukkit.getScheduler().cancelTask(checkerTaskId);
                     running = false;
                     Bukkit.broadcastMessage("LCAP placement finished!");

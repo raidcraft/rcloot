@@ -40,8 +40,8 @@ public class LootObjectStorage {
         LootObject lootObject = sortedObjects.get(location);
 
         Block otherBlock = ChestDispenserUtil.getOtherChestBlock(location.getBlock());
-        if(otherBlock != null) {
-            if(lootObject != null) {
+        if (otherBlock != null) {
+            if (lootObject != null) {
                 addLootObjectHost(otherBlock.getLocation(), lootObject);
             }
             lootObject = sortedObjects.get(otherBlock.getLocation());
@@ -64,7 +64,7 @@ public class LootObjectStorage {
 
         sortedObjects.clear();
         List<LootObject> lootObjects = RaidCraft.getTable(LootObjectsTable.class).getAllObjects();
-        for(LootObject lootObject : lootObjects) {
+        for (LootObject lootObject : lootObjects) {
             addLootObjectHost(lootObject.getHostLocation(), lootObject);
         }
         RaidCraft.LOGGER.info("[RCLoot] Es wurden " + lootObjects.size() + " Loot-Ojekte in den Cache geladen!");

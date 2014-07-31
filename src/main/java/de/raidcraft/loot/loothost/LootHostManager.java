@@ -32,9 +32,9 @@ public class LootHostManager {
 
     public LootHost getLootHost(Inventory inventory) {
 
-        for(LootHost lootHost : registeredHosts.values()) {
+        for (LootHost lootHost : registeredHosts.values()) {
 
-            if(lootHost.validateInventory(inventory)) {
+            if (lootHost.validateInventory(inventory)) {
                 return lootHost;
             }
         }

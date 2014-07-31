@@ -98,8 +98,8 @@ public class LootTableManager {
     public String getIdStringList() {
 
         String list = "0";
-        for(int id : cachedTables.keySet()) {
-            if(list.length() > 0) {
+        for (int id : cachedTables.keySet()) {
+            if (list.length() > 0) {
                 list += ",";
             }
             list += id;

@@ -107,7 +107,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        if(event.getClickedBlock() == null) return;
+        if (event.getClickedBlock() == null) return;
 
         // editor mode
         if (editorMode.contains(event.getPlayer().getName())
@@ -202,7 +202,7 @@ public class PlayerListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent event) {
 
         LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getInventory());
-        if(lootHost == null) return;
+        if (lootHost == null) return;
 
         Block block = lootHost.getBlock(event.getInventory());
 
@@ -235,9 +235,9 @@ public class PlayerListener implements Listener {
 
 
         // fill public loot chest if cooldown over
-        if(lootObject instanceof PublicLootObject) {
+        if (lootObject instanceof PublicLootObject) {
             loot = lootObject.loot(entity.getUniqueId());
-            if(loot.size() > 0) {
+            if (loot.size() > 0) {
                 event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
             }
             return;

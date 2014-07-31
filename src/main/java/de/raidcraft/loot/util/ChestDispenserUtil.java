@@ -22,50 +22,62 @@ public class ChestDispenserUtil {
         Block otherBlock;
 
         otherBlock = block.getRelative(1, 0, 0);
-        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
             return otherBlock;
+        }
         otherBlock = block.getRelative(-1, 0, 0);
-        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
             return otherBlock;
+        }
         otherBlock = block.getRelative(0, 0, 1);
-        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
             return otherBlock;
+        }
         otherBlock = block.getRelative(0, 0, -1);
-        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+        if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
             return otherBlock;
+        }
 
         if (allDirections) {
             otherBlock = block.getRelative(1, 0, 1);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(1, 0, -1);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(-1, 0, 1);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(-1, 0, -1);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(2, 0, 0);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(-2, 0, 0);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(0, 0, 2);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
             otherBlock = block.getRelative(0, 0, -2);
-            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST)
+            if (otherBlock.getType() == Material.CHEST || otherBlock.getType() == Material.TRAPPED_CHEST) {
                 return otherBlock;
+            }
 
         }
 

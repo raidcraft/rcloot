@@ -36,6 +36,7 @@ public abstract class AbstractLootTable implements LootTable {
 
         return id;
     }
+
     @Override
     public void setEntries(List<LootTableEntry> entries) {
 

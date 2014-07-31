@@ -50,7 +50,7 @@ public class SimplePublicLootObject extends SimpleLootObject implements TimedLoo
                 RaidCraft.getTable(LootPlayersTable.class)
                         // TODO: refactor
                         .addEntry(LootFactory.ANY,
-                        getId(), System.currentTimeMillis() / 1000);
+                                getId(), System.currentTimeMillis() / 1000);
             }
         }
         return content;

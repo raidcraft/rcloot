@@ -65,15 +65,14 @@ public class BlockListener implements Listener {
         if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
         Inventory inventory;
-        if(event.getBlock().getState() instanceof Dispenser) {
+        if (event.getBlock().getState() instanceof Dispenser) {
             inventory = ((Dispenser) event.getBlock().getState()).getInventory();
-        }
-        else {
+        } else {
             inventory = ((Dropper) event.getBlock().getState()).getInventory();
         }
 
         loot.stream().forEach(l -> {
-            if(event.getItem().getType().name().equals(l.getType().name())) {
+            if (event.getItem().getType().name().equals(l.getType().name())) {
                 inventory.addItem(event.getItem());
             }
         });

@@ -70,7 +70,7 @@ public class DatabaseLootTable extends AbstractLootTable {
         EbeanServer database = RaidCraft.getDatabase(LootPlugin.class);
         TLootTable tLootTable = database.find(TLootTable.class, getId());
         RaidCraft.getComponent(LootPlugin.class).getLogger().info(
-            "deleted loot table (" + tLootTable.getId() + ")");
+                "deleted loot table (" + tLootTable.getId() + ")");
         database.delete(tLootTable);
     }
 }

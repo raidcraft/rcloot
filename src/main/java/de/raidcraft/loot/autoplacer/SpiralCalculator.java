@@ -27,31 +27,31 @@ public class SpiralCalculator {
     public void doSpiral(int ring) {
 
         // max radius reached
-        if(ring > maxCoordinate / pointDistance) {
+        if (ring > maxCoordinate / pointDistance) {
             return;
         }
 
         int i;
-        Location location = new Location(world, -ring*pointDistance, 3, -ring*pointDistance);
+        Location location = new Location(world, -ring * pointDistance, 3, -ring * pointDistance);
 
         locations.push(location.clone());
 
-        for(i = 1; i < ((ring * 2) + 1); i++) {
+        for (i = 1; i < ((ring * 2) + 1); i++) {
             location.setZ(location.getBlockZ() + pointDistance);
             locations.push(location.clone());
         }
 
-        for(i = 1; i < ((ring * 2) + 1); i++) {
+        for (i = 1; i < ((ring * 2) + 1); i++) {
             location.setX(location.getBlockX() + pointDistance);
             locations.push(location.clone());
         }
 
-        for(i = 1; i < ((ring * 2) + 1); i++) {
+        for (i = 1; i < ((ring * 2) + 1); i++) {
             location.setZ(location.getBlockZ() - pointDistance);
             locations.push(location.clone());
         }
 
-        for(i = 1; i < (ring * 2); i++) {
+        for (i = 1; i < (ring * 2); i++) {
             location.setX(location.getBlockX() - pointDistance);
             locations.push(location.clone());
         }

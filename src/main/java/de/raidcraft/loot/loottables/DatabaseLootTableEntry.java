@@ -29,13 +29,13 @@ public class DatabaseLootTableEntry extends AbstractLootTableEntry {
         entry.setAmount(getAmount());
         database.save(entry);
     }
-    
+
     public void delete() {
-        
+
         EbeanServer database = RaidCraft.getDatabase(LootPlugin.class);
         TLootTableEntry entry = database.find(TLootTableEntry.class, getId());
         RaidCraft.getComponent(LootPlugin.class).getLogger().info(
-            "deleted loot table (" + entry.getLootTable().getId() + ") entry: " + getId() + " - " + entry.getItem());
+                "deleted loot table (" + entry.getLootTable().getId() + ") entry: " + getId() + " - " + entry.getItem());
         database.delete(entry);
     }
 }

@@ -4,9 +4,16 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.LootTableManager;
+import de.raidcraft.loot.api.object.LootObject;
+import de.raidcraft.loot.api.object.PublicLootObject;
+import de.raidcraft.loot.api.object.SimpleLootObject;
+import de.raidcraft.loot.api.object.SimplePublicLootObject;
+import de.raidcraft.loot.api.object.SimpleTimedLootObject;
+import de.raidcraft.loot.api.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.api.object.TimedLootObject;
+import de.raidcraft.loot.api.object.TreasureLootObject;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
-import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -72,11 +79,10 @@ public class LootObjectsTable extends Table {
 
                 LootObject lootObject;
                 if (cooldown != -1) {
-                    if(publicChest) {
+                    if (publicChest) {
                         lootObject = new SimplePublicLootObject();
                         ((SimplePublicLootObject) lootObject).setCooldown(cooldown);
-                    }
-                    else {
+                    } else {
                         lootObject = new SimpleTimedLootObject();
                         ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
                     }
@@ -137,11 +143,10 @@ public class LootObjectsTable extends Table {
 
                 LootObject lootObject;
                 if (cooldown != -1) {
-                    if(publicChest) {
+                    if (publicChest) {
                         lootObject = new SimplePublicLootObject();
                         ((SimplePublicLootObject) lootObject).setCooldown(cooldown);
-                    }
-                    else {
+                    } else {
                         lootObject = new SimpleTimedLootObject();
                         ((SimpleTimedLootObject) lootObject).setCooldown(cooldown);
                     }
@@ -205,7 +210,7 @@ public class LootObjectsTable extends Table {
         if (object instanceof TreasureLootObject) {
             rewardLevel = ((TreasureLootObject) object).getRewardLevel();
         }
-        if(object instanceof PublicLootObject) {
+        if (object instanceof PublicLootObject) {
             publicChest = true;
         }
 
@@ -243,12 +248,12 @@ public class LootObjectsTable extends Table {
         try {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM `" + getTableName() + "` WHERE " +
-                    "x > '" + (location.getBlockX() - radiusXZ) + "' AND " +
-                    "x < '" + (location.getBlockX() + radiusXZ) + "' AND " +
-                    "z > '" + (location.getBlockZ() - radiusXZ) + "' AND " +
-                    "z < '" + (location.getBlockZ() + radiusXZ) + "' AND " +
-                    "y > '" + (location.getBlockY() - radiusY) + "' AND " +
-                    "y < '" + (location.getBlockY() + radiusY) + "'"
+                            "x > '" + (location.getBlockX() - radiusXZ) + "' AND " +
+                            "x < '" + (location.getBlockX() + radiusXZ) + "' AND " +
+                            "z > '" + (location.getBlockZ() - radiusXZ) + "' AND " +
+                            "z < '" + (location.getBlockZ() + radiusXZ) + "' AND " +
+                            "y > '" + (location.getBlockY() - radiusY) + "' AND " +
+                            "y < '" + (location.getBlockY() + radiusY) + "'"
             );
 
             while (resultSet.next()) {

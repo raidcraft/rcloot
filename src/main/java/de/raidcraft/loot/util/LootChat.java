@@ -16,6 +16,7 @@ public class LootChat {
     private final static String CHAT_TAG = ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Loot" + ChatColor.DARK_GRAY + "] " + ChatColor.WHITE;
 
     public static void successfullyCreatedLootObject(Player player, LootObject lootObject) {
+
         LootChat.success(player, "Es wurde erfolgreich ein Loot-Objekt erstellt! ");
         LootChat.info(player, RaidCraft.getComponent(LootPlugin.class).getLootFactory().getObjectInfo(player, lootObject));
     }

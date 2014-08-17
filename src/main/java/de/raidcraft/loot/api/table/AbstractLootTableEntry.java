@@ -81,7 +81,7 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
         }
         this.chance = chance;
     }
-    
+
     protected abstract void delete();
 
     @Override

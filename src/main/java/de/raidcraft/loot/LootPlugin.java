@@ -61,14 +61,14 @@ public class LootPlugin extends BasePlugin implements Component {
 
         lootTableManager.load();
         // register auto chest placer
-//        new AutomaticPlacer();
+        //        new AutomaticPlacer();
 
-//        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-//            @Override
-//            public void run() {
-//                AutomaticPlacer.INST.resume();
-//            }
-//        }, 10*20);
+        //        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                AutomaticPlacer.INST.resume();
+        //            }
+        //        }, 10*20);
 
         reload();
     }
@@ -76,7 +76,7 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public void disable() {
 
-//        AutomaticPlacer.INST.save();
+        //        AutomaticPlacer.INST.save();
     }
 
     @Override

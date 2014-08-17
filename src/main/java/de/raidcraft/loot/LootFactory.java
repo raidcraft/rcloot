@@ -1,10 +1,19 @@
 package de.raidcraft.loot;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.loot.api.object.LootObject;
+import de.raidcraft.loot.api.object.LootObjectStorage;
+import de.raidcraft.loot.api.object.PublicLootObject;
+import de.raidcraft.loot.api.object.SimpleLootObject;
+import de.raidcraft.loot.api.object.SimplePublicLootObject;
+import de.raidcraft.loot.api.object.SimpleTimedLootObject;
+import de.raidcraft.loot.api.object.SimpleTreasureLootObject;
+import de.raidcraft.loot.api.object.TimedLootObject;
+import de.raidcraft.loot.api.object.TreasureLootObject;
+import de.raidcraft.loot.api.table.LootTable;
+import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.exceptions.LootTableNotExistsException;
-import de.raidcraft.loot.api.object.*;
-import de.raidcraft.loot.api.table.*;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTableEntry;
 import de.raidcraft.loot.tables.TLootTable;
@@ -20,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -28,7 +38,9 @@ import java.util.List;
  */
 public class LootFactory {
 
-    public final static String ANY = "ANY";
+    public final static UUID ANY = UUID.fromString("000000f5-2100-41cc-a05d-3ed7da445841");
+    public final static UUID AutomaticPlacerSurface = UUID.fromString("000000ef-b1a0-4173-9775-e5c1352a0cf9");
+    public final static UUID AutomaticPlacerCave = UUID.fromString("0000008f-00ae-4368-bb33-b6c965a1f3a3");
 
     private LootObjectStorage lootObjectStorage;
     private LootPlugin plugin;
@@ -97,12 +109,12 @@ public class LootFactory {
         return createLootTable(null, items, minLoot, maxLoot);
     }
 
-    public void createTreasureLootObject(String creator, Block block, int rewardLevel) {
+    public void createTreasureLootObject(UUID creator, Block block, int rewardLevel) {
 
         createTreasureLootObject(creator, block, rewardLevel, false);
     }
 
-    public void createTreasureLootObject(String creator, Block block, int rewardLevel, boolean chat) {
+    public void createTreasureLootObject(UUID creator, Block block, int rewardLevel, boolean chat) {
 
         Player player = Bukkit.getPlayer(creator);
         LootObject existingLootObject = lootObjectStorage.getLootObject(block.getLocation());
@@ -147,7 +159,7 @@ public class LootFactory {
         }
     }
 
-    public void createTimedLootObject(String creator, Block block, ItemStack[] items, int cooldown, int drops) {
+    public void createTimedLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int drops) {
 
         int itemCount = 0;
         for (ItemStack item : items) {
@@ -175,7 +187,7 @@ public class LootFactory {
         lootObjectStorage.registerLootObject(timedLootObject);
     }
 
-    public void createDefaultLootObject(String creator, Block block, ItemStack[] items, int drops) {
+    public void createDefaultLootObject(UUID creator, Block block, ItemStack[] items, int drops) {
 
         int itemCount = 0;
         for (ItemStack item : items) {
@@ -202,7 +214,8 @@ public class LootFactory {
         lootObjectStorage.registerLootObject(lootObject);
     }
 
-    public void createPublicLootObject(String creator, Block block, ItemStack[] items, int cooldown) {
+    public void createPublicLootObject(UUID creator, Block block, ItemStack[] items, int cooldown) {
+
         int itemCount = 0;
         for (ItemStack item : items) {
             if (item != null) {
@@ -229,12 +242,11 @@ public class LootFactory {
     public String getObjectInfo(Player player, LootObject lootObject) {
 
         String info = "Typ: ";
-        if(lootObject instanceof PublicLootObject) {
+        if (lootObject instanceof PublicLootObject) {
             info += "Public-Loot-Objekt, Cooldown: "
                     + ((TimedLootObject) lootObject).getCooldown()
                     + "s";
-        }
-        else if (lootObject instanceof TimedLootObject) {
+        } else if (lootObject instanceof TimedLootObject) {
             info += "Timed-Loot-Objekt, Cooldown: "
                     + ((TimedLootObject) lootObject).getCooldown()
                     + "s";

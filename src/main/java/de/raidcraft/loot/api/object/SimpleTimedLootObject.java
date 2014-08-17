@@ -2,12 +2,13 @@ package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
-import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
+import de.raidcraft.loot.database.tables.LootPlayersTable;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -31,18 +32,20 @@ public class SimpleTimedLootObject extends SimpleLootObject implements TimedLoot
     }
 
     @Override
-    public List<ItemStack> loot(String player) {
+    public List<ItemStack> loot(UUID player) {
 
         List<ItemStack> loot = new ArrayList<>();
 
-        if ((RaidCraft.getTable(LootPlayersTable.class).getLastLooted(player, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
+        if ((RaidCraft.getTable(LootPlayersTable.class)
+                .getLastLooted(player, getId()) * 1000 + cooldown * 1000) < System.currentTimeMillis()) {
             for (LootTableEntry entry : getLootTable().loot()) {
                 loot.add(entry.getItem());
             }
 
             // remember loot if not infinite
             if (cooldown != 0 || player.equals(LootFactory.ANY)) {
-                RaidCraft.getTable(LootPlayersTable.class).addEntry(player, getId(), System.currentTimeMillis() / 1000);
+                RaidCraft.getTable(LootPlayersTable.class)
+                        .addEntry(player, getId(), System.currentTimeMillis() / 1000);
             }
         }
         return loot;

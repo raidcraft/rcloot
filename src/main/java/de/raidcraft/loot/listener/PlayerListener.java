@@ -15,7 +15,6 @@ import de.raidcraft.loot.commands.LootTableCreation;
 import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,8 +34,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -45,24 +46,24 @@ import java.util.Map;
  */
 public class PlayerListener implements Listener {
 
-    public static Map<String, SettingStorage> createMode = new CaseInsensitiveMap<>();
-    public static Map<String, LootTableCreation> createLootTable = new CaseInsensitiveMap<>();
-    public static List<String> editorMode = new ArrayList<>();
-    public static List<String> adminMode = new ArrayList<>();
-    private Map<String, LootObject> inventoryLocks = new CaseInsensitiveMap<>();
-    private Map<String, List<LootTableEntry>> createLootTableEntries = new CaseInsensitiveMap<>();
+    public static Map<UUID, SettingStorage> createMode = new HashMap<>();
+    public static Map<UUID, LootTableCreation> createLootTable = new HashMap<>();
+    public static List<UUID> editorMode = new ArrayList<>();
+    public static List<UUID> adminMode = new ArrayList<>();
+    private Map<UUID, LootObject> inventoryLocks = new HashMap<>();
+    private Map<UUID, List<LootTableEntry>> createLootTableEntries = new HashMap<>();
 
     @EventHandler(ignoreCancelled = true)
     public void onLootTableCreate(PlayerInteractEvent event) {
 
-        if (!createLootTable.containsKey(event.getPlayer().getName()) || event.getClickedBlock() == null) {
+        if (!createLootTable.containsKey(event.getPlayer().getUniqueId()) || event.getClickedBlock() == null) {
             return;
         }
         // if lootable block clicked
         LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getClickedBlock().getType());
         if (lootHost != null) {
             LootFactory lootFactory = RaidCraft.getComponent(LootPlugin.class).getLootFactory();
-            LootTableCreation creation = createLootTable.remove(event.getPlayer().getName());
+            LootTableCreation creation = createLootTable.remove(event.getPlayer().getUniqueId());
             LootTable table = lootFactory.createLootTable(
                     creation.getAlias(),
                     lootHost.getContents(event.getClickedBlock()),
@@ -73,7 +74,7 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             // lets store the loot table entry creation
             if (table.getEntries().size() > 0) {
-                createLootTableEntries.put(event.getPlayer().getName(), new ArrayList<>(table.getEntries()));
+                createLootTableEntries.put(event.getPlayer().getUniqueId(), new ArrayList<>(table.getEntries()));
                 event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
                         + ItemUtils.toString(table.getEntries().get(0).getItem()) + " an: ");
             }
@@ -83,19 +84,19 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
-        if (createLootTableEntries.containsKey(event.getPlayer().getName())) {
+        if (createLootTableEntries.containsKey(event.getPlayer().getUniqueId())) {
             try {
-                LootTableEntry entry = createLootTableEntries.get(event.getPlayer().getName()).get(0);
+                LootTableEntry entry = createLootTableEntries.get(event.getPlayer().getUniqueId()).get(0);
                 double chance = Double.parseDouble(event.getMessage());
                 entry.setChance(chance);
                 entry.save();
-                createLootTableEntries.get(event.getPlayer().getName()).remove(0);
-                if (createLootTableEntries.get(event.getPlayer().getName()).size() > 0) {
+                createLootTableEntries.get(event.getPlayer().getUniqueId()).remove(0);
+                if (createLootTableEntries.get(event.getPlayer().getUniqueId()).size() > 0) {
                     event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte gebe die Chance für "
-                            + ItemUtils.toString(createLootTableEntries.get(event.getPlayer().getName()).get(0).getItem()) + " an: ");
+                            + ItemUtils.toString(createLootTableEntries.get(event.getPlayer().getUniqueId()).get(0).getItem()) + " an: ");
                 } else {
                     event.getPlayer().sendMessage(ChatColor.GREEN + "Bitte setzte nun noch falls gewollt die Qualitäts Chancen in der Datenbank.");
-                    createLootTableEntries.remove(event.getPlayer().getName());
+                    createLootTableEntries.remove(event.getPlayer().getUniqueId());
                 }
             } catch (NumberFormatException e) {
                 event.getPlayer().sendMessage(ChatColor.RED + "Du musst eine Chance in Dezimal Notation angeben, z.B. 10% = 0.10");
@@ -107,10 +108,10 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-        if(event.getClickedBlock() == null) return;
+        if (event.getClickedBlock() == null) return;
 
         // editor mode
-        if (editorMode.contains(event.getPlayer().getName())
+        if (editorMode.contains(event.getPlayer().getUniqueId())
                 && event.getItem() != null
                 && event.getClickedBlock() != null
                 && EditorModeFactory.INSTANCE.isEditorBlock(event.getItem())) {
@@ -132,8 +133,8 @@ public class PlayerListener implements Listener {
             }
 
             // no storage found
-            if (createMode.containsKey(event.getPlayer().getName())) {
-                SettingStorage settingStorage = createMode.get(event.getPlayer().getName());
+            if (createMode.containsKey(event.getPlayer().getUniqueId())) {
+                SettingStorage settingStorage = createMode.get(event.getPlayer().getUniqueId());
                 // clicked object is already loot object
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.REMOVE) {
@@ -143,14 +144,14 @@ public class PlayerListener implements Listener {
                         lootFactory.deleteLootObject(existingLootObject, true);
                         LootChat.success(event.getPlayer(), "Das Loot Objekt wurde erfolgreich gelöscht!");
                     }
-                    createMode.remove(event.getPlayer().getName());   // remove create action from cache
+                    createMode.remove(event.getPlayer().getUniqueId());   // remove create action from cache
                     return;
                 }
 
                 if (existingLootObject != null) {
                     // warn player and request deletion via command -> exit
                     LootChat.warn(event.getPlayer(), "Dies ist bereits ein Loot-Objekt und muss erst per Befehl gelöscht werden!");
-                    createMode.remove(event.getPlayer().getName());
+                    createMode.remove(event.getPlayer().getUniqueId());
                     event.setCancelled(true);
                     return;
                 }
@@ -160,7 +161,7 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TIMED) {
                     // create timed loot object
-                    lootFactory.createTimedLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTimedLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown()
                             , settingStorage.getDrops());
@@ -168,27 +169,27 @@ public class PlayerListener implements Listener {
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
                     // create public loot object
-                    lootFactory.createPublicLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createPublicLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
                     // create default loot object
-                    lootFactory.createDefaultLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createDefaultLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getDrops());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {
                     // create treasure loot object
-                    lootFactory.createTreasureLootObject(event.getPlayer().getName(), event.getClickedBlock()
+                    lootFactory.createTreasureLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , settingStorage.getRewardLevel());
                 }
 
                 LootChat.successfullyCreatedLootObject(event.getPlayer(), lootObjectStorage.getLootObject(event.getClickedBlock().getLocation()));
 
-                createMode.remove(event.getPlayer().getName());   // remove create action from cache
+                createMode.remove(event.getPlayer().getUniqueId());   // remove create action from cache
                 event.setCancelled(true);
                 return;
             }
@@ -202,7 +203,7 @@ public class PlayerListener implements Listener {
     public void onInventoryOpen(InventoryOpenEvent event) {
 
         LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getInventory());
-        if(lootHost == null) return;
+        if (lootHost == null) return;
 
         Block block = lootHost.getBlock(event.getInventory());
 
@@ -235,18 +236,18 @@ public class PlayerListener implements Listener {
 
 
         // fill public loot chest if cooldown over
-        if(lootObject instanceof PublicLootObject) {
-            loot = lootObject.loot(entity.getName());
-            if(loot.size() > 0) {
+        if (lootObject instanceof PublicLootObject) {
+            loot = lootObject.loot(entity.getUniqueId());
+            if (loot.size() > 0) {
                 event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
             }
             return;
         }
 
         // lock loot object
-        inventoryLocks.put(entity.getName(), lootObject);
+        inventoryLocks.put(entity.getUniqueId(), lootObject);
         boolean admin = false;
-        if (adminMode.contains(entity.getName())) {
+        if (adminMode.contains(entity.getUniqueId())) {
             admin = true;
             LootChat.info((Player) entity, "Du befindest dich im Admin-Modus!");
             // fill loot object with all table entries
@@ -256,7 +257,7 @@ public class PlayerListener implements Listener {
                 loot.add(entry.getItem());
             }
         } else {
-            loot = lootObject.loot(entity.getName());
+            loot = lootObject.loot(entity.getUniqueId());
         }
         // set loot
         event.getInventory().clear();
@@ -277,12 +278,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        if (inventoryLocks.containsKey(event.getPlayer().getName())) {
-            LootObject lootObject = inventoryLocks.get(event.getPlayer().getName());
-            inventoryLocks.remove(event.getPlayer().getName());
+        if (inventoryLocks.containsKey(event.getPlayer().getUniqueId())) {
+            LootObject lootObject = inventoryLocks.get(event.getPlayer().getUniqueId());
+            inventoryLocks.remove(event.getPlayer().getUniqueId());
 
             // drop not cleared items if loot object isn't infinite
-            if (!adminMode.contains(event.getPlayer().getName())) {
+            if (!adminMode.contains(event.getPlayer().getUniqueId())) {
 
                 if (!(lootObject instanceof TimedLootObject) || (((TimedLootObject) lootObject).getCooldown() != 0)) {
                     for (ItemStack itemStack : event.getInventory().getContents()) {
@@ -310,11 +311,11 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuiet(PlayerQuitEvent event) {
 
-        if (inventoryLocks.containsKey(event.getPlayer().getName())) {
-            inventoryLocks.remove(event.getPlayer().getName());
+        if (inventoryLocks.containsKey(event.getPlayer().getUniqueId())) {
+            inventoryLocks.remove(event.getPlayer().getUniqueId());
         }
-        editorMode.remove(event.getPlayer().getName());
-        adminMode.remove(event.getPlayer().getName());
-        createMode.remove(event.getPlayer().getName());
+        editorMode.remove(event.getPlayer().getUniqueId());
+        adminMode.remove(event.getPlayer().getUniqueId());
+        createMode.remove(event.getPlayer().getUniqueId());
     }
 }

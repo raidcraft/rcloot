@@ -35,46 +35,46 @@ public class LootCommands {
         //TODO probably add help
     }
 
-//    @Command(
-//            aliases = {"lcap"},
-//            desc = "Place automatic chests"
-//    )
-//    @CommandPermissions("autoplace.cmd")
-//    public void autoplace(CommandContext context, CommandSender sender) throws CommandException {
-//
-//        if(context.getString(0).equalsIgnoreCase("resume")) {
-//            if(AutomaticPlacer.INST.config.lastRunning) {
-//                Bukkit.broadcastMessage("Resume placement...");
-//                AutomaticPlacer.INST.resume();
-//            }
-//            else {
-//                Bukkit.broadcastMessage("Nothing to resume!");
-//            }
-//        }
-//
-//        if(context.getString(0).equalsIgnoreCase("start")) {
-//            Player player = (Player)sender;
-//            AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(1));
-//        }
-//
-//        if(context.getString(0).equalsIgnoreCase("delete")) {
-//
-//            int i = 0;
-//            Map<Integer, Map<Integer, List<LootObject>>> lootObjectsCopy = new HashMap<>(LootFactory.INST.getLootObjects());
-//            for(Map.Entry<Block, LootObject> entry : lootObjectsCopy.entrySet()) {
-//                if(entry.getValue().getCreator().contains("AutomaticPlacer")) {
-//                    i++;
-//                    entry.getKey().setType(Material.AIR);
-//                    LootFactory.INST.deleteLootObject(entry.getValue(), false);
-//
-//                    if(i % 100 == 0) {
-//                        Bukkit.broadcastMessage("LCAP removed: " + i);
-//                    }
-//                }
-//            }
-//            Bukkit.broadcastMessage("LCAP removed all ap chests!");
-//        }
-//    }
+    //    @Command(
+    //            aliases = {"lcap"},
+    //            desc = "Place automatic chests"
+    //    )
+    //    @CommandPermissions("autoplace.cmd")
+    //    public void autoplace(CommandContext context, CommandSender sender) throws CommandException {
+    //
+    //        if(context.getString(0).equalsIgnoreCase("resume")) {
+    //            if(AutomaticPlacer.INST.config.lastRunning) {
+    //                Bukkit.broadcastMessage("Resume placement...");
+    //                AutomaticPlacer.INST.resume();
+    //            }
+    //            else {
+    //                Bukkit.broadcastMessage("Nothing to resume!");
+    //            }
+    //        }
+    //
+    //        if(context.getString(0).equalsIgnoreCase("start")) {
+    //            Player player = (Player)sender;
+    //            AutomaticPlacer.INST.run(player.getWorld(), context.getInteger(1));
+    //        }
+    //
+    //        if(context.getString(0).equalsIgnoreCase("delete")) {
+    //
+    //            int i = 0;
+    //            Map<Integer, Map<Integer, List<LootObject>>> lootObjectsCopy = new HashMap<>(LootFactory.INST.getLootObjects());
+    //            for(Map.Entry<Block, LootObject> entry : lootObjectsCopy.entrySet()) {
+    //                if(entry.getValue().getCreator().contains("AutomaticPlacer")) {
+    //                    i++;
+    //                    entry.getKey().setType(Material.AIR);
+    //                    LootFactory.INST.deleteLootObject(entry.getValue(), false);
+    //
+    //                    if(i % 100 == 0) {
+    //                        Bukkit.broadcastMessage("LCAP removed: " + i);
+    //                    }
+    //                }
+    //            }
+    //            Bukkit.broadcastMessage("LCAP removed all ap chests!");
+    //        }
+    //    }
 
     @Command(
             aliases = {"autorefill", "infinite"},
@@ -84,7 +84,7 @@ public class LootCommands {
     public void infinite(CommandContext context, CommandSender sender) throws CommandException {
 
         if (!PlayerListener.createMode.containsKey(sender.getName())) {
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(0).setDrops(SettingStorage.ALL));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(0).setDrops(SettingStorage.ALL));
         }
         LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
     }
@@ -106,7 +106,7 @@ public class LootCommands {
         public void reload(CommandContext context, CommandSender sender) throws CommandException {
 
             RaidCraft.getComponent(LootPlugin.class).reload();
-//            AutomaticPlacer.INST.config.reload();
+            //            AutomaticPlacer.INST.config.reload();
             LootChat.info((Player) sender, "Das Loot-Plugin wurde neugeladen!");
         }
 
@@ -117,7 +117,7 @@ public class LootCommands {
         @CommandPermissions("loot.delete")
         public void delete(CommandContext context, CommandSender sender) throws CommandException {
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.REMOVE));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.REMOVE));
             LootChat.info((Player) sender, "Klicke nun das Loot Objekt an das gelöscht werden soll!");
         }
 
@@ -132,7 +132,7 @@ public class LootCommands {
                 PlayerListener.editorMode.remove(sender.getName());
                 LootChat.info((Player) sender, "Du hast den Editor-Modus verlassen!");
             } else {
-                PlayerListener.editorMode.add(sender.getName());
+                PlayerListener.editorMode.add(((Player) sender).getUniqueId());
                 LootChat.success((Player) sender, "Du hast den Editor-Modus betreten!");
             }
         }
@@ -148,7 +148,7 @@ public class LootCommands {
                 PlayerListener.adminMode.remove(sender.getName());
                 LootChat.info((Player) sender, "Du hast den Admin-Modus verlassen!");
             } else {
-                PlayerListener.adminMode.add(sender.getName());
+                PlayerListener.adminMode.add(((Player) sender).getUniqueId());
                 LootChat.success((Player) sender, "Du hast den Admin-Modus betreten!");
             }
         }
@@ -171,7 +171,7 @@ public class LootCommands {
                 drops = context.getInteger(1);
             }
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(cooldown).setDrops(drops));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(cooldown).setDrops(drops));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
@@ -189,7 +189,7 @@ public class LootCommands {
                 return;
             }
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.PUBLIC).setCooldown(cooldown));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.PUBLIC).setCooldown(cooldown));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
@@ -205,7 +205,7 @@ public class LootCommands {
                 drops = context.getInteger(0);
             }
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
@@ -222,16 +222,16 @@ public class LootCommands {
             }
 
             int rewardLevel = context.getInteger(0);
-
+            Player player = (Player) sender;
             try {
                 TreasureRewardLevel.getLinkedTable(rewardLevel);
             } catch (NoLinkedRewardTableException e) {
-                LootChat.warn((Player) sender, "Die angegebene Belohungsstufe existiert nicht!");
+                LootChat.warn(player, "Die angegebene Belohungsstufe existiert nicht!");
                 return;
             }
 
-            PlayerListener.createMode.put(sender.getName(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setRewardLevel(rewardLevel));
-            LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+            PlayerListener.createMode.put(player.getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TREASURE).setRewardLevel(rewardLevel));
+            LootChat.info(player, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
         @Command(
@@ -244,7 +244,7 @@ public class LootCommands {
         public void createTable(CommandContext args, CommandSender sender) {
 
             int minLoot = args.getInteger(1);
-            PlayerListener.createLootTable.put(sender.getName(), new LootTableCreation(args.getString(0), minLoot, args.getInteger(2, minLoot)));
+            PlayerListener.createLootTable.put(((Player) sender).getUniqueId(), new LootTableCreation(args.getString(0), minLoot, args.getInteger(2, minLoot)));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
     }

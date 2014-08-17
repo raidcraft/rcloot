@@ -14,17 +14,19 @@ import java.util.List;
  * Description:
  */
 public class WorldGuardManager {
+
     public final static WorldGuardManager INST = new WorldGuardManager();
     private WorldGuardPlugin worldGuard;
 
     public WorldGuardManager() {
+
         worldGuard = (WorldGuardPlugin) Bukkit.getPluginManager().getPlugin("WorldGuard");
     }
 
     public List<String> getLocatedRegions(Location location) {
 
         List<String> regions = new ArrayList<>();
-        for(ProtectedRegion region : worldGuard.getRegionManager(location.getWorld()).getApplicableRegions(location)) {
+        for (ProtectedRegion region : worldGuard.getRegionManager(location.getWorld()).getApplicableRegions(location)) {
             regions.add(region.getId());
         }
         return regions;

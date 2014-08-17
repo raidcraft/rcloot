@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: Philip
@@ -17,9 +18,9 @@ public interface LootObject {
 
     public int getId();
 
-    public void setCreator(String player);
+    public void setCreator(UUID player);
 
-    public String getCreator();
+    public UUID getCreator();
 
     public void setCreated(long created);
 
@@ -37,5 +38,5 @@ public interface LootObject {
 
     public void setHostLocation(Location block);
 
-    public List<ItemStack> loot(String player);
+    public List<ItemStack> loot(UUID player);
 }

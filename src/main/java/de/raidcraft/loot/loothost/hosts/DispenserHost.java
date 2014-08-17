@@ -37,7 +37,7 @@ public class DispenserHost implements LootHost {
     @Override
     public boolean validateInventory(Inventory inventory) {
 
-        if(inventory.getType() == InventoryType.DISPENSER && inventory.getName().toLowerCase().contains("dispenser")) {
+        if (inventory.getType() == InventoryType.DISPENSER && inventory.getName().toLowerCase().contains("dispenser")) {
             return true;
         }
         return false;

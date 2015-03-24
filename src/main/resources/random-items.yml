@@ -1,0 +1,16 @@
+count: 3
+entries:
+    trash:
+        type: filtered-custom-items
+        count: 1
+        probability: 10
+        args:
+            min-level: 1
+            max-level: 7
+            qualities:
+                - POOR
+                - COMMON
+            types:
+                - TRASH
+            bind-types:
+                - NONE

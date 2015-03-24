@@ -1,0 +1,7 @@
+count: 3
+entries:
+    money:
+        type: table
+        always: true
+        args:
+            name: random-money

@@ -3,5 +3,23 @@ entries:
     money:
         type: table
         always: true
+        unique: true
         args:
             name: random-money
+    level-dependent-table:
+        type: table
+        unique: true
+        probability: 0.1
+        args:
+            name: level-dependent-table
+    random-items:
+        type: table
+        probability: 10
+        count: 3
+        args:
+            name: random-items
+    exp:
+        type: rcskills.exp
+        probability: 1
+        args:
+            amount: 100

@@ -1,0 +1,11 @@
+type: level-dependent-items
+count: 1
+args:
+    lower-diff: 7
+    upper-diff: 7
+    qualities:
+        - COMMON
+        - UNCOMMON
+    types:
+        - ARMOR
+        - WEAPON

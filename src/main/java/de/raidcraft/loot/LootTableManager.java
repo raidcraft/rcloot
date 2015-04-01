@@ -48,21 +48,14 @@ public class LootTableManager {
                 addTable(lootTable);
             }
         }
-        // lets also load all our configured random loot tables
-        File path = new File(plugin.getDataFolder(), "random-tables");
-        path.mkdirs();
-        for (File file : path.listFiles()) {
-            String name = file.getName().replace(".yml", "");
-            levelDependantTables.put(name, new HashMap<>());
-            randomLootTableConfigs.put(name, plugin.configure(new RandomLootTableConfig(plugin, file), false));
-        }
-        // TODO: remove the other loot table code and replace with this
         // lets test the new loot table loading system
         File lootTablesPath = new File(plugin.getDataFolder(), "loot-tables");
         loadLootTables(lootTablesPath, "");
         // initiate the loading process for all tables after they were loaded
         // tables can reference other tables so this needs to happen after loading all files
-        queuedTables.stream().filter(table -> table instanceof Loadable).forEach(table -> ((Loadable) table).load());
+        queuedTables.stream()
+                .filter(table -> table instanceof Loadable)
+                .forEach(table -> ((Loadable) table).load());
         queuedTables.clear();
     }
 

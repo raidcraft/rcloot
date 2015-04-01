@@ -1,82 +1,34 @@
 package de.raidcraft.loot.loottables;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.items.CustomItem;
-import de.raidcraft.api.items.CustomItemManager;
-import de.raidcraft.api.items.ItemQuality;
-import de.raidcraft.api.items.ItemType;
-import de.raidcraft.loot.RandomLootTableConfig;
-import de.raidcraft.loot.api.table.AbstractLootTable;
-import de.raidcraft.loot.api.table.AbstractLootTableEntry;
-import de.raidcraft.loot.api.table.AbstractLootTableQuality;
-
-import java.util.List;
-import java.util.Map;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSObjectFactory;
+import de.raidcraft.items.loottables.FilteredItemsTable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * @author Silthus
  */
-public class LevelDependantLootTable extends AbstractLootTable {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class LevelDependantLootTable extends FilteredItemsTable {
 
-    private final int level;
+    @RDSObjectFactory.Name("level-dependent-items")
+    public static class Factory implements RDSObjectFactory {
 
-    public LevelDependantLootTable(RandomLootTableConfig config, int level) {
+        @Override
+        public RDSObject createInstance(ConfigurationSection config) {
 
-        super(-1);
-        this.level = level;
-        setMinMaxLootItems(config.getMinLoot(), config.getMaxLoot());
-
-        Map<ItemQuality, Double> qualities = config.getItemQualities();
-        for (ItemQuality quality : qualities.keySet()) {
-            AbstractLootTableQuality tableQuality = new AbstractLootTableQuality(-1, quality) {
-                @Override
-                public void save() {
-                    // dont save
-                }
-            };
-            tableQuality.setChance(qualities.get(quality));
-            tableQuality.setMinAmount(1);
-            tableQuality.setMaxAmount(1);
-            addQuality(tableQuality);
-        }
-
-        Map<ItemType, Double> itemTypes = config.getItemTypes();
-        List<CustomItem> items = RaidCraft.getComponent(CustomItemManager.class).getLoadedCustomItems();
-        for (CustomItem item : items) {
-            if (itemTypes.containsKey(item.getType()) && qualities.containsKey(item.getQuality())) {
-                // lets check the item level
-                if (item.getItemLevel() > getLevel() - config.getLowerLevelDiff() && item.getItemLevel() < getLevel() + config.getUpperLevelDiff()) {
-                    AbstractLootTableEntry entry = new AbstractLootTableEntry(-1) {
-                        @Override
-                        public void save() {
-                            // dont save
-                        }
-
-                        @Override
-                        protected void delete() {
-                            // dont delete
-                        }
-                    };
-                    entry.setChance(itemTypes.get(item.getType()));
-                    entry.setItem(item.createNewItem());
-                    addEntry(entry);
-                }
-            }
+            return new LevelDependantLootTable(config, config.getInt("level", 1));
         }
     }
 
-    public int getLevel() {
+    private final ConfigurationSection config;
 
-        return level;
-    }
+    public LevelDependantLootTable(ConfigurationSection config, int level) {
 
-    @Override
-    public void save() {
-        // non persistant
-    }
-
-    @Override
-    public void delete() {
-        // non persistant
+        super(config, level - config.getInt("lower-diff", 0), level + config.getInt("upper-diff", 0));
+        this.config = config;
     }
 }

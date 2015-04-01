@@ -67,7 +67,7 @@ public class LootTableManager {
         }
         for (File file : files) {
             if (file.isDirectory()) {
-                loadLootTables(path, base + file.getName().toLowerCase() + ".");
+                loadLootTables(file, base + file.getName().toLowerCase() + ".");
             } else if (file.getName().endsWith(".yml")) {
                 SimpleConfiguration<LootPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
                 RDSTable table = null;

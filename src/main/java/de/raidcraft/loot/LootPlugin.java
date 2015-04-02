@@ -4,6 +4,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.random.RDS;
 import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
@@ -15,11 +16,13 @@ import de.raidcraft.loot.loothost.hosts.ChestHost;
 import de.raidcraft.loot.loothost.hosts.DispenserHost;
 import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
+import de.raidcraft.loot.loottables.LevelDependantLootTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.tables.TLootTableQuality;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,8 @@ public class LootPlugin extends BasePlugin implements Component {
         registerTable(LootObjectsTable.class, new LootObjectsTable());
         registerTable(LootPlayersTable.class, new LootPlayersTable());
 
+        loadConfig();
+
         registerCommands(LootCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BlockListener());
@@ -59,7 +64,12 @@ public class LootPlugin extends BasePlugin implements Component {
         lootHostManager.registerLootHost(new DropperHost());
         lootHostManager.registerLootHost(new DispenserHost());
 
-        lootTableManager.load();
+        RDS.registerObject(new LevelDependantLootTable.Factory());
+
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            lootTableManager.load();
+            lootObjectStorage.reload();
+        }, 1L);
         // register auto chest placer
         //        new AutomaticPlacer();
 
@@ -69,8 +79,6 @@ public class LootPlugin extends BasePlugin implements Component {
         //                AutomaticPlacer.INST.resume();
         //            }
         //        }, 10*20);
-
-        reload();
     }
 
     @Override

@@ -13,9 +13,9 @@ import de.raidcraft.loot.loottables.LevelDependantLootTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +29,12 @@ public class LootTableManager {
     private final LootPlugin plugin;
     private final Map<Integer, LootTable> cachedTables = new HashMap<>();
     private final Map<String, Map<Integer, RDSTable>> levelDependantTables = new CaseInsensitiveMap<>();
-    private final Map<String, RandomLootTableConfig> randomLootTableConfigs = new CaseInsensitiveMap<>();
     private final Map<String, Integer> aliasTables = new CaseInsensitiveMap<>();
-    private final List<RDSTable> queuedTables = new ArrayList<>();
+    private final Map<RDSTable, ConfigurationSection> queuedTables = new HashMap<>();
 
     protected LootTableManager(LootPlugin plugin) {
 
         this.plugin = plugin;
-        load();
     }
 
     public void load() {
@@ -53,9 +51,9 @@ public class LootTableManager {
         loadLootTables(lootTablesPath, "");
         // initiate the loading process for all tables after they were loaded
         // tables can reference other tables so this needs to happen after loading all files
-        queuedTables.stream()
-                .filter(table -> table instanceof Loadable)
-                .forEach(table -> ((Loadable) table).load());
+        queuedTables.entrySet().stream()
+                .filter(entry -> entry.getKey() instanceof Loadable)
+                .forEach(entry -> ((Loadable) entry.getKey()).load(entry.getValue()));
         queuedTables.clear();
     }
 
@@ -80,11 +78,11 @@ public class LootTableManager {
                         }
                     }
                 } else {
-                    table = new ConfiguredRDSTable(config);
+                    table = new ConfiguredRDSTable();
                 }
                 if (table != null) {
                     RDS.registerTable(plugin, base + file.getName().replace(".yml", ""), table, config);
-                    queuedTables.add(table);
+                    queuedTables.put(table, config);
                 }
             }
         }
@@ -94,7 +92,6 @@ public class LootTableManager {
 
         cachedTables.clear();
         aliasTables.clear();
-        randomLootTableConfigs.clear();
         levelDependantTables.clear();
         RDS.unregisterTables(plugin);
         load();

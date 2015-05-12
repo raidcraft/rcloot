@@ -17,6 +17,7 @@ import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
@@ -219,6 +220,13 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        if (entity.getGameMode() == GameMode.SPECTATOR || entity.getGameMode() == GameMode.CREATIVE) {
+            if (!adminMode.contains(entity.getUniqueId())) {
+                LootChat.warn((Player) entity, "Du kannst in diesem Gamemode keine Lootkisten öffnen.");
+                event.setCancelled(true);
+            }
+        }
+
         if (!lootHost.canBeOpened() && !entity.hasPermission("loot.admin")) {
             LootChat.warn((Player) entity, "Du hast keine Rechte um Loot-Dispenser zu öffnen!");
             event.setCancelled(true);
@@ -233,7 +241,6 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             return;
         }
-
 
         // fill public loot chest if cooldown over
         if (lootObject instanceof PublicLootObject) {

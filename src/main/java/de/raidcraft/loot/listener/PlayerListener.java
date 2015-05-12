@@ -1,6 +1,9 @@
 package de.raidcraft.loot.listener;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.Dropable;
+import de.raidcraft.api.random.Obtainable;
+import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
@@ -15,6 +18,7 @@ import de.raidcraft.loot.commands.LootTableCreation;
 import de.raidcraft.loot.editor.EditorModeFactory;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.util.LootChat;
+import de.raidcraft.util.InventoryUtils;
 import de.raidcraft.util.ItemUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -35,10 +39,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Author: Philip
@@ -233,7 +239,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        List<ItemStack> loot;
+        Collection<RDSObject> loot;
 
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {
@@ -245,8 +251,12 @@ public class PlayerListener implements Listener {
         // fill public loot chest if cooldown over
         if (lootObject instanceof PublicLootObject) {
             loot = lootObject.loot(entity.getUniqueId());
-            if (loot.size() > 0) {
-                event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+            if (!loot.isEmpty()) {
+                List<ItemStack> items = loot.stream()
+                        .filter(object -> object instanceof Dropable)
+                        .map(object1 -> ((Dropable) object1).getItemStack())
+                        .collect(Collectors.toList());
+                event.getInventory().setContents(items.toArray(new ItemStack[items.size()]));
             }
             return;
         }
@@ -258,10 +268,10 @@ public class PlayerListener implements Listener {
             admin = true;
             LootChat.info((Player) entity, "Du befindest dich im Admin-Modus!");
             // fill loot object with all table entries
-            List<LootTableEntry> entries = lootObject.getLootTable().getEntries();
+            Collection<RDSObject> entries = lootObject.getLootTable().getContents();
             loot = new ArrayList<>();
-            for (LootTableEntry entry : entries) {
-                loot.add(entry.getItem());
+            for (RDSObject entry : entries) {
+                loot.add(entry);
             }
         } else {
             loot = lootObject.loot(entity.getUniqueId());
@@ -303,14 +313,14 @@ public class PlayerListener implements Listener {
 
             // fill dispenser otherwise the dispenser event won't be called
             if (event.getInventory().getType() == InventoryType.DISPENSER) {
-                List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
+                Collection<RDSObject> loot = lootObject.loot(LootFactory.ANY);
                 event.getInventory().clear();
-                if (loot.size() == 0) loot.add(new ItemStack(Material.STONE, 1));    // force add item if database error occurred
-                for (ItemStack item : loot) {
-                    // create item stack
-                    ItemStack newItemStack = item.clone();
-                    event.getInventory().addItem(newItemStack);
+                if (loot.isEmpty()) {
+                    return;
                 }
+                loot.stream().filter(object -> object instanceof Obtainable)
+                        .forEach(object -> ((Obtainable) object)
+                                .addTo((Player) event.getPlayer()));
             }
         }
     }

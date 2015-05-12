@@ -1,6 +1,9 @@
 package de.raidcraft.loot.listener;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.Dropable;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.api.object.LootObject;
@@ -16,10 +19,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,8 +63,15 @@ public class BlockListener implements Listener {
         }
 
         LootObject lootObject = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation());
-        List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-        if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
+        RDSTable lootTable = lootObject.getLootTable();
+        int count = lootTable.getCount();
+        lootTable.setCount(1);
+        Collection<RDSObject> loot = lootObject.loot(LootFactory.ANY);
+        lootTable.setCount(count);
+        if (loot.isEmpty()) {
+            event.setCancelled(true);
+            return;
+        }
 
         Inventory inventory;
         if (event.getBlock().getState() instanceof Dispenser) {
@@ -71,11 +80,13 @@ public class BlockListener implements Listener {
             inventory = ((Dropper) event.getBlock().getState()).getInventory();
         }
 
-        loot.stream().forEach(l -> {
-            if (event.getItem().getType().name().equals(l.getType().name())) {
-                inventory.addItem(event.getItem());
+        for (RDSObject rdsObject : loot) {
+            if (rdsObject instanceof Dropable) {
+                event.setItem(((Dropable) rdsObject).getItemStack());
+                inventory.addItem(((Dropable) rdsObject).getItemStack())
+                break;
             }
-        });
+        }
     }
 
     public class TNTPlacerTask implements Runnable {

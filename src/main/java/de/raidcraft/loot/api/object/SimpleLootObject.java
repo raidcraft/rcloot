@@ -1,16 +1,15 @@
 package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.loot.api.table.LootTable;
-import de.raidcraft.loot.api.table.LootTableEntry;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -24,7 +23,7 @@ public class SimpleLootObject implements LootObject {
     @Getter
     private int id = 0;
     @Getter
-    private LootTable lootTable;
+    private RDSTable lootTable;
     private Location hostLocation;
     @Setter
     @Getter
@@ -49,7 +48,7 @@ public class SimpleLootObject implements LootObject {
 
 
     @Override
-    public void assignLootTable(LootTable lootTable) {
+    public void assignLootTable(RDSTable lootTable) {
 
         this.lootTable = lootTable;
     }
@@ -67,19 +66,14 @@ public class SimpleLootObject implements LootObject {
     }
 
     @Override
-    public List<ItemStack> loot(UUID player) {
+    public Collection<RDSObject> loot(UUID player) {
 
-        List<ItemStack> loot = new ArrayList<>();
         // player not yet looted
         if (id != 0 && !RaidCraft.getTable(LootPlayersTable.class).hasLooted(player, id)) {
-            for (LootTableEntry entry : getLootTable().loot()) {
-                loot.add(entry.getItem().clone());
-            }
-
+            RaidCraft.getTable(LootPlayersTable.class).addEntry(player, id, System.currentTimeMillis() / 1000);
+            return getLootTable().getResult();
             // remember loot
-            RaidCraft.getTable(LootPlayersTable.class)
-                    .addEntry(player, id, System.currentTimeMillis() / 1000);
         }
-        return loot;
+        return new ArrayList<>();
     }
 }

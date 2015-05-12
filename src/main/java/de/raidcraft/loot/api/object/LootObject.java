@@ -1,10 +1,10 @@
 package de.raidcraft.loot.api.object;
 
-import de.raidcraft.loot.api.table.LootTable;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSTable;
 import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 /**
@@ -30,13 +30,13 @@ public interface LootObject {
 
     public boolean isEnabled();
 
-    public LootTable getLootTable();
+    public RDSTable getLootTable();
 
-    public void assignLootTable(LootTable lootTable);
+    public void assignLootTable(RDSTable lootTable);
 
     public Location getHostLocation();
 
     public void setHostLocation(Location block);
 
-    public List<ItemStack> loot(UUID player);
+    public Collection<RDSObject> loot(UUID player);
 }

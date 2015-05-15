@@ -10,12 +10,12 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface EditorItem {
 
-    public ItemStack getItem();
+    ItemStack getItem();
 
-    public void run(PlayerInteractEvent event);
+    void run(PlayerInteractEvent event);
 
-    public void actionRightClick(PlayerInteractEvent event);
+    void actionRightClick(PlayerInteractEvent event);
 
-    public void actionLeftClick(PlayerInteractEvent event);
+    void actionLeftClick(PlayerInteractEvent event);
 
 }

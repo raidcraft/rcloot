@@ -7,7 +7,7 @@ package de.raidcraft.loot.api.object;
  */
 public interface TreasureLootObject {
 
-    public void setRewardLevel(int rewardLevel);
+    void setRewardLevel(int rewardLevel);
 
-    public int getRewardLevel();
+    int getRewardLevel();
 }

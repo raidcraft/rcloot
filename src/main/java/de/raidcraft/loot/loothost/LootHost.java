@@ -10,17 +10,17 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface LootHost {
 
-    public Material getMaterial();
+    Material getMaterial();
 
-    public ItemStack[] getContents(Block block);
+    ItemStack[] getContents(Block block);
 
-    public void clearContent(Block block);
+    void clearContent(Block block);
 
-    public boolean validateInventory(Inventory inventory);
+    boolean validateInventory(Inventory inventory);
 
-    public Block getBlock(Inventory inventory);
+    Block getBlock(Inventory inventory);
 
-    public boolean canBeOpened();
+    boolean canBeOpened();
 
-    public boolean halfTreasureChance(Inventory inventory);
+    boolean halfTreasureChance(Inventory inventory);
 }

@@ -7,7 +7,7 @@ package de.raidcraft.loot.api.object;
  */
 public interface TimedLootObject extends LootObject {
 
-    public void setCooldown(int cooldown);
+    void setCooldown(int cooldown);
 
-    public int getCooldown();
+    int getCooldown();
 }

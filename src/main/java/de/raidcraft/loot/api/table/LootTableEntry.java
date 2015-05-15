@@ -9,21 +9,21 @@ import org.bukkit.inventory.ItemStack;
  */
 public interface LootTableEntry {
 
-    public int getId();
+    int getId();
 
-    public ItemStack getItem();
+    ItemStack getItem();
 
-    public void setItem(ItemStack item);
+    void setItem(ItemStack item);
 
-    public void setItem(String id);
+    void setItem(String id);
 
-    public int getAmount();
+    int getAmount();
 
-    public void setAmount(int amount);
+    void setAmount(int amount);
 
-    public double getChance();
+    double getChance();
 
-    public void setChance(double chance);
+    void setChance(double chance);
 
-    public void save();
+    void save();
 }

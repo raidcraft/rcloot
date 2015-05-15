@@ -12,39 +12,39 @@ import java.util.Set;
  */
 public interface LootTable {
 
-    public int getId();
+    int getId();
 
-    public void setEntries(List<LootTableEntry> entries);
+    void setEntries(List<LootTableEntry> entries);
 
-    public void addEntry(LootTableEntry entry);
+    void addEntry(LootTableEntry entry);
 
-    public boolean removeEntry(LootTableEntry entry);
+    boolean removeEntry(LootTableEntry entry);
 
-    public List<LootTableEntry> getEntries();
+    List<LootTableEntry> getEntries();
 
-    public LootTableQuality getQuality(ItemQuality quality);
+    LootTableQuality getQuality(ItemQuality quality);
 
-    public void setQualities(Set<LootTableQuality> qualities);
+    void setQualities(Set<LootTableQuality> qualities);
 
-    public void addQuality(LootTableQuality quality);
+    void addQuality(LootTableQuality quality);
 
-    public LootTableQuality removeQuality(LootTableQuality quality);
+    LootTableQuality removeQuality(LootTableQuality quality);
 
-    public Set<LootTableQuality> getQualities();
+    Set<LootTableQuality> getQualities();
 
-    public void setMinMaxLootItems(int min, int max);
+    void setMinMaxLootItems(int min, int max);
 
-    public void setMinLootItems(int min);
+    void setMinLootItems(int min);
 
-    public int getMinLootItems();
+    int getMinLootItems();
 
-    public void setMaxLootItems(int max);
+    void setMaxLootItems(int max);
 
-    public int getMaxLootItems();
+    int getMaxLootItems();
 
-    public List<LootTableEntry> loot();
+    List<LootTableEntry> loot();
 
-    public void save();
+    void save();
 
-    public void delete();
+    void delete();
 }

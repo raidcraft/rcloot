@@ -14,29 +14,29 @@ import java.util.UUID;
  */
 public interface LootObject {
 
-    public void setId(int id);
+    void setId(int id);
 
-    public int getId();
+    int getId();
 
-    public void setCreator(UUID player);
+    void setCreator(UUID player);
 
-    public UUID getCreator();
+    UUID getCreator();
 
-    public void setCreated(long created);
+    void setCreated(long created);
 
-    public long getCreated();
+    long getCreated();
 
-    public void setEnabled(boolean enabled);
+    void setEnabled(boolean enabled);
 
-    public boolean isEnabled();
+    boolean isEnabled();
 
-    public RDSTable getLootTable();
+    RDSTable getLootTable();
 
-    public void assignLootTable(RDSTable lootTable);
+    void assignLootTable(RDSTable lootTable);
 
-    public Location getHostLocation();
+    Location getHostLocation();
 
-    public void setHostLocation(Location block);
+    void setHostLocation(Location block);
 
-    public Collection<RDSObject> loot(UUID player);
+    Collection<RDSObject> loot(UUID player);
 }

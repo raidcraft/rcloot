@@ -7,21 +7,21 @@ import de.raidcraft.api.items.ItemQuality;
  */
 public interface LootTableQuality {
 
-    public int getId();
+    int getId();
 
-    public ItemQuality getQuality();
+    ItemQuality getQuality();
 
-    public int getMinAmount();
+    int getMinAmount();
 
-    public void setMinAmount(int minAmount);
+    void setMinAmount(int minAmount);
 
-    public int getMaxAmount();
+    int getMaxAmount();
 
-    public void setMaxAmount(int maxAmount);
+    void setMaxAmount(int maxAmount);
 
-    public double getChance();
+    double getChance();
 
-    public void setChance(double chance);
+    void setChance(double chance);
 
-    public void save();
+    void save();
 }

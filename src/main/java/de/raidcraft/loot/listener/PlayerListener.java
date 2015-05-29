@@ -224,6 +224,7 @@ public class PlayerListener implements Listener {
             if (!adminMode.contains(entity.getUniqueId())) {
                 LootChat.warn((Player) entity, "Du kannst in diesem Gamemode keine Lootkisten öffnen.");
                 event.setCancelled(true);
+                return;
             }
         }
 

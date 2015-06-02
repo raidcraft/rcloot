@@ -131,12 +131,25 @@ public class LootTableManager {
             }
             LevelDependantLootTable lootTable = new LevelDependantLootTable(((LevelDependantLootTable) table.get()).getConfig(), level);
             levelDependantTables.get(name).put(level, lootTable);
+            updateLevelDependantTables(lootTable, level);
             return lootTable;
         }
         if (table.isPresent()) {
+            updateLevelDependantTables(table.get(), level);
             return table.get();
         }
         return null;
+    }
+
+    private void updateLevelDependantTables(RDSTable table, int level) {
+
+        for (RDSObject object : table.getContents()) {
+            if (object instanceof LevelDependantLootTable) {
+                ((LevelDependantLootTable) object).setLevel(level);
+            } else if (object instanceof RDSTable) {
+                updateLevelDependantTables((RDSTable) object, level);
+            }
+        }
     }
 
     public String getIdStringList() {

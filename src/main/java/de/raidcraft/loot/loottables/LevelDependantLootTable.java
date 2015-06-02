@@ -31,4 +31,12 @@ public class LevelDependantLootTable extends FilteredItemsTable {
         super(config, level - config.getInt("lower-diff", 0), level + config.getInt("upper-diff", 0));
         this.config = config;
     }
+
+    public void setLevel(int level) {
+
+        clearContents();
+        config.set("min-level", level - config.getInt("lower-diff", 0));
+        config.set("max-level", level + config.getInt("upper-diff", 0));
+        load(config);
+    }
 }

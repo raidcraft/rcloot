@@ -24,19 +24,21 @@ public class LevelDependantLootTable extends FilteredItemsTable {
         }
     }
 
-    private final ConfigurationSection config;
+    private int lowerDiff;
+    private int upperDiff;
 
     public LevelDependantLootTable(ConfigurationSection config, int level) {
 
         super(config, level - config.getInt("lower-diff", 0), level + config.getInt("upper-diff", 0));
-        this.config = config;
+        this.lowerDiff = config.getInt("lower-diff", 0);
+        this.upperDiff = config.getInt("upper-diff", 0);
     }
 
     public void setLevel(int level) {
 
         clearContents();
-        config.set("min-level", level - config.getInt("lower-diff", 0));
-        config.set("max-level", level + config.getInt("upper-diff", 0));
-        load(config);
+        this.minItemLevel = level - lowerDiff;
+        this.maxItemLevel = level - upperDiff;
+        load(args);
     }
 }

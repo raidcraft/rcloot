@@ -129,7 +129,7 @@ public class LootTableManager {
             if (!levelDependantTables.containsKey(name)) {
                 levelDependantTables.put(name, new HashMap<>());
             }
-            LevelDependantLootTable lootTable = new LevelDependantLootTable(((LevelDependantLootTable) table.get()).getArgs(), level);
+            LevelDependantLootTable lootTable = ((LevelDependantLootTable) table.get()).createInstance();
             levelDependantTables.get(name).put(level, lootTable);
             updateLevelDependantTables(lootTable, level);
             return lootTable;
@@ -146,6 +146,7 @@ public class LootTableManager {
         for (RDSObject object : table.getContents()) {
             if (object instanceof LevelDependantLootTable) {
                 ((LevelDependantLootTable) object).setLevel(level);
+                ((LevelDependantLootTable) object).loadItems();
             } else if (object instanceof RDSTable) {
                 updateLevelDependantTables((RDSTable) object, level);
             }

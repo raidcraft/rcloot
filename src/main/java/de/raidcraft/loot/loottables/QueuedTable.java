@@ -3,7 +3,6 @@ package de.raidcraft.loot.loottables;
 import de.raidcraft.api.random.Loadable;
 import de.raidcraft.api.random.RDSTable;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 
 /**
  * @author Silthus
@@ -22,8 +21,7 @@ public class QueuedTable {
     public void load() {
 
         if (table instanceof Loadable) {
-            ConfigurationSection args = config.getConfigurationSection("args");
-            ((Loadable) table).load(args == null ? new MemoryConfiguration() : args);
+            ((Loadable) table).load(config);
         }
     }
 }

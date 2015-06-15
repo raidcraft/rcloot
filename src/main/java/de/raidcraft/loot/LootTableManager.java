@@ -143,6 +143,10 @@ public class LootTableManager {
 
     private void updateLevelDependantTables(RDSTable table, int level) {
 
+        if (table instanceof LevelDependantLootTable) {
+            ((LevelDependantLootTable) table).setLevel(level);
+            ((LevelDependantLootTable) table).loadItems();
+        }
         for (RDSObject object : table.getContents()) {
             if (object instanceof LevelDependantLootTable) {
                 ((LevelDependantLootTable) object).setLevel(level);

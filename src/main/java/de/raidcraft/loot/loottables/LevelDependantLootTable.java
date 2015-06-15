@@ -38,7 +38,7 @@ public class LevelDependantLootTable extends FilteredItemsTable {
 
         clearContents();
         this.minItemLevel = level - lowerDiff;
-        this.maxItemLevel = level - upperDiff;
+        this.maxItemLevel = level + upperDiff;
         load(args);
     }
 }

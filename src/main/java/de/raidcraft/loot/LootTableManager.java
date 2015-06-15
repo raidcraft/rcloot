@@ -129,7 +129,7 @@ public class LootTableManager {
             if (!levelDependantTables.containsKey(name)) {
                 levelDependantTables.put(name, new HashMap<>());
             }
-            LevelDependantLootTable lootTable = new LevelDependantLootTable(((LevelDependantLootTable) table.get()).getConfig(), level);
+            LevelDependantLootTable lootTable = new LevelDependantLootTable(((LevelDependantLootTable) table.get()).getArgs(), level);
             levelDependantTables.get(name).put(level, lootTable);
             updateLevelDependantTables(lootTable, level);
             return lootTable;

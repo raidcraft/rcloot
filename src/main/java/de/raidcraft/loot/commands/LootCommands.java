@@ -6,14 +6,24 @@ import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.Dropable;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Author: Philip
@@ -91,11 +101,11 @@ public class LootCommands {
 
     public static class NestedLootCommands {
 
-        private final LootPlugin module;
+        private final LootPlugin plugin;
 
-        public NestedLootCommands(LootPlugin module) {
+        public NestedLootCommands(LootPlugin plugin) {
 
-            this.module = module;
+            this.plugin = plugin;
         }
 
         @Command(
@@ -246,6 +256,36 @@ public class LootCommands {
             int minLoot = args.getInteger(1);
             PlayerListener.createLootTable.put(((Player) sender).getUniqueId(), new LootTableCreation(args.getString(0), minLoot, args.getInteger(2, minLoot)));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
+        }
+
+        @Command(
+                aliases = {"simulate"},
+                desc = "Simulates the looting of the given loot table",
+                usage = "<table> <level>",
+                min = 1
+        )
+        @CommandPermissions("loot.simulate")
+        public void simulate(CommandContext args, CommandSender sender) throws CommandException {
+
+            RDSTable table = plugin.getLootTableManager().getLevelDependantLootTable(args.getString(0), args.getInteger(1, 1));
+            if (table == null) {
+                throw new CommandException("The loot table " + args.getString(0) + " does not exist!");
+            }
+            Collection<RDSObject> result = table.getResult();
+            Inventory inventory = Bukkit.createInventory((Player) sender, 54);
+            for (RDSObject rdsObject : result) {
+                if (rdsObject instanceof Dropable) {
+                    ItemStack itemStack = ((Dropable) rdsObject).getItemStack();
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    List<String> lore = itemMeta.getLore();
+                    lore.add("Chance: " + rdsObject.getProbability());
+                    lore.add("Source: " + rdsObject.getTable());
+                    itemMeta.setLore(lore);
+                    itemStack.setItemMeta(itemMeta);
+                    inventory.addItem(itemStack);
+                }
+            }
+            ((Player) sender).openInventory(inventory);
         }
     }
 }

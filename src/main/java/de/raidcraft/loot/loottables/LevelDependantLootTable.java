@@ -63,6 +63,6 @@ public class LevelDependantLootTable extends FilteredItemsTable implements RDSOb
     public void setLevel(int level) {
 
         this.minItemLevel = level - lowerDiff;
-        this.maxItemLevel = level - upperDiff;
+        this.maxItemLevel = level + upperDiff;
     }
 }

@@ -53,6 +53,7 @@ public class TrappedChestHost implements LootHost {
             DoubleChest doubleChest = (DoubleChest) inventory.getHolder();
             block = doubleChest.getLocation().getBlock();
         } else {
+            if (!(inventory.getHolder() instanceof BlockState)) return null;
             block = ((BlockState) inventory.getHolder()).getBlock();
         }
 

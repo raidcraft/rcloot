@@ -207,6 +207,7 @@ public class PlayerListener implements Listener {
         if (lootHost == null) return;
 
         Block block = lootHost.getBlock(event.getInventory());
+        if (block == null) return;
 
         LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
         LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());

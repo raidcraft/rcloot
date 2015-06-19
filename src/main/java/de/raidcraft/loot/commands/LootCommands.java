@@ -16,6 +16,7 @@ import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -271,21 +272,26 @@ public class LootCommands {
             if (table == null) {
                 throw new CommandException("The loot table " + args.getString(0) + " does not exist!");
             }
-            Collection<RDSObject> result = table.getResult();
+            int count = 0;
+            Collection<RDSObject> result;
+            do {
+                count++;
+                result = table.getResult();
+            } while (result.isEmpty());
+
             Inventory inventory = Bukkit.createInventory((Player) sender, 54);
-            for (RDSObject rdsObject : result) {
-                if (rdsObject instanceof Dropable) {
-                    ItemStack itemStack = ((Dropable) rdsObject).getItemStack();
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    List<String> lore = itemMeta.getLore();
-                    lore.add("Chance: " + rdsObject.getProbability());
-                    lore.add("Source: " + rdsObject.getTable());
-                    itemMeta.setLore(lore);
-                    itemStack.setItemMeta(itemMeta);
-                    inventory.addItem(itemStack);
-                }
-            }
+            result.stream().filter(rdsObject -> rdsObject instanceof Dropable).forEach(rdsObject -> {
+                ItemStack itemStack = ((Dropable) rdsObject).getItemStack();
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                List<String> lore = itemMeta.getLore();
+                lore.add("Chance: " + rdsObject.getProbability());
+                lore.add("Source: " + rdsObject.getTable());
+                itemMeta.setLore(lore);
+                itemStack.setItemMeta(itemMeta);
+                inventory.addItem(itemStack);
+            });
             ((Player) sender).openInventory(inventory);
+            sender.sendMessage(ChatColor.GREEN + "Looted " + count + "x to get any loot.");
         }
     }
 }

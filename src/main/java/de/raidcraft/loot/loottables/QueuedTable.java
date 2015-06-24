@@ -10,18 +10,18 @@ import org.bukkit.configuration.ConfigurationSection;
 public class QueuedTable {
 
     private final RDSTable table;
-    private final ConfigurationSection config;
+    private final ConfigurationSection args;
 
-    public QueuedTable(RDSTable table, ConfigurationSection config) {
+    public QueuedTable(RDSTable table, ConfigurationSection args) {
 
         this.table = table;
-        this.config = config;
+        this.args = args;
     }
 
     public void load() {
 
         if (table instanceof Loadable) {
-            ((Loadable) table).load(config);
+            ((Loadable) table).load(args);
         }
     }
 }

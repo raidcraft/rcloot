@@ -13,6 +13,7 @@ import de.raidcraft.loot.loottables.QueuedTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,10 +68,11 @@ public class LootTableManager {
             } else if (file.getName().endsWith(".yml")) {
                 SimpleConfiguration<LootPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
                 RDSTable table = null;
+                ConfigurationSection args = config.getSafeConfigSection("args");
                 if (config.isSet("type")) {
                     Optional<RDSObjectFactory> creator = RDS.getObjectCreator(config.getString("type"));
                     if (creator.isPresent()) {
-                        RDSObject rdsObject = creator.get().createInstance(config.getSafeConfigSection("args"));
+                        RDSObject rdsObject = creator.get().createInstance(args);
                         if (rdsObject instanceof RDSTable) {
                             table = (RDSTable) rdsObject;
                         }
@@ -80,7 +82,7 @@ public class LootTableManager {
                 }
                 if (table != null) {
                     RDS.registerTable(plugin, base + file.getName().replace(".yml", ""), table, config);
-                    queuedTables.add(new QueuedTable(table, config));
+                    queuedTables.add(new QueuedTable(table, args));
                 }
             }
         }

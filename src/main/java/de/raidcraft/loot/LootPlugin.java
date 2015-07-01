@@ -10,6 +10,7 @@ import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.listener.BlockListener;
+import de.raidcraft.loot.listener.InventoryListener;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.loothost.LootHostManager;
 import de.raidcraft.loot.loothost.hosts.ChestHost;
@@ -52,6 +53,7 @@ public class LootPlugin extends BasePlugin implements Component {
         registerCommands(LootCommands.class);
         registerEvents(new PlayerListener());
         registerEvents(new BlockListener());
+        registerEvents(new InventoryListener(this));
 
         lootObjectStorage = new LootObjectStorage();
         lootFactory = new LootFactory(this);

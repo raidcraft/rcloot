@@ -3,9 +3,7 @@ package de.raidcraft.loot;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
-import de.raidcraft.api.random.RDSObjectFactory;
 import de.raidcraft.api.random.RDSTable;
-import de.raidcraft.api.random.tables.ConfiguredRDSTable;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.LevelDependantLootTable;
@@ -13,7 +11,7 @@ import de.raidcraft.loot.loottables.QueuedTable;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
-import org.bukkit.configuration.ConfigurationSection;
+import de.raidcraft.util.ConfigUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,23 +65,20 @@ public class LootTableManager {
                 loadLootTables(file, base + file.getName().toLowerCase() + ".");
             } else if (file.getName().endsWith(".yml")) {
                 SimpleConfiguration<LootPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-                RDSTable table = null;
-                ConfigurationSection args = config.getSafeConfigSection("args");
-                if (config.isSet("type")) {
-                    Optional<RDSObjectFactory> creator = RDS.getObjectCreator(config.getString("type"));
-                    if (creator.isPresent()) {
-                        RDSObject rdsObject = creator.get().createInstance(args);
-                        if (rdsObject instanceof RDSTable) {
-                            table = (RDSTable) rdsObject;
-                        }
-                    }
-                } else {
-                    table = new ConfiguredRDSTable();
+                Optional<RDSObject> object = RDS.createObject(config.getString("type", "table"), config, false);
+                if (!object.isPresent()) {
+                    plugin.getLogger().warning("Could not find loot table with type: "
+                            + config.getString("type", "table") + " in " + ConfigUtil.getFileName(config));
+                    continue;
                 }
-                if (table != null) {
-                    RDS.registerTable(plugin, base + file.getName().replace(".yml", ""), table, config);
-                    queuedTables.add(new QueuedTable(table, args));
+                RDSObject rdsObject = object.get();
+                if (!(rdsObject instanceof RDSTable)) {
+                    plugin.getLogger().warning(ConfigUtil.getFileName(config) + " is not a loot table!");
+                    continue;
                 }
+                RDSTable table = (RDSTable) rdsObject;
+                RDS.registerTable(plugin, base + file.getName().replace(".yml", ""), table, config);
+                queuedTables.add(new QueuedTable(table, config.getSafeConfigSection("args")));
             }
         }
     }

@@ -15,6 +15,7 @@ import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.listener.PlayerListener;
 import de.raidcraft.loot.util.LootChat;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -168,14 +169,15 @@ public class LootCommands {
         @Command(
                 aliases = {"timed"},
                 min = 1,
+                help = "<cooldown: 30s> [drops: default to all]",
                 desc = "Creates an timed loot object"
         )
         @CommandPermissions("loot.create")
         public void timed(CommandContext context, CommandSender sender) throws CommandException {
 
-            int cooldown = context.getInteger(0);
+            double cooldown = TimeUtil.ticksToSeconds(TimeUtil.parseTimeAsTicks(context.getString(0)));
             if (cooldown < 0) {
-                LootChat.warn((Player) sender, "Der Cooldown muss größer 0 sein!");
+                LootChat.warn((Player) sender, "Der Cooldown muss größer 0s sein!");
                 return;
             }
             int drops = SettingStorage.ALL;
@@ -183,7 +185,7 @@ public class LootCommands {
                 drops = context.getInteger(1);
             }
 
-            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(cooldown).setDrops(drops));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown((int) cooldown).setDrops(drops));
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 

@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -273,11 +274,18 @@ public class LootCommands {
                 throw new CommandException("The loot table " + args.getString(0) + " does not exist!");
             }
             int count = 0;
-            Collection<RDSObject> result;
-            do {
-                count++;
+            Collection<RDSObject> result = new ArrayList<>();
+            for (int i = 0; i < 1000; i++) {
                 result = table.getResult();
-            } while (result.isEmpty());
+                if (!result.isEmpty()) {
+                    count = i;
+                    break;
+                }
+            }
+
+            if (result.isEmpty()) {
+                throw new CommandException("Could not get a valid result after 1000 iterations! Is the loot table configured correctly?");
+            }
 
             Inventory inventory = Bukkit.createInventory((Player) sender, 54);
             result.stream().filter(rdsObject -> rdsObject instanceof Dropable).forEach(rdsObject -> {

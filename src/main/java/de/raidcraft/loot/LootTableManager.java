@@ -1,6 +1,6 @@
 package de.raidcraft.loot;
 
-import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.api.config.ConfigLoader;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.api.random.RDSTable;
@@ -12,13 +12,9 @@ import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
+import org.bukkit.configuration.ConfigurationSection;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Philip Urban
@@ -46,41 +42,29 @@ public class LootTableManager {
             }
         }
         // lets test the new loot table loading system
-        File lootTablesPath = new File(plugin.getDataFolder(), "loot-tables");
-        loadLootTables(lootTablesPath, "");
-        // initiate the loading process for all tables after they were loaded
-        // tables can reference other tables so this needs to happen after loading all files
-        queuedTables.forEach(QueuedTable::load);
-        queuedTables.clear();
-    }
-
-    private void loadLootTables(File path, String base) {
-
-        File[] files = path.listFiles();
-        if (files == null) {
-            return;
-        }
-        for (File file : files) {
-            if (file.isDirectory()) {
-                loadLootTables(file, base + file.getName().toLowerCase() + ".");
-            } else if (file.getName().endsWith(".yml")) {
-                SimpleConfiguration<LootPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        ConfigUtil.loadRecursiveConfigs(plugin, "loot-tables", new ConfigLoader(plugin) {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
                 Optional<RDSObject> object = RDS.createObject(config.getString("type", "table"), config, false);
                 if (!object.isPresent()) {
                     plugin.getLogger().warning("Could not find loot table with type: "
                             + config.getString("type", "table") + " in " + ConfigUtil.getFileName(config));
-                    continue;
+                    return;
                 }
                 RDSObject rdsObject = object.get();
                 if (!(rdsObject instanceof RDSTable)) {
                     plugin.getLogger().warning(ConfigUtil.getFileName(config) + " is not a loot table!");
-                    continue;
+                    return;
                 }
                 RDSTable table = (RDSTable) rdsObject;
-                RDS.registerTable(plugin, base + file.getName().replace(".yml", ""), table, config);
-                queuedTables.add(new QueuedTable(table, config.getSafeConfigSection("args")));
+                RDS.registerTable(plugin, id, table, config);
+                queuedTables.add(new QueuedTable(table, config.getConfigurationSection("args")));
             }
-        }
+        });
+        // initiate the loading process for all tables after they were loaded
+        // tables can reference other tables so this needs to happen after loading all files
+        queuedTables.forEach(QueuedTable::load);
+        queuedTables.clear();
     }
 
     public void reload() {

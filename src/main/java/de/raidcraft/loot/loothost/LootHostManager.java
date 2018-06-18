@@ -32,6 +32,8 @@ public class LootHostManager {
 
     public LootHost getLootHost(Inventory inventory) {
 
+        if (inventory == null) return null;
+
         for (LootHost lootHost : registeredHosts.values()) {
 
             if (lootHost.validateInventory(inventory)) {

@@ -4,14 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.database.Table;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.LootTableManager;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.object.PublicLootObject;
-import de.raidcraft.loot.api.object.SimpleLootObject;
-import de.raidcraft.loot.api.object.SimplePublicLootObject;
-import de.raidcraft.loot.api.object.SimpleTimedLootObject;
-import de.raidcraft.loot.api.object.SimpleTreasureLootObject;
-import de.raidcraft.loot.api.object.TimedLootObject;
-import de.raidcraft.loot.api.object.TreasureLootObject;
+import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.database.LootDatabase;
 import de.raidcraft.loot.exceptions.NoLinkedRewardTableException;
 import de.raidcraft.loot.util.TreasureRewardLevel;
@@ -52,7 +45,7 @@ public class LootObjectsTable extends Table {
                             "`y` INT( 11 ) NOT NULL ,\n" +
                             "`z` INT( 11 ) NOT NULL ,\n" +
                             "`cooldown` INT( 11 ) NOT NULL ,\n" +
-                            "`creator` VARCHAR ( 32 ) NOT NULL ,\n" +
+                            "`creator` VARCHAR ( 40 ) NOT NULL ,\n" +
                             "`creator_id` VARCHAR ( 40 ) NOT NULL ,\n" +
                             "`created` BIGINT( 20 ) NOT NULL , \n" +
                             "`enabled` TINYINT( 1 ) DEFAULT 1,\n" +
@@ -223,7 +216,7 @@ public class LootObjectsTable extends Table {
                     "'" + object.getHostLocation().getBlockY() + "'" + "," +
                     "'" + object.getHostLocation().getBlockZ() + "'" + "," +
                     "'" + cooldown + "'" + "," +
-                    "'" + object.getCreator() + "'" + "," +
+                    "'" + object.getCreator().toString() + "'" + "," +
                     "'" + object.getCreated() + "'" + "," +
                     "'" + ((object.isEnabled()) ? 1 : 0) + "'" + "," +
                     "'" + rewardLevel + "'" + "," +

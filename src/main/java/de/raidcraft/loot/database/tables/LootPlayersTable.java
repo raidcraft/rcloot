@@ -1,7 +1,9 @@
 package de.raidcraft.loot.database.tables;
 
 import de.raidcraft.api.database.Table;
+import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.database.LootDatabase;
+import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,8 +29,8 @@ public class LootPlayersTable extends Table {
                     "CREATE TABLE `" + getTableName() + "` (\n" +
                             "`id` INT NOT NULL AUTO_INCREMENT ,\n" +
                             "`object_id` INT( 11 ) NOT NULL ,\n" +
-                            "`player` VARCHAR( 32 ) NOT NULL ,\n" +
-                            "`player_id` VARCHAR( 32 ) NOT NULL ,\n" +
+                            "`player` VARCHAR( 40 ) NOT NULL ,\n" +
+                            "`player_id` VARCHAR( 40 ) NOT NULL ,\n" +
                             "`timestamp` BIGINT( 20 ) NOT NULL , \n" +
                             "PRIMARY KEY ( `id` )\n" +
                             ")");
@@ -41,10 +43,11 @@ public class LootPlayersTable extends Table {
 
         try {
             executeUpdate(
-                    "INSERT INTO " + getTableName() + " (object_id, player_id, timestamp) " +
+                    "INSERT INTO " + getTableName() + " (object_id, player, player_id, timestamp) " +
                             "VALUES (" +
                             "'" + objectId + "'" + "," +
-                            "'" + player + "'" + "," +
+                            "'" + (LootFactory.ANY.equals(player) ? "ANY" : Bukkit.getPlayer(player).getDisplayName()) + "'" + "," +
+                            "'" + player.toString() + "'" + "," +
                             "'" + timestamp + "'" +
                             ");"
             );
@@ -58,7 +61,7 @@ public class LootPlayersTable extends Table {
         try {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName()
-                            + " WHERE player_id = '" + player
+                            + " WHERE player_id = '" + player.toString()
                             + "' AND object_id = '" + objectId + "';");
 
             while (resultSet.next()) {
@@ -78,7 +81,7 @@ public class LootPlayersTable extends Table {
         try {
             ResultSet resultSet = executeQuery(
                     "SELECT * FROM " + getTableName()
-                            + " WHERE player_id = '" + player
+                            + " WHERE player_id = '" + player.toString()
                             + "' AND object_id = '" + objectId + "' ORDER BY timestamp DESC;");
 
             while (resultSet.next()) {

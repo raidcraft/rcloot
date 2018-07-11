@@ -1,16 +1,20 @@
 package de.raidcraft.loot;
 
+import lombok.Data;
+
 /**
  * Author: Philip
  * Date: 29.10.12 - 05:20
  * Description:
  */
+@Data
 public class SettingStorage {
 
     public final static int ALL = -1;
     private SETTING_TYPE type;
     private int cooldown = 0;
-    private int drops = ALL;
+    private int minLoot = ALL;
+    private int maxLoot = minLoot;
     private int rewardLevel = 0;
 
     public SettingStorage(SETTING_TYPE type) {
@@ -29,14 +33,14 @@ public class SettingStorage {
         return this;
     }
 
-    public int getDrops() {
+    public int getMinLoot() {
 
-        return drops;
+        return minLoot;
     }
 
-    public SettingStorage setDrops(int drops) {
+    public SettingStorage setMinLoot(int minLoot) {
 
-        this.drops = drops;
+        this.minLoot = minLoot;
         return this;
     }
 

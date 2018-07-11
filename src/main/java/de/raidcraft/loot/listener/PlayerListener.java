@@ -4,11 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.object.LootObjectStorage;
-import de.raidcraft.loot.api.object.PublicLootObject;
-import de.raidcraft.loot.api.object.TimedLootObject;
-import de.raidcraft.loot.api.object.TreasureLootObject;
+import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.commands.LootTableCreation;
@@ -34,11 +30,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Author: Philip
@@ -82,7 +74,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         if (createLootTableEntries.containsKey(event.getPlayer().getUniqueId())) {
@@ -165,21 +157,25 @@ public class PlayerListener implements Listener {
                     lootFactory.createTimedLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
                             , settingStorage.getCooldown()
-                            , settingStorage.getDrops());
+                            , settingStorage.getMinLoot(),
+                            settingStorage.getMaxLoot());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.PUBLIC) {
                     // create public loot object
                     lootFactory.createPublicLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
                             , items
-                            , settingStorage.getCooldown());
+                            , settingStorage.getCooldown(),
+                            settingStorage.getMinLoot(),
+                            settingStorage.getMaxLoot());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.DEFAULT) {
                     // create default loot object
                     lootFactory.createDefaultLootObject(event.getPlayer().getUniqueId(), event.getClickedBlock()
-                            , items
-                            , settingStorage.getDrops());
+                            , items,
+                            settingStorage.getMinLoot(),
+                            settingStorage.getMaxLoot());
                 }
 
                 if (settingStorage.getType() == SettingStorage.SETTING_TYPE.TREASURE) {

@@ -1,15 +1,7 @@
 package de.raidcraft.loot;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.object.LootObjectStorage;
-import de.raidcraft.loot.api.object.PublicLootObject;
-import de.raidcraft.loot.api.object.SimpleLootObject;
-import de.raidcraft.loot.api.object.SimplePublicLootObject;
-import de.raidcraft.loot.api.object.SimpleTimedLootObject;
-import de.raidcraft.loot.api.object.SimpleTreasureLootObject;
-import de.raidcraft.loot.api.object.TimedLootObject;
-import de.raidcraft.loot.api.object.TreasureLootObject;
+import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
@@ -72,6 +64,12 @@ public class LootFactory {
                 itemCount++;
             }
         }
+
+        if (minLoot < 0) {
+            minLoot = itemCount;
+        }
+        if (maxLoot < minLoot) maxLoot = minLoot;
+
         TLootTable tLootTable = new TLootTable();
         plugin.getDatabase().save(tLootTable);
         LootTable lootTable = new DatabaseLootTable(tLootTable.getId());
@@ -159,18 +157,9 @@ public class LootFactory {
         }
     }
 
-    public void createTimedLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int drops) {
+    public void createTimedLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int minLoot, int maxLoot) {
 
-        int itemCount = 0;
-        for (ItemStack item : items) {
-            if (item != null) {
-                itemCount++;
-            }
-        }
-        if (drops != SettingStorage.ALL) {
-            itemCount = drops;
-        }
-        LootTable lootTable = createLootTable(items, itemCount, itemCount);
+        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
         // create loot object
         SimpleTimedLootObject timedLootObject = new SimpleTimedLootObject();
         timedLootObject.setCooldown(cooldown);
@@ -187,18 +176,9 @@ public class LootFactory {
         lootObjectStorage.registerLootObject(timedLootObject);
     }
 
-    public void createDefaultLootObject(UUID creator, Block block, ItemStack[] items, int drops) {
+    public void createDefaultLootObject(UUID creator, Block block, ItemStack[] items, int minLoot, int maxLoot) {
 
-        int itemCount = 0;
-        for (ItemStack item : items) {
-            if (item != null) {
-                itemCount++;
-            }
-        }
-        if (drops != SettingStorage.ALL) {
-            itemCount = drops;
-        }
-        LootTable lootTable = createLootTable(items, itemCount, itemCount);
+        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
         // create loot object
         SimpleLootObject lootObject = new SimpleLootObject();
         lootObject.setHostLocation(block.getLocation());
@@ -214,15 +194,9 @@ public class LootFactory {
         lootObjectStorage.registerLootObject(lootObject);
     }
 
-    public void createPublicLootObject(UUID creator, Block block, ItemStack[] items, int cooldown) {
+    public void createPublicLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int minLoot, int maxLoot) {
 
-        int itemCount = 0;
-        for (ItemStack item : items) {
-            if (item != null) {
-                itemCount++;
-            }
-        }
-        LootTable lootTable = createLootTable(items, itemCount, itemCount);
+        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
         // create loot object
         SimplePublicLootObject publicLootObject = new SimplePublicLootObject();
         publicLootObject.setCooldown(cooldown);

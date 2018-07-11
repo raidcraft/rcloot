@@ -1,10 +1,6 @@
 package de.raidcraft.loot.commands;
 
-import com.sk89q.minecraft.util.commands.Command;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.minecraft.util.commands.CommandPermissions;
-import com.sk89q.minecraft.util.commands.NestedCommand;
+import com.sk89q.minecraft.util.commands.*;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.random.Dropable;
 import de.raidcraft.api.random.RDSObject;
@@ -91,13 +87,14 @@ public class LootCommands {
 
     @Command(
             aliases = {"autorefill", "infinite"},
-            desc = "Creates an infinite dispenser or chest"
+            desc = "Creates an infinite dispenser or chest",
+            help = "Creates an inifnite dispenser or loot chest."
     )
     @CommandPermissions("loot.create")
     public void infinite(CommandContext context, CommandSender sender) throws CommandException {
 
         if (!PlayerListener.createMode.containsKey(sender.getName())) {
-            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(0).setDrops(SettingStorage.ALL));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown(0).setMinLoot(SettingStorage.ALL));
         }
         LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
     }
@@ -169,7 +166,7 @@ public class LootCommands {
         @Command(
                 aliases = {"timed"},
                 min = 1,
-                help = "<cooldown: 30s> [drops: default to all]",
+                help = "<cooldown: 30s> [min: minimum items a player gets] [max: maximum items a player gets]",
                 desc = "Creates an timed loot object"
         )
         @CommandPermissions("loot.create")
@@ -180,19 +177,21 @@ public class LootCommands {
                 LootChat.warn((Player) sender, "Der Cooldown muss größer 0s sein!");
                 return;
             }
-            int drops = SettingStorage.ALL;
-            if (context.argsLength() > 1 && context.getInteger(1) > 0) {
-                drops = context.getInteger(1);
-            }
 
-            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.TIMED).setCooldown((int) cooldown).setDrops(drops));
+            SettingStorage settings = new SettingStorage(SettingStorage.SETTING_TYPE.TIMED);
+            settings.setCooldown((int) cooldown)
+                    .setMinLoot(context.getInteger(1, SettingStorage.ALL))
+                    .setMaxLoot(context.getInteger(2, settings.getMinLoot()));
+
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), settings);
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
         @Command(
                 aliases = {"public"},
                 min = 1,
-                desc = "Creates an timed loot object"
+                desc = "Creates an timed loot object",
+                help = "<cooldown: 30s> [min: minimum items a player gets] [max: maximum items a player gets]"
         )
         @CommandPermissions("loot.public")
         public void publicLoot(CommandContext context, CommandSender sender) throws CommandException {
@@ -203,23 +202,28 @@ public class LootCommands {
                 return;
             }
 
-            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.PUBLIC).setCooldown(cooldown));
+            SettingStorage settings = new SettingStorage(SettingStorage.SETTING_TYPE.PUBLIC);
+            settings.setCooldown((int) cooldown)
+                    .setMinLoot(context.getInteger(1, SettingStorage.ALL))
+                    .setMaxLoot(context.getInteger(2, settings.getMinLoot()));
+
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), settings);
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 
         @Command(
                 aliases = {"default"},
-                desc = "Creates an default loot object"
+                desc = "Creates an default loot object",
+                help = "<cooldown: 30s> [min: minimum items a player gets] [max: maximum items a player gets]"
         )
         @CommandPermissions("loot.create")
         public void normal(CommandContext context, CommandSender sender) throws CommandException {
 
-            int drops = SettingStorage.ALL;
-            if (context.argsLength() > 0 && context.getInteger(0) > 0) {
-                drops = context.getInteger(0);
-            }
+            SettingStorage settings = new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT);
+            settings.setMinLoot(context.getInteger(1, SettingStorage.ALL))
+                    .setMaxLoot(context.getInteger(2, settings.getMinLoot()));
 
-            PlayerListener.createMode.put(((Player) sender).getUniqueId(), new SettingStorage(SettingStorage.SETTING_TYPE.DEFAULT).setDrops(drops));
+            PlayerListener.createMode.put(((Player) sender).getUniqueId(), settings);
             LootChat.info((Player) sender, "Klicke nun eine Kiste oder einen Dispenser an!");
         }
 

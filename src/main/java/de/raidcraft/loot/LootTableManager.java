@@ -1,5 +1,7 @@
 package de.raidcraft.loot;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
@@ -19,7 +21,7 @@ import java.util.*;
 /**
  * @author Philip Urban
  */
-public class LootTableManager {
+public class LootTableManager implements Component {
 
     private final LootPlugin plugin;
     private final Map<Integer, LootTable> cachedTables = new HashMap<>();
@@ -30,6 +32,7 @@ public class LootTableManager {
     protected LootTableManager(LootPlugin plugin) {
 
         this.plugin = plugin;
+        RaidCraft.registerComponent(LootTableManager.class, this);
     }
 
     public void load() {
@@ -151,5 +154,12 @@ public class LootTableManager {
             list += id;
         }
         return list;
+    }
+
+    public String getAlias(int lootTableId) {
+        for (Map.Entry<String, Integer> entry : aliasTables.entrySet()) {
+            if (entry.getValue() == lootTableId) return entry.getKey();
+        }
+        return null;
     }
 }

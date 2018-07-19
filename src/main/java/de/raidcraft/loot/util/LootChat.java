@@ -18,7 +18,7 @@ public class LootChat {
     public static void successfullyCreatedLootObject(Player player, LootObject lootObject) {
 
         LootChat.success(player, "Es wurde erfolgreich ein Loot-Objekt erstellt! ");
-        LootChat.info(player, RaidCraft.getComponent(LootPlugin.class).getLootFactory().getObjectInfo(player, lootObject));
+        LootChat.info(player, RaidCraft.getComponent(LootPlugin.class).getLootFactory().getObjectInfo(lootObject));
     }
 
     public static void occupiedByOtherChest(Player player) {

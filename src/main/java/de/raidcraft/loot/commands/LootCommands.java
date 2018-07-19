@@ -154,7 +154,11 @@ public class LootCommands {
         @CommandPermissions("loot.mode.admin")
         public void adminMode(CommandContext context, CommandSender sender) throws CommandException {
 
-            if (PlayerListener.adminMode.contains(sender.getName())) {
+            if (!(sender instanceof Player)) return;
+
+            if (plugin.hasHotbarSupport()) {
+                plugin.getToolbarManager().toggleLootToolbar((Player) sender);
+            } else if (PlayerListener.adminMode.contains(sender.getName())) {
                 PlayerListener.adminMode.remove(sender.getName());
                 LootChat.info((Player) sender, "Du hast den Admin-Modus verlassen!");
             } else {

@@ -122,7 +122,7 @@ public class PlayerListener implements Listener {
             LootObject existingLootObject = lootObjectStorage.getLootObject(event.getClickedBlock().getLocation());
 
             if (existingLootObject != null && event.getAction() == Action.LEFT_CLICK_BLOCK && event.getPlayer().hasPermission("loot.info")) {
-                LootChat.info(event.getPlayer(), lootFactory.getObjectInfo(event.getPlayer(), existingLootObject));
+                LootChat.info(event.getPlayer(), lootFactory.getObjectInfo(existingLootObject));
             }
 
             // no storage found

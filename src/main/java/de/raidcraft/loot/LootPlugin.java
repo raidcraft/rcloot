@@ -23,7 +23,9 @@ import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
 import de.raidcraft.loot.tables.TLootTableQuality;
 import de.raidcraft.loot.util.TreasureRewardLevel;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +39,16 @@ public class LootPlugin extends BasePlugin implements Component {
 
     public LocalConfiguration config;
 
+    @Getter
     private LootFactory lootFactory;
+    @Getter
     private LootObjectStorage lootObjectStorage;
+    @Getter
     private LootTableManager lootTableManager;
+    @Getter
     private LootHostManager lootHostManager;
+    @Getter
+    private ToolbarManager toolbarManager;
 
     @Override
     public void enable() {
@@ -68,10 +76,6 @@ public class LootPlugin extends BasePlugin implements Component {
 
         RDS.registerObject(new LevelDependantLootTable.Factory());
 
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            lootTableManager.load();
-            lootObjectStorage.reload();
-        }, 1L);
         // register auto chest placer
         //        new AutomaticPlacer();
 
@@ -81,6 +85,17 @@ public class LootPlugin extends BasePlugin implements Component {
         //                AutomaticPlacer.INST.resume();
         //            }
         //        }, 10*20);
+    }
+
+    @Override
+    public void loadDependencyConfigs() {
+        lootTableManager.load();
+        lootObjectStorage.reload();
+
+        if (hasHotbarSupport()) {
+            this.toolbarManager = new ToolbarManager(this);
+            this.toolbarManager.load();
+        }
     }
 
     @Override
@@ -95,6 +110,11 @@ public class LootPlugin extends BasePlugin implements Component {
         loadConfig();
         getLootTableManager().reload();
         getLootObjectStorage().reload();
+    }
+
+    public boolean hasHotbarSupport() {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("RCCombatBar");
+        return plugin != null && plugin.isEnabled();
     }
 
     @Override
@@ -139,25 +159,5 @@ public class LootPlugin extends BasePlugin implements Component {
 
             super(plugin, "config.yml");
         }
-    }
-
-    public LootFactory getLootFactory() {
-
-        return lootFactory;
-    }
-
-    public LootObjectStorage getLootObjectStorage() {
-
-        return lootObjectStorage;
-    }
-
-    public LootTableManager getLootTableManager() {
-
-        return lootTableManager;
-    }
-
-    public LootHostManager getLootHostManager() {
-
-        return lootHostManager;
     }
 }

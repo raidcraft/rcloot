@@ -1,6 +1,8 @@
 package de.raidcraft.loot;
 
+import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.loot.api.object.*;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
@@ -28,7 +30,7 @@ import java.util.UUID;
  * Date: 18.10.12 - 20:57
  * Description:
  */
-public class LootFactory {
+public class LootFactory implements Component {
 
     public final static UUID ANY = UUID.fromString("000000f5-2100-41cc-a05d-3ed7da445841");
     public final static UUID AutomaticPlacerSurface = UUID.fromString("000000ef-b1a0-4173-9775-e5c1352a0cf9");
@@ -40,6 +42,8 @@ public class LootFactory {
     public LootFactory(LootPlugin plugin) {
 
         this.plugin = plugin;
+        RaidCraft.registerComponent(LootFactory.class, this
+        );
         lootObjectStorage = plugin.getLootObjectStorage();
     }
 
@@ -89,7 +93,7 @@ public class LootFactory {
             DatabaseLootTableEntry entry = new DatabaseLootTableEntry(tableEntry);
             tableEntries.add(entry);
         }
-        if (alias != null && alias.equals("")) {
+        if (!Strings.isNullOrEmpty(alias)) {
             TLootTableAlias lootAlias = new TLootTableAlias();
             lootAlias.setTableAlias(alias);
             lootAlias.setLootTable(tLootTable);
@@ -213,7 +217,7 @@ public class LootFactory {
         lootObjectStorage.registerLootObject(publicLootObject);
     }
 
-    public String getObjectInfo(Player player, LootObject lootObject) {
+    public String getObjectInfo(LootObject lootObject) {
 
         String info = "Typ: ";
         if (lootObject instanceof PublicLootObject) {

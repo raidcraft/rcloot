@@ -1,6 +1,7 @@
 package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import org.bukkit.Location;
@@ -13,9 +14,13 @@ import java.util.Map;
 /**
  * @author Philip Urban
  */
-public class LootObjectStorage {
+public class LootObjectStorage implements Component {
 
     private Map<Location, LootObject> sortedObjects = new HashMap<>();
+
+    public LootObjectStorage() {
+        RaidCraft.registerComponent(LootObjectStorage.class, this);
+    }
 
     public void unregisterLootObject(LootObject lootObject) {
 

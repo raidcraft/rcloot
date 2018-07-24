@@ -3,26 +3,23 @@ package de.raidcraft.loot;
 import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
-import de.raidcraft.loot.api.object.*;
+import de.raidcraft.loot.api.object.DatabaseLootObject;
+import de.raidcraft.loot.api.object.LootObject;
+import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
-import de.raidcraft.loot.database.tables.LootObjectsTable;
-import de.raidcraft.loot.exceptions.LootTableNotExistsException;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTableEntry;
+import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
-import de.raidcraft.loot.util.LootChat;
-import de.raidcraft.loot.util.TreasureRewardLevel;
-import de.raidcraft.util.DateUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -49,9 +46,9 @@ public class LootFactory implements Component {
 
     public void deleteLootObject(LootObject lootObject, boolean andTable) {
 
-        RaidCraft.getTable(LootObjectsTable.class).deleteObject(lootObject);
+        lootObject.delete();
 
-        if (andTable && !(lootObject instanceof TreasureLootObject)) {
+        if (andTable) {
             lootObject.getLootTable().delete();
         }
 
@@ -111,131 +108,23 @@ public class LootFactory implements Component {
         return createLootTable(null, items, minLoot, maxLoot);
     }
 
-    public void createTreasureLootObject(UUID creator, Block block, int rewardLevel) {
+    public LootObject createLootObject(Block block, LootTable table) {
+        Objects.requireNonNull(block);
+        Objects.requireNonNull(table);
 
-        createTreasureLootObject(creator, block, rewardLevel, false);
-    }
+        DatabaseLootObject object = new DatabaseLootObject(new TLootObject(), table);
+        object.setHostLocation(block.getLocation());
 
-    public void createTreasureLootObject(UUID creator, Block block, int rewardLevel, boolean chat) {
-
-        Player player = Bukkit.getPlayer(creator);
-        LootObject existingLootObject = lootObjectStorage.getLootObject(block.getLocation());
-        if (existingLootObject != null) {
-            if (player != null && chat) {
-                LootChat.alreadyLootObject(player);
-            }
-            return;
-        }
-
-
-        SimpleTreasureLootObject treasureLootObject = new SimpleTreasureLootObject();
-
-        try {
-            LootTable lootTable = plugin.getLootTableManager().getTable(TreasureRewardLevel.getLinkedTable(rewardLevel));
-            if (lootTable == null) {
-                throw new LootTableNotExistsException("[Loot] Cannot load loot table");
-            }
-            treasureLootObject.assignLootTable(lootTable);
-        } catch (Throwable e) {
-            RaidCraft.LOGGER.warning("[Loot] Try to assign non existing loot table (treasure object creation)!");
-            if (player != null && chat) {
-                LootChat.failureDuringCreation(player);
-            }
-            return;
-        }
-
-        treasureLootObject.setHostLocation(block.getLocation());
-        treasureLootObject.setCreator(creator);
-        treasureLootObject.setCreated(System.currentTimeMillis() / 1000);
-        treasureLootObject.setRewardLevel(rewardLevel);
-        treasureLootObject.setEnabled(true);
-
-        // save loot object in database
-        RaidCraft.getTable(LootObjectsTable.class).addObject(treasureLootObject);
+        object.save();
 
         // register loot object in cache
-        lootObjectStorage.registerLootObject(treasureLootObject);
+        lootObjectStorage.registerLootObject(object);
 
-        if (player != null && chat) {
-            LootChat.successfullyCreatedLootObject(player, treasureLootObject);
-        }
-    }
-
-    public void createTimedLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int minLoot, int maxLoot) {
-
-        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
-        // create loot object
-        SimpleTimedLootObject timedLootObject = new SimpleTimedLootObject();
-        timedLootObject.setCooldown(cooldown);
-        timedLootObject.setHostLocation(block.getLocation());
-        timedLootObject.assignLootTable(lootTable);
-        timedLootObject.setCreator(creator);
-        timedLootObject.setCreated(System.currentTimeMillis() / 1000);
-        timedLootObject.setEnabled(true);
-
-        // save loot object in database
-        RaidCraft.getTable(LootObjectsTable.class).addObject(timedLootObject);
-
-        // register loot object in cache
-        lootObjectStorage.registerLootObject(timedLootObject);
-    }
-
-    public void createDefaultLootObject(UUID creator, Block block, ItemStack[] items, int minLoot, int maxLoot) {
-
-        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
-        // create loot object
-        SimpleLootObject lootObject = new SimpleLootObject();
-        lootObject.setHostLocation(block.getLocation());
-        lootObject.assignLootTable(lootTable);
-        lootObject.setCreator(creator);
-        lootObject.setCreated(System.currentTimeMillis() / 1000);
-        lootObject.setEnabled(true);
-
-        // save loot object in database
-        RaidCraft.getTable(LootObjectsTable.class).addObject(lootObject);
-
-        // register loot object in cache
-        lootObjectStorage.registerLootObject(lootObject);
-    }
-
-    public void createPublicLootObject(UUID creator, Block block, ItemStack[] items, int cooldown, int minLoot, int maxLoot) {
-
-        LootTable lootTable = createLootTable(items, minLoot, maxLoot);
-        // create loot object
-        SimplePublicLootObject publicLootObject = new SimplePublicLootObject();
-        publicLootObject.setCooldown(cooldown);
-        publicLootObject.setHostLocation(block.getLocation());
-        publicLootObject.assignLootTable(lootTable);
-        publicLootObject.setCreator(creator);
-        publicLootObject.setCreated(System.currentTimeMillis() / 1000);
-        publicLootObject.setEnabled(true);
-
-        // save loot object in database
-        RaidCraft.getTable(LootObjectsTable.class).addObject(publicLootObject);
-
-        // register loot object in cache
-        lootObjectStorage.registerLootObject(publicLootObject);
+        return object;
     }
 
     public String getObjectInfo(LootObject lootObject) {
 
-        String info = "Typ: ";
-        if (lootObject instanceof PublicLootObject) {
-            info += "Public-Loot-Objekt, Cooldown: "
-                    + ((TimedLootObject) lootObject).getCooldown()
-                    + "s";
-        } else if (lootObject instanceof TimedLootObject) {
-            info += "Timed-Loot-Objekt, Cooldown: "
-                    + ((TimedLootObject) lootObject).getCooldown()
-                    + "s";
-        } else if (lootObject instanceof TreasureLootObject) {
-            info += "Schatztruhe, Stufe: " + ((TreasureLootObject) lootObject).getRewardLevel();
-        } else if (lootObject instanceof SimpleLootObject) {
-            info += "Default-Loot-Objekt";
-        }
-
-        info += ", Drops: " + lootObject.getLootTable().getMinLootItems() + "-" + lootObject.getLootTable().getMaxLootItems() + ", Ersteller: " + lootObject.getCreator()
-                + ", Erstelldatum: " + DateUtil.getDateString(lootObject.getCreated() * 1000);
-        return info;
+        return lootObject.toString();
     }
 }

@@ -7,8 +7,6 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
-import de.raidcraft.loot.database.tables.LootObjectsTable;
-import de.raidcraft.loot.database.tables.LootPlayersTable;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.InventoryListener;
 import de.raidcraft.loot.listener.PlayerListener;
@@ -18,10 +16,7 @@ import de.raidcraft.loot.loothost.hosts.DispenserHost;
 import de.raidcraft.loot.loothost.hosts.DropperHost;
 import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.loottables.LevelDependantLootTable;
-import de.raidcraft.loot.tables.TLootTable;
-import de.raidcraft.loot.tables.TLootTableAlias;
-import de.raidcraft.loot.tables.TLootTableEntry;
-import de.raidcraft.loot.tables.TLootTableQuality;
+import de.raidcraft.loot.tables.*;
 import de.raidcraft.loot.util.TreasureRewardLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -52,9 +47,6 @@ public class LootPlugin extends BasePlugin implements Component {
 
     @Override
     public void enable() {
-
-        registerTable(LootObjectsTable.class, new LootObjectsTable());
-        registerTable(LootPlayersTable.class, new LootPlayersTable());
 
         loadConfig();
 
@@ -125,6 +117,8 @@ public class LootPlugin extends BasePlugin implements Component {
         tables.add(TLootTableEntry.class);
         tables.add(TLootTableQuality.class);
         tables.add(TLootTableAlias.class);
+        tables.add(TLootObject.class);
+        tables.add(TLootPlayer.class);
         return tables;
     }
 

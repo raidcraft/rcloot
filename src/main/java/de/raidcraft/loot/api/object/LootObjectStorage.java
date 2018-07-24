@@ -2,7 +2,8 @@ package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
-import de.raidcraft.loot.database.tables.LootObjectsTable;
+import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -68,10 +69,11 @@ public class LootObjectStorage implements Component {
     public void reload() {
 
         sortedObjects.clear();
-        List<LootObject> lootObjects = RaidCraft.getTable(LootObjectsTable.class).getAllObjects();
-        for (LootObject lootObject : lootObjects) {
+        List<TLootObject> objects = RaidCraft.getDatabase(LootPlugin.class).find(TLootObject.class).findList();
+        for (TLootObject dbEntry : objects) {
+            DatabaseLootObject lootObject = new DatabaseLootObject(dbEntry);
             addLootObjectHost(lootObject.getHostLocation(), lootObject);
         }
-        RaidCraft.LOGGER.info("[RCLoot] Es wurden " + lootObjects.size() + " Loot-Ojekte in den Cache geladen!");
+        RaidCraft.LOGGER.info("[RCLoot] Es wurden " + objects.size() + " Loot-Objekte in den Cache geladen!");
     }
 }

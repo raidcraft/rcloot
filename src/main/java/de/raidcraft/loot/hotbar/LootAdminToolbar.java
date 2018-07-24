@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -80,7 +81,16 @@ public class LootAdminToolbar extends Hotbar {
                         .setOnInventoryClick(this::openCreateNewLootTableMenu)
         );
         addHotbarSlot(new ActionHotbarSlot(
-                new ItemStackBuilder(Material.CHEST).item())
+                new ItemStackBuilder(Material.CHEST)
+                        .title(ChatColor.BLUE + "Loot-Tabelle auf Kiste anwenden")
+                        .lore(ChatColor.GOLD + "Auswählen: " + ChatColor.GRAY + "Kiste in Loot-Kiste umwandeln",
+                                ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Neue Loot-Kiste mit aktiver Loot-Tabelle setzen",
+                                ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Bestehende Loot-Kiste entfernen")
+                        .item())
+                .setOnSelect(this::convertChestToLootChest)
+                .setOnLeftClickInteract(this::destroyLootChest)
+                .setCancelBlockPlacement(true)
+                .setOnPlayerPlaceBlock(this::placeLootChest)
         );
     }
 
@@ -185,5 +195,31 @@ public class LootAdminToolbar extends Hotbar {
 
     private void openChooseLootTableMenu(Player player) {
 
+    }
+
+    private void convertChestToLootChest(Player player) {
+
+    }
+
+    private void destroyLootChest(PlayerInteractEvent event) {
+
+    }
+
+    private void placeLootChest(BlockPlaceEvent event) {
+
+        if (!isLootTableActive()) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Es ist keine Loot-Tabelle aktiv.");
+            return;
+        }
+
+        LootHost lootHost = getLootHostManager().getLootHost(event.getBlockPlaced());
+
+        if (lootHost == null) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Der Block ist keine gültiger Loot-Host.");
+            return;
+        }
+
+        LootObject lootObject = getLootFactory().createLootObject(event.getBlockPlaced(), getLootTable());
+        event.getPlayer().sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
     }
 }

@@ -1,9 +1,6 @@
 package de.raidcraft.loot.autoplacer;
 
-import de.raidcraft.api.database.Database;
-import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.database.tables.LootObjectsTable;
 import de.raidcraft.loot.util.WorldGuardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -60,16 +57,16 @@ public class LocationChecker {
             distance = (int) (Math.random()
                     * (AutomaticPlacer.INST.config.surfaceMaxDistance - AutomaticPlacer.INST.config.surfaceMinDistance)
                     + AutomaticPlacer.INST.config.surfaceMinDistance);
-            if (!Database.getTable(LootObjectsTable.class).isNearLootObject(surfaceLocation, distance, 20)) {
-                treasureLevel = 1;
-                chance = (int) (Math.random() * 100F);
-                if (AutomaticPlacer.INST.config.treasure2Chance > chance) {
-                    treasureLevel = 2;
-                }
-
-                surfaceLocation.getBlock().setType(Material.CHEST);
-                plugin.getLootFactory().createTreasureLootObject(LootFactory.AutomaticPlacerSurface, surfaceLocation.getBlock(), treasureLevel, false);
-            }
+//            if (!Database.getTable(LootObjectsTable.class).isNearLootObject(surfaceLocation, distance, 20)) {
+//                treasureLevel = 1;
+//                chance = (int) (Math.random() * 100F);
+//                if (AutomaticPlacer.INST.config.treasure2Chance > chance) {
+//                    treasureLevel = 2;
+//                }
+//
+//                surfaceLocation.getBlock().setType(Material.CHEST);
+//                plugin.getLootFactory().createTreasureLootObject(LootFactory.AutomaticPlacerSurface, surfaceLocation.getBlock(), treasureLevel, false);
+//            }
         }
 
         /* cave: */
@@ -99,15 +96,15 @@ public class LocationChecker {
                     * (AutomaticPlacer.INST.config.caveMaxDistance - AutomaticPlacer.INST.config.caveMinDistance)
                     + AutomaticPlacer.INST.config.caveMinDistance);
 
-            if (!Database.getTable(LootObjectsTable.class).isNearLootObject(caveLocation, distance, 10)) {
-                treasureLevel = 1;
-                chance = (int) (Math.random() * 100F);
-                if (AutomaticPlacer.INST.config.treasure2Chance > chance) {
-                    treasureLevel = 2;
-                }
-                caveLocation.getBlock().setType(Material.CHEST);
-                plugin.getLootFactory().createTreasureLootObject(LootFactory.AutomaticPlacerCave, caveLocation.getBlock(), treasureLevel, false);
-            }
+//            if (!Database.getTable(LootObjectsTable.class).isNearLootObject(caveLocation, distance, 10)) {
+//                treasureLevel = 1;
+//                chance = (int) (Math.random() * 100F);
+//                if (AutomaticPlacer.INST.config.treasure2Chance > chance) {
+//                    treasureLevel = 2;
+//                }
+//                caveLocation.getBlock().setType(Material.CHEST);
+//                plugin.getLootFactory().createTreasureLootObject(LootFactory.AutomaticPlacerCave, caveLocation.getBlock(), treasureLevel, false);
+//            }
         }
 
         printInfo();

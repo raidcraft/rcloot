@@ -14,29 +14,46 @@ import java.util.UUID;
  */
 public interface LootObject {
 
-    public void setId(int id);
-
-    public int getId();
-
-    public void setCreator(UUID player);
-
-    public UUID getCreator();
+    int getId();
 
     public void setCreated(long created);
 
     public long getCreated();
 
-    public void setEnabled(boolean enabled);
+    abstract void setEnabled(boolean enabled);
 
-    public boolean isEnabled();
+    abstract boolean isEnabled();
 
-    public LootTable getLootTable();
+    abstract LootTable getLootTable();
 
     public void assignLootTable(LootTable lootTable);
 
-    public Location getHostLocation();
+    abstract Location getHostLocation();
 
     public void setHostLocation(Location block);
 
+    boolean canLoot(UUID player);
+
+    boolean hasLooted(UUID player);
+
     public List<ItemStack> loot(UUID player);
+
+    int getCooldown();
+
+    /**
+     * If the {@link LootObject} is public the cooldown and looted players are shared.
+     */
+    boolean isPublicLootObject();
+
+    void setCooldown(int cooldown);
+
+    void setPublicLootObject(boolean publicLootObject);
+
+    boolean isInfinite();
+
+    void setInfinite(boolean infinite);
+
+    void save();
+
+    void delete();
 }

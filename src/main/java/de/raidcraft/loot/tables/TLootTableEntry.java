@@ -1,18 +1,16 @@
 package de.raidcraft.loot.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Silthus
  */
 @Entity
 @Table(name = "rcloot_table_entries")
+@Data
 public class TLootTableEntry {
 
     @Id
@@ -25,54 +23,4 @@ public class TLootTableEntry {
     private String item;
     private int amount = 1;
     private double chance = 1.0;
-
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public TLootTable getLootTable() {
-
-        return lootTable;
-    }
-
-    public void setLootTable(TLootTable lootTable) {
-
-        this.lootTable = lootTable;
-    }
-
-    public String getItem() {
-
-        return item;
-    }
-
-    public void setItem(String item) {
-
-        this.item = item;
-    }
-
-    public int getAmount() {
-
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-
-        this.amount = amount;
-    }
-
-    public double getChance() {
-
-        return chance;
-    }
-
-    public void setChance(double chance) {
-
-        this.chance = chance;
-    }
 }

@@ -2,6 +2,7 @@ package de.raidcraft.loot.tables;
 
 import com.avaje.ebean.validation.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "rcloot_table_entries")
 @Data
+@EqualsAndHashCode(of = "id")
 public class TLootTableEntry {
 
     @Id

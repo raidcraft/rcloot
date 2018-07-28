@@ -15,6 +15,7 @@ import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.loothost.LootHostManager;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,10 +26,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Data
 @HotbarName("loot-admin")
+@EqualsAndHashCode(callSuper = true)
 public class LootAdminToolbar extends Hotbar {
 
     private static final int LOOTTABLE_LOOKUP_DISTANCE = 5;
@@ -77,7 +80,7 @@ public class LootAdminToolbar extends Hotbar {
                                 .lore(ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Neue Loot-Tabelle aus Kiste",
                                         ChatColor.GOLD + "Inventar Klick: " + ChatColor.GRAY + "Neue Loot-Tabelle")
                                 .item()
-                ).setOnInteract(this::createNewLootTabelFromChest)
+                ).setOnInteract(this::createNewLootTableFromChest)
                         .setOnInventoryClick(this::openCreateNewLootTableMenu)
         );
         addHotbarSlot(new ActionHotbarSlot(
@@ -146,7 +149,7 @@ public class LootAdminToolbar extends Hotbar {
         return lootObject.getLootTable();
     }
 
-    private void createNewLootTabelFromChest(PlayerInteractEvent event) {
+    private void createNewLootTableFromChest(PlayerInteractEvent event) {
 
         LootHost lootHost = getLootHostManager().getLootHost(event.getClickedBlock());
         if (lootHost == null) {
@@ -156,30 +159,38 @@ public class LootAdminToolbar extends Hotbar {
 
         ItemStack[] contents = lootHost.getContents(event.getClickedBlock());
         Conversations.readLines(event.getPlayer(), answers -> {
-                    if (answers.length < 1) {
-                        event.getPlayer().sendMessage(ChatColor.RED + "Bitte beantworte die Fragen um eine neue Loot-Tabelle zur erstellen.");
-                        return;
-                    }
-                    String name = answers[0];
-                    ;
-                    int minLoot = contents.length;
-                    int maxLoot = minLoot;
-                    if (answers.length < 2) {
-                        event.getPlayer().sendMessage(ChatColor.GOLD + "Keine mindest Drops ausgewählt. Es droppen alle Items auf einmal.");
-                    }
-                    if (answers.length > 1) {
-                        minLoot = Integer.parseInt(answers[1]);
-                        maxLoot = minLoot;
-                        if (answers.length < 3) {
-                            event.getPlayer().sendMessage(ChatColor.GOLD + "Keine max Drops ausgewählt. Es droppen maximal " + maxLoot + " Items.");
+                    try {
+                        if (answers.length < 1) {
+                            event.getPlayer().sendMessage(ChatColor.RED + "Bitte beantworte die Fragen um eine neue Loot-Tabelle zur erstellen.");
+                            return;
                         }
+                        String name = answers[0];
+                        if (lootTableManager.getTable(name) != null) {
+                            event.getPlayer().sendMessage(ChatColor.RED + "Es gibt bereits eine Loot-Tabelle mit dem Namen '" + name + "'.");
+                            return;
+                        }
+                        int minLoot = contents.length;
+                        int maxLoot = minLoot;
+                        if (answers.length < 2) {
+                            event.getPlayer().sendMessage(ChatColor.GOLD + "Keine mindest Drops ausgewählt. Es droppen alle Items auf einmal.");
+                        }
+                        if (answers.length > 1) {
+                            minLoot = Integer.parseInt(answers[1]);
+                            maxLoot = minLoot;
+                            if (answers.length < 3) {
+                                event.getPlayer().sendMessage(ChatColor.GOLD + "Keine max Drops ausgewählt. Es droppen maximal " + maxLoot + " Items.");
+                            }
+                        }
+                        if (answers.length > 2) {
+                            maxLoot = Integer.parseInt(answers[2]);
+                        }
+                        setLootTable(getLootFactory().createLootTable(name, contents, minLoot, maxLoot));
+                        event.getPlayer().sendMessage(ChatColor.GREEN + "Es wurde erfolgreich eine neue Loot-Tabelle erstellt: " + getLootTableAlias());
+                        setLootTableActive(true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
                     }
-                    if (answers.length > 2) {
-                        maxLoot = Integer.parseInt(answers[2]);
-                    }
-                    setLootTable(getLootFactory().createLootTable(name, contents, minLoot, maxLoot));
-                    event.getPlayer().sendMessage(ChatColor.GREEN + "Es wurde erfolgreich eine neue Loot-Tabelle erstellt: " + getLootTableAlias());
-                    setLootTableActive(true);
                 }, "Wie soll die Loot-Tabelle heissen? (z.B.: mobs-default-drops)",
                 "Wie viele Items sollen mindestens droppen?",
                 "Wie viele Items sollen maximal droppen?");
@@ -199,27 +210,45 @@ public class LootAdminToolbar extends Hotbar {
 
     private void convertChestToLootChest(Player player) {
 
+        getTargetBlock(player).ifPresent(block -> createLootChest(player, block));
     }
 
     private void destroyLootChest(PlayerInteractEvent event) {
 
+        LootObject lootObject = lootObjectStorage.getLootObject(event.getClickedBlock().getLocation());
+        if (lootObject == null) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Der angeklickte Block ist kein Loot Objekt.");
+            return;
+        }
+
+        Conversations.askYesNo(event.getPlayer(), result -> lootFactory.deleteLootObject(lootObject, result),
+                "Möchtest du die dazugehörige Loot-Tabelle ebenfalls löschen?",
+                ChatColor.RED + "Alle anderen Loot-Kisten mit dieser Loot-Tabelle werden ebenfalls gelöscht.");
     }
 
     private void placeLootChest(BlockPlaceEvent event) {
 
+        createLootChest(event.getPlayer(), event.getBlockPlaced());
+    }
+
+    private void createLootChest(Player player, Block block) {
         if (!isLootTableActive()) {
-            event.getPlayer().sendMessage(ChatColor.RED + "Es ist keine Loot-Tabelle aktiv.");
+            player.sendMessage(ChatColor.RED + "Es ist keine Loot-Tabelle aktiv.");
             return;
         }
 
-        LootHost lootHost = getLootHostManager().getLootHost(event.getBlockPlaced());
+        LootHost lootHost = getLootHostManager().getLootHost(block);
 
         if (lootHost == null) {
-            event.getPlayer().sendMessage(ChatColor.RED + "Der Block ist keine gültiger Loot-Host.");
+            player.sendMessage(ChatColor.RED + "Der Block ist keine gültiger Loot-Host.");
             return;
         }
 
-        LootObject lootObject = getLootFactory().createLootObject(event.getBlockPlaced(), getLootTable());
-        event.getPlayer().sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
+        LootObject lootObject = getLootFactory().createLootObject(block, getLootTable());
+        player.sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
+    }
+
+    private Optional<Block> getTargetBlock(Player player) {
+        return Optional.ofNullable(player.getTargetBlock(LOOTTABLE_HOLDER_MATERIALS, LOOTTABLE_LOOKUP_DISTANCE));
     }
 }

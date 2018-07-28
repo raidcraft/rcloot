@@ -1,6 +1,7 @@
 package de.raidcraft.loot.tables;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,7 +10,10 @@ import java.util.List;
  * @author Silthus
  */
 
+@Entity
+@Table(name = "rcloot_tables")
 @Data
+@EqualsAndHashCode(of = "id")
 public class TLootTable {
 
     @Id

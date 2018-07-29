@@ -10,7 +10,6 @@ import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTableEntry;
-import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootTable;
 import de.raidcraft.loot.tables.TLootTableAlias;
 import de.raidcraft.loot.tables.TLootTableEntry;
@@ -112,7 +111,7 @@ public class LootFactory implements Component {
         Objects.requireNonNull(block);
         Objects.requireNonNull(table);
 
-        DatabaseLootObject object = new DatabaseLootObject(new TLootObject(), table);
+        DatabaseLootObject object = new DatabaseLootObject(block, table);
         object.setHostLocation(block.getLocation());
 
         object.save();

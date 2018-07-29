@@ -7,13 +7,7 @@ import de.raidcraft.loot.util.QualityLootTable;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.MathUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -212,5 +206,14 @@ public abstract class AbstractLootTable implements LootTable {
     public int hashCode() {
 
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "{ID: " + getId() +
+                "entries=" + entries +
+                ", minLoot=" + minLoot +
+                ", maxLoot=" + maxLoot +
+                '}';
     }
 }

@@ -9,11 +9,13 @@ import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 public class DatabaseLootObject extends AbstractLootObject {
 
-    public DatabaseLootObject(TLootObject dbEntry, LootTable table) {
-        this(dbEntry);
+    public DatabaseLootObject(Block block, LootTable table) {
+        super(-1);
+        setHostLocation(block.getLocation());
         setLootTable(table);
     }
 

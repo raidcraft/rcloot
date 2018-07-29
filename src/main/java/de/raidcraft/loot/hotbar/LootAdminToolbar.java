@@ -1,5 +1,6 @@
 package de.raidcraft.loot.hotbar;
 
+import com.google.common.collect.Sets;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.combatbar.api.Hotbar;
@@ -13,6 +14,7 @@ import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.loothost.LootHostManager;
+import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +26,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,7 +35,7 @@ import java.util.Set;
 public class LootAdminToolbar extends Hotbar {
 
     private static final int LOOTTABLE_LOOKUP_DISTANCE = 10;
-    private static final Set<Material> TRANSPARENT_BLOCKS = new HashSet<>();
+    private static final Set<Material> TRANSPARENT_BLOCKS = Sets.newHashSet(Material.AIR, Material.WATER, Material.LAVA);
 
     private final LootTableManager lootTableManager = RaidCraft.getComponent(LootTableManager.class);
     private final LootHostManager lootHostManager = RaidCraft.getComponent(LootHostManager.class);
@@ -122,6 +123,7 @@ public class LootAdminToolbar extends Hotbar {
         LootTable lootTable = getLootTable(targetBlock);
         if (lootTable == null) {
             player.sendMessage(ChatColor.RED + "Das Ziel ist kein Loot Objekt und kann nicht ausgewählt werden.");
+            return;
         }
 
         setLootTable(lootTable);
@@ -197,6 +199,7 @@ public class LootAdminToolbar extends Hotbar {
 
     private void openChooseLootTableMenu(Player player) {
 
+        Gui.open(player, new LootTableListUi(this));
     }
 
     private void convertChestToLootChest(Player player) {

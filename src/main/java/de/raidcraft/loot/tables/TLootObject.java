@@ -3,6 +3,7 @@ package de.raidcraft.loot.tables;
 import io.ebean.annotation.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.bukkit.block.Block;
 
 import javax.persistence.*;
 import java.util.List;
@@ -37,4 +38,14 @@ public class TLootObject {
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "loot_object_id")
     private List<TLootPlayer> lootPlayers;
+
+    public TLootObject() {
+    }
+
+    public TLootObject(Block block) {
+        setWorld(block.getWorld().getName());
+        setX(block.getX());
+        setY(block.getY());
+        setZ(block.getZ());
+    }
 }

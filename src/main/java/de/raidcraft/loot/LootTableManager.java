@@ -162,4 +162,8 @@ public class LootTableManager implements Component {
         }
         return null;
     }
+
+    public Collection<LootTable> getTables() {
+        return cachedTables.values();
+    }
 }

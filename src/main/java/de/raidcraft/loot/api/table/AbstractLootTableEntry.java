@@ -101,4 +101,11 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
 
         return id;
     }
+
+    @Override
+    public String toString() {
+        return amount + "x "
+                + item.getItemMeta().getDisplayName()
+                + " (" + chance + ")";
+    }
 }

@@ -24,7 +24,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -34,16 +33,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 public class LootAdminToolbar extends Hotbar {
 
-    private static final int LOOTTABLE_LOOKUP_DISTANCE = 5;
-    private static final Set<Material> LOOTTABLE_HOLDER_MATERIALS = new HashSet<>(Arrays.asList(
-            Material.CHEST,
-            Material.ENDER_CHEST,
-            Material.TRAPPED_CHEST,
-            Material.DISPENSER,
-            Material.BREWING_STAND,
-            Material.FURNACE,
-            Material.BURNING_FURNACE
-    ));
+    private static final int LOOTTABLE_LOOKUP_DISTANCE = 10;
+    private static final Set<Material> TRANSPARENT_BLOCKS = new HashSet<>();
 
     private final LootTableManager lootTableManager = RaidCraft.getComponent(LootTableManager.class);
     private final LootHostManager lootHostManager = RaidCraft.getComponent(LootHostManager.class);
@@ -126,7 +117,7 @@ public class LootAdminToolbar extends Hotbar {
     }
 
     private void selectTargetAsLootTable(Player player) {
-        Block targetBlock = player.getTargetBlock(LOOTTABLE_HOLDER_MATERIALS, LOOTTABLE_LOOKUP_DISTANCE);
+        Block targetBlock = player.getTargetBlock(TRANSPARENT_BLOCKS, LOOTTABLE_LOOKUP_DISTANCE);
 
         LootTable lootTable = getLootTable(targetBlock);
         if (lootTable == null) {
@@ -228,27 +219,30 @@ public class LootAdminToolbar extends Hotbar {
 
     private void placeLootChest(BlockPlaceEvent event) {
 
-        createLootChest(event.getPlayer(), event.getBlockPlaced());
+        if (createLootChest(event.getPlayer(), event.getBlockPlaced())) {
+            event.setCancelled(false);
+        }
     }
 
-    private void createLootChest(Player player, Block block) {
+    private boolean createLootChest(Player player, Block block) {
         if (!isLootTableActive()) {
             player.sendMessage(ChatColor.RED + "Es ist keine Loot-Tabelle aktiv.");
-            return;
+            return false;
         }
 
         LootHost lootHost = getLootHostManager().getLootHost(block);
 
         if (lootHost == null) {
             player.sendMessage(ChatColor.RED + "Der Block ist keine gültiger Loot-Host.");
-            return;
+            return false;
         }
 
         LootObject lootObject = getLootFactory().createLootObject(block, getLootTable());
         player.sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
+        return true;
     }
 
     private Optional<Block> getTargetBlock(Player player) {
-        return Optional.ofNullable(player.getTargetBlock(LOOTTABLE_HOLDER_MATERIALS, LOOTTABLE_LOOKUP_DISTANCE));
+        return Optional.ofNullable(player.getTargetBlock(TRANSPARENT_BLOCKS, LOOTTABLE_LOOKUP_DISTANCE));
     }
 }

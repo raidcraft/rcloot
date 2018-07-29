@@ -46,7 +46,7 @@ public abstract class AbstractLootTableEntry implements LootTableEntry {
     public void setItem(String id) {
 
         try {
-            this.item = RaidCraft.getItem(id);
+            this.item = RaidCraft.getSafeItem(id);
         } catch (CustomItemException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
             delete();

@@ -2,7 +2,6 @@ package de.raidcraft.loot.tables;
 
 import io.ebean.annotation.CreatedTimestamp;
 import io.ebean.annotation.NotNull;
-import io.ebean.annotation.WhenModified;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,7 +26,5 @@ public class TLootPlayer {
     @ManyToOne
     private TLootObject lootObject;
     @CreatedTimestamp
-    private Timestamp created;
-    @WhenModified
-    private Timestamp updated;
+    private Timestamp created = new Timestamp(System.currentTimeMillis());
 }

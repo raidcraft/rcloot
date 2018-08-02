@@ -14,13 +14,12 @@ import org.bukkit.block.Block;
 public class DatabaseLootObject extends AbstractLootObject {
 
     public DatabaseLootObject(Block block, LootTable table) {
-        super(-1);
         setHostLocation(block.getLocation());
         setLootTable(table);
     }
 
     public DatabaseLootObject(TLootObject dbEntry) {
-        super(dbEntry.getId());
+        setId(dbEntry.getId());
         setHostLocation(new Location(Bukkit.getWorld(dbEntry.getWorld()), dbEntry.getX(), dbEntry.getY(), dbEntry.getZ()));
         setCooldown(dbEntry.getCooldown());
         setEnabled(dbEntry.isEnabled());
@@ -51,6 +50,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         }
 
         database.save(lootObject);
+        setId(lootObject.getId());
     }
 
     @Override

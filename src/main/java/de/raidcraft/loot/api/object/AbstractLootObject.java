@@ -7,23 +7,20 @@ import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.*;
 
-/**
- * Author: Philip
- * Date: 11.10.12 - 20:16
- * Description:
- */
 @Data
 public abstract class AbstractLootObject implements LootObject {
 
-    private final int id;
+    @Setter(AccessLevel.PROTECTED)
+    private int id = -1;
     private LootTable lootTable;
     private Location hostLocation;
     private long created;
@@ -40,7 +37,31 @@ public abstract class AbstractLootObject implements LootObject {
 
     @Override
     public boolean canLoot(UUID player) {
-        return true;
+        if (isInfinite()) return !isOnCooldown(player);
+        if (isPublicLootObject()) return !hasLooted();
+        return !hasLooted(player) && !isOnCooldown(player);
+    }
+
+
+    @Override
+    public boolean isOnCooldown(UUID player) {
+        if (cooldown < 0) return false;
+
+        if (isPublicLootObject()) {
+            return getLastLooter().map(TLootPlayer::getCreated)
+                    .map(this::getCooldownEndTime)
+                    .map(timestamp -> timestamp.after(new Timestamp(System.currentTimeMillis())))
+                    .orElse(false);
+        }
+
+        return RaidCraft.getDatabase(LootPlugin.class).find(TLootPlayer.class)
+                .where().eq("player_id", player)
+                .orderBy("created desc").findList()
+                .stream().findFirst()
+                .map(TLootPlayer::getCreated)
+                .map(this::getCooldownEndTime)
+                .map(timestamp -> timestamp.after(new Timestamp(System.currentTimeMillis())))
+                .orElse(false);
     }
 
     @Override
@@ -52,6 +73,15 @@ public abstract class AbstractLootObject implements LootObject {
                 .findList();
 
         return players.size() > 0;
+    }
+
+    @Override
+    public boolean hasLooted() {
+
+        return RaidCraft.getDatabase(LootPlugin.class).find(TLootPlayer.class).where()
+                .eq("loot_object_id", getId())
+                .findList()
+                .size() > 0;
     }
 
     @Override
@@ -72,6 +102,23 @@ public abstract class AbstractLootObject implements LootObject {
             database.save(lootPlayer);
         }
         return loot;
+    }
+
+    private Optional<TLootPlayer> getLastLooter() {
+
+        return RaidCraft.getDatabase(LootPlugin.class).find(TLootPlayer.class)
+                .orderBy("created desc").findList()
+                .stream().findFirst();
+    }
+
+    private Timestamp getCooldownEndTime(Timestamp timestamp) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTimeInMillis(timestamp.getTime());
+        calendar.add(Calendar.SECOND, getCooldown());
+
+        return new Timestamp(calendar.getTime().getTime());
     }
 
     @Override

@@ -34,7 +34,11 @@ public interface LootObject {
 
     boolean canLoot(UUID player);
 
+    boolean isOnCooldown(UUID player);
+
     boolean hasLooted(UUID player);
+
+    boolean hasLooted();
 
     public List<ItemStack> loot(UUID player);
 

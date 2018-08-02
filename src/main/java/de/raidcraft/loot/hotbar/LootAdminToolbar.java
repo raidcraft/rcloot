@@ -8,6 +8,7 @@ import de.raidcraft.combatbar.api.HotbarHolder;
 import de.raidcraft.combatbar.api.HotbarName;
 import de.raidcraft.combatbar.slots.ActionHotbarSlot;
 import de.raidcraft.loot.LootFactory;
+import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.LootTableManager;
 import de.raidcraft.loot.api.object.LootObject;
 import de.raidcraft.loot.api.object.LootObjectStorage;
@@ -240,8 +241,16 @@ public class LootAdminToolbar extends Hotbar {
             return false;
         }
 
+
         LootObject lootObject = getLootFactory().createLootObject(block, getLootTable());
         player.sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
+
+        Conversations.startConversation(player, RaidCraft.getComponent(LootPlugin.class).config.createLootObjectConversation, CreateLootObjectConversation.class)
+                .ifPresent(conversation -> {
+                    conversation.setLootObject(lootObject);
+                    conversation.setLootTable(lootTable);
+                });
+
         return true;
     }
 

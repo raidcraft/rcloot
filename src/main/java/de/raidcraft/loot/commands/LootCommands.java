@@ -36,7 +36,7 @@ public class LootCommands {
     }
 
     @Command(
-            aliases = {"loot"},
+            aliases = {"loot", "rcloot"},
             desc = "Main loot command"
     )
     @NestedCommand(NestedLootCommands.class)

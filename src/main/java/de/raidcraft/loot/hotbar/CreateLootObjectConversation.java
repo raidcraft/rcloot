@@ -28,9 +28,11 @@ public class CreateLootObjectConversation extends PlayerConversation {
     protected boolean onStart() {
         if (lootObject == null || lootTable == null) return false;
 
+
         Stage cooldownStage = Conversations.createStage(this, "Was für einen Cooldown soll das Loot-Objekt haben?",
                 new InputAnswer("Cooldown in Sekunden (-1 für keinen Cooldown)")
-                        .setInputListener(input -> lootObject.setCooldown(Integer.parseInt(input))));
+                        .setInputListener(input -> lootObject.setCooldown(Integer.parseInt(input)))
+        );
 
         setCurrentStage(Conversations.createStage(this, "Welche Art von Loot-Objekt möchtest du erstellen?",
                 Answer.of("Öffentlich - Alle Spieler teilen sich den Loot.", (type, config) -> lootObject.setPublicLootObject(true), Action.changeStage(cooldownStage)),

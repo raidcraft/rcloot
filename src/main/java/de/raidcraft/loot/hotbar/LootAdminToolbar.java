@@ -216,7 +216,14 @@ public class LootAdminToolbar extends Hotbar {
             return;
         }
 
-        Conversations.askYesNo(event.getPlayer(), result -> lootFactory.deleteLootObject(lootObject, result),
+        Conversations.askYesNo(event.getPlayer(), result -> {
+                    lootFactory.deleteLootObject(lootObject, result);
+                    if (result) {
+                        event.getPlayer().sendMessage(ChatColor.GREEN + "Die Loot-Tabelle und alle dazugehörigen Loot-Objekte wurden entfernt.");
+                    } else {
+                        event.getPlayer().sendMessage(ChatColor.GREEN + "Das Loot-Objekt wurde erfolgreich entfernt.");
+                    }
+                },
                 "Möchtest du die dazugehörige Loot-Tabelle ebenfalls löschen?",
                 ChatColor.RED + "Alle anderen Loot-Kisten mit dieser Loot-Tabelle werden ebenfalls gelöscht.");
     }

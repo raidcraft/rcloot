@@ -4,9 +4,11 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
+import de.raidcraft.loot.hotbar.CreateLootObjectConversation;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.InventoryListener;
 import de.raidcraft.loot.listener.PlayerListener;
@@ -82,6 +84,8 @@ public class LootPlugin extends BasePlugin implements Component {
     public void loadDependencyConfigs() {
         lootTableManager.load();
         lootObjectStorage.reload();
+
+        Conversations.registerConversationType("create-loot-object", CreateLootObjectConversation.class);
 
         if (hasHotbarSupport()) {
             this.toolbarManager = new ToolbarManager(this);

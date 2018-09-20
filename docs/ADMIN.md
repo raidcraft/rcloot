@@ -1,6 +1,6 @@
 # RCLoot Admin Dokumentation
 
-Loot-Tabellen beschränken sich nicht nur auf [Items](https://git.faldoria.de/raidcraft/rcitems) sondern können beliebige Sachen droppen oder spawnen. Eine Loot-Tabelle könnte auch z.B.: einen [Custom Mob](https://git.faldoria.de/raidcraft/rcmobs) spawnen oder dem Spieler virtuelles Geld geben.
+Loot-Tabellen beschränken sich nicht nur auf [Items](https://git.faldoria.de/tof/plugins/raidcraft/rcitems) sondern können beliebige Sachen droppen oder spawnen. Eine Loot-Tabelle könnte auch z.B.: einen [Custom Mob](https://git.faldoria.de/tof/plugins/raidcraft/rcmobs) spawnen oder dem Spieler virtuelles Geld geben.
 
 Loot-Tabellen können sich gegenseitig auf andere Loot-Tabellen in einer beliebigen Tiefe referenzieren. **Dabei muss darauf geachtet werden keine Endlosschleife zu erzeugen.**
 
@@ -52,7 +52,7 @@ Die `probability` Angabe in Loot-Tabellen ist keine Prozent Angabe sondern gibt 
 
 ## Loot Tabellen
 
-In einer Loot-Tabelle werden die oben genannten Loot-Typen zusammengefasst und Wahrscheinlichkeiten definiert. Die Loot-Tabelle wird dann einem [Custom Mob]((https://git.faldoria.de/raidcraft/rcmobs)), Kiste oder anderem [Loot Host](#loot-hosts) zugewiesen.
+In einer Loot-Tabelle werden die oben genannten Loot-Typen zusammengefasst und Wahrscheinlichkeiten definiert. Die Loot-Tabelle wird dann einem [Custom Mob]((https://git.faldoria.de/tof/plugins/raidcraft/rcmobs)), Kiste oder anderem [Loot Host](#loot-hosts) zugewiesen.
 
 ```yml
 # Kann weggelassen werden da es der default ist.

@@ -1,8 +1,8 @@
-[![pipeline status](https://git.faldoria.de/raidcraft/rcloot/badges/master/pipeline.svg)](https://git.faldoria.de/raidcraft/rcloot/commits/master)
+[![pipeline status](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/badges/master/pipeline.svg)](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/commits/master)
 
 # RCLoot
 
-Das Loot Plugin ermöglicht die Erstellung von komplexen Loot-Tabellen um [Items](https://git.faldoria.de/raidcraft/rcitems), Geld und mehr zu droppen. Außerdem kann man damit Loot-Kisten in der Welt verteilen.
+Das Loot Plugin ermöglicht die Erstellung von komplexen Loot-Tabellen um [Items](https://git.faldoria.de/tof/plugins/raidcraft/rcitems), Geld und mehr zu droppen. Außerdem kann man damit Loot-Kisten in der Welt verteilen.
 
 * [Getting Started](#getting-started)
     * [Prerequisites](#prerequisites)
@@ -10,16 +10,16 @@ Das Loot Plugin ermöglicht die Erstellung von komplexen Loot-Tabellen um [Items
 
 ## Getting Started
 
-* [Project Details](https://git.faldoria.de/raidcraft/rcloot)
-* [Source Code](https://git.faldoria.de/raidcraft/rcloot/tree/master)
+* [Project Details](https://git.faldoria.de/tof/plugins/raidcraft/rcloot)
+* [Source Code](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/tree/master)
 * [Latest Stable Download](https://ci.faldoria.de/view/RaidCraft/job/RCLoot/lastStableBuild)
-* [Issue Tracker](https://git.faldoria.de/raidcraft/rcloot/issues)
+* [Issue Tracker](https://git.faldoria.de/tof/plugins/raidcraft/rcloot/issues)
 * [Developer Documentation](docs/DEVELOPER.md)
 * [Admin Documentation](docs/ADMIN.md)
 
 ### Prerequisites
 
-Das RCLoot Plugin ist nur von der [RaidCraft API](https://git.faldoria.de/raidcraft/raidcraft-api) abhängig. Damit es Sinn ergibt sollte jedoch mindestens noch das [RCItems](https://git.faldoria.de/raidcraft/rcitems) und das [RCMobs](https://git.faldoria.de/raidcraft/rcmobs) Plugin installiert sein.
+Das RCLoot Plugin ist nur von der [RaidCraft API](https://git.faldoria.de/tof/plugins/raidcraft/raidcraft-api) abhängig. Damit es Sinn ergibt sollte jedoch mindestens noch das [RCItems](https://git.faldoria.de/tof/plugins/raidcraft/rcitems) und das [RCMobs](https://git.faldoria.de/tof/plugins/raidcraft/rcmobs) Plugin installiert sein.
 
 ### Installation
 

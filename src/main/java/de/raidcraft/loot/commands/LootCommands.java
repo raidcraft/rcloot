@@ -309,7 +309,7 @@ public class LootCommands {
                 inventory.addItem(itemStack);
             });
             ((Player) sender).openInventory(inventory);
-            sender.sendMessage(ChatColor.GREEN + "Looted " + count + "x to get any loot.");
+            sender.sendMessage(ChatColor.GREEN + "Looted " + (count + 1) + "x to get any loot.");
         }
     }
 }

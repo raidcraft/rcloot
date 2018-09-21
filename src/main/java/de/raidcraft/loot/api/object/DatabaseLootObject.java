@@ -1,12 +1,12 @@
 package de.raidcraft.loot.api.object;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootTable;
+import io.ebean.EbeanServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;

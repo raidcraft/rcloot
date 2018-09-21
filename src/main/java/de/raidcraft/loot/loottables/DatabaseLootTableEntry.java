@@ -1,10 +1,10 @@
 package de.raidcraft.loot.loottables;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.api.table.AbstractLootTableEntry;
 import de.raidcraft.loot.tables.TLootTableEntry;
+import io.ebean.EbeanServer;
 
 /**
  * @author Silthus

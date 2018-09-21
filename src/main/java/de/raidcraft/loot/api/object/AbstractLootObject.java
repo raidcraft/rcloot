@@ -1,12 +1,12 @@
 package de.raidcraft.loot.api.object;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
+import io.ebean.EbeanServer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;

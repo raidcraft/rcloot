@@ -1,6 +1,6 @@
 package de.raidcraft.loot.tables;
 
-import com.avaje.ebean.validation.NotNull;
+import io.ebean.annotation.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

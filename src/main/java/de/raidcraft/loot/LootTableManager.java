@@ -37,10 +37,10 @@ public class LootTableManager implements Component {
 
     public void load() {
 
-        List<TLootTable> list = plugin.getDatabase().find(TLootTable.class).findList();
+        List<TLootTable> list = plugin.getRcDatabase().find(TLootTable.class).findList();
         for (TLootTable table : list) {
             DatabaseLootTable lootTable = new DatabaseLootTable(table);
-            if (plugin.getDatabase().find(TLootTable.class, table.getId()) != null) {
+            if (plugin.getRcDatabase().find(TLootTable.class, table.getId()) != null) {
                 addTable(lootTable);
             }
         }
@@ -85,7 +85,7 @@ public class LootTableManager implements Component {
     public void addTable(LootTable table) {
 
         cachedTables.put(table.getId(), table);
-        TLootTable tLootTable = plugin.getDatabase().find(TLootTable.class, table.getId());
+        TLootTable tLootTable = plugin.getRcDatabase().find(TLootTable.class, table.getId());
         if (tLootTable == null) return;
         TLootTableAlias alias = tLootTable.getLootTableAlias();
         if (alias != null) {

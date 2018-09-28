@@ -71,7 +71,7 @@ public class LootFactory implements Component {
         if (maxLoot < minLoot) maxLoot = minLoot;
 
         TLootTable tLootTable = new TLootTable();
-        plugin.getDatabase().save(tLootTable);
+        plugin.getRcDatabase().save(tLootTable);
         LootTable lootTable = new DatabaseLootTable(tLootTable.getId());
         lootTable.setEntries(tableEntries);
         lootTable.setMinMaxLootItems(minLoot, maxLoot);
@@ -85,7 +85,7 @@ public class LootFactory implements Component {
             tableEntry.setItem(RaidCraft.getItemIdString(item));
             tableEntry.setChance((int) ((1. / (double) itemCount) * 100.));
             tableEntry.setLootTable(tLootTable);
-            plugin.getDatabase().save(tableEntry);
+            plugin.getRcDatabase().save(tableEntry);
             DatabaseLootTableEntry entry = new DatabaseLootTableEntry(tableEntry);
             tableEntries.add(entry);
         }
@@ -93,7 +93,7 @@ public class LootFactory implements Component {
             TLootTableAlias lootAlias = new TLootTableAlias();
             lootAlias.setTableAlias(alias);
             lootAlias.setLootTable(tLootTable);
-            plugin.getDatabase().save(lootAlias);
+            plugin.getRcDatabase().save(lootAlias);
         }
         lootTable.setEntries(tableEntries);
         lootTable.save();

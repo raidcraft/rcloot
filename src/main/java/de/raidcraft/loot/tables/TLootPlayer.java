@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Table(name = "rcloot_players")
+@Table(name = "rc_loot_players")
 @Data
 @EqualsAndHashCode(of = "id")
 public class TLootPlayer {

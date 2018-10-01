@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "rcloot_tables")
+@Table(name = "rc_loot_tables")
 @Data
 @EqualsAndHashCode(of = "id")
 public class TLootTable {

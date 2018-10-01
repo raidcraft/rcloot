@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "rcloot_objects")
+@Table(name = "rc_loot_objects")
 @Data
 @EqualsAndHashCode(of = "id")
 public class TLootObject {

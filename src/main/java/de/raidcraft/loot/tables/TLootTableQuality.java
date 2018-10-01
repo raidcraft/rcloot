@@ -11,7 +11,7 @@ import javax.persistence.*;
  * @author Silthus
  */
 @Entity
-@Table(name = "rcloot_table_qualities")
+@Table(name = "rc_loot_table_qualities")
 @Data
 @EqualsAndHashCode(of = "id")
 public class TLootTableQuality {

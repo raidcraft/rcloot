@@ -10,7 +10,7 @@ import javax.persistence.*;
  * @author Silthus
  */
 @Entity
-@Table(name = "rcloot_table_aliases")
+@Table(name = "rc_loot_table_aliases")
 @Data
 @EqualsAndHashCode(of = "id")
 public class TLootTableAlias {

@@ -3,6 +3,9 @@ package de.raidcraft.loot.hotbar;
 import com.google.common.collect.Sets;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.conversations.Conversations;
+import de.raidcraft.api.conversations.conversation.Conversation;
+import de.raidcraft.api.random.RDS;
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.combatbar.api.Hotbar;
 import de.raidcraft.combatbar.api.HotbarHolder;
 import de.raidcraft.combatbar.api.HotbarName;
@@ -12,7 +15,6 @@ import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.LootTableManager;
 import de.raidcraft.loot.api.object.LootObject;
 import de.raidcraft.loot.api.object.LootObjectStorage;
-import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.loothost.LootHostManager;
 import fr.zcraft.zlib.components.gui.Gui;
@@ -42,7 +44,8 @@ public class LootAdminToolbar extends Hotbar {
     private final LootHostManager lootHostManager = RaidCraft.getComponent(LootHostManager.class);
     private final LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootObjectStorage.class);
     private final LootFactory lootFactory = RaidCraft.getComponent(LootFactory.class);
-    private LootTable lootTable = null;
+    private RDSTable lootTable = null;
+    private LootObject lastLootObject = null;
     private boolean lootTableActive = false;
 
     public LootAdminToolbar(HotbarHolder holder) {
@@ -57,25 +60,23 @@ public class LootAdminToolbar extends Hotbar {
                         .lore(ChatColor.GOLD + "Auswählen: " + ChatColor.GRAY + "Loot-Tabelle des Ziels auswählen",
                                 ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Loot-Tabelle " + ChatColor.GREEN + "aktivieren",
                                 ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Loot-Tabelle " + ChatColor.RED + "deaktivieren",
-                                ChatColor.GOLD + "Inventar Links Klick: " + ChatColor.GRAY + "Andere Loot-Tabelle auswählen",
-                                ChatColor.GOLD + "Inventar Links Klick: " + ChatColor.GRAY + "Aktive Loot-Tabelle bearbeiten")
+                                ChatColor.GOLD + "Inventar Links Klick: " + ChatColor.GRAY + "Andere Loot-Tabelle auswählen")
                         .item())
                 .setOnSelect(this::selectTargetAsLootTable)
                 .setOnInventoryLeftClick(this::openChooseLootTableMenu)
-                .setOnInventoryRightClick(this::openEditLootTableMenu)
                 .setOnRightClickInteract(player -> setLootTableActive(true))
                 .setOnLeftClickInteract(player -> setLootTableActive(false))
         );
         // create new loottable
-        addHotbarSlot(new ActionHotbarSlot(
-                        new ItemStackBuilder(Material.BOOK_AND_QUILL)
-                                .title(ChatColor.DARK_GREEN, "Neue Loot-Tabelle erstellen")
-                                .lore(ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Neue Loot-Tabelle aus Kiste",
-                                        ChatColor.GOLD + "Inventar Klick: " + ChatColor.GRAY + "Neue Loot-Tabelle")
-                                .item()
-                ).setOnInteract(this::createNewLootTableFromChest)
-                        .setOnInventoryClick(this::openCreateNewLootTableMenu)
-        );
+//        addHotbarSlot(new ActionHotbarSlot(
+//                        new ItemStackBuilder(Material.BOOK_AND_QUILL)
+//                                .title(ChatColor.DARK_GREEN, "Neue Loot-Tabelle erstellen")
+//                                .lore(ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Neue Loot-Tabelle aus Kiste",
+//                                        ChatColor.GOLD + "Inventar Klick: " + ChatColor.GRAY + "Neue Loot-Tabelle")
+//                                .item()
+//                ).setOnInteract(this::createNewLootTableFromChest)
+//                        .setOnInventoryClick(this::openCreateNewLootTableMenu)
+//        );
         addHotbarSlot(new ActionHotbarSlot(
                 new ItemStackBuilder(Material.CHEST)
                         .title(ChatColor.BLUE + "Loot-Tabelle auf Kiste anwenden")
@@ -91,7 +92,7 @@ public class LootAdminToolbar extends Hotbar {
     }
 
     private String getLootTableAlias() {
-        return ChatColor.AQUA + getLootTableManager().getAlias(getLootTable().getId()) + ChatColor.GRAY + "(" + getLootTable().getId() + ") "
+        return ChatColor.AQUA + getLootTable().getId().orElse("N/A") + " "
                 + (isLootTableActive() ? ChatColor.GREEN + "AN" : ChatColor.RED + "AUS" + ChatColor.GOLD);
     }
 
@@ -109,7 +110,7 @@ public class LootAdminToolbar extends Hotbar {
         }
     }
 
-    public void setLootTable(LootTable lootTable) {
+    public void setLootTable(RDSTable lootTable) {
         this.lootTable = lootTable;
         if (this.lootTable == null) {
             getPlayer().sendMessage(ChatColor.GOLD + "Aktive Loot-Tabelle wurde entfernt.");
@@ -121,7 +122,7 @@ public class LootAdminToolbar extends Hotbar {
     private void selectTargetAsLootTable(Player player) {
         Block targetBlock = player.getTargetBlock(TRANSPARENT_BLOCKS, LOOTTABLE_LOOKUP_DISTANCE);
 
-        LootTable lootTable = getLootTable(targetBlock);
+        RDSTable lootTable = getLootTable(targetBlock);
         if (lootTable == null) {
             player.sendMessage(ChatColor.RED + "Das Ziel ist kein Loot Objekt und kann nicht ausgewählt werden.");
             return;
@@ -130,7 +131,7 @@ public class LootAdminToolbar extends Hotbar {
         setLootTable(lootTable);
     }
 
-    private LootTable getLootTable(Block targetBlock) {
+    private RDSTable getLootTable(Block targetBlock) {
         if (targetBlock == null) {
             return null;
         }
@@ -159,7 +160,7 @@ public class LootAdminToolbar extends Hotbar {
                             return;
                         }
                         String name = answers[0];
-                        if (lootTableManager.getTable(name) != null) {
+                        if (RDS.getTable(name) != null) {
                             event.getPlayer().sendMessage(ChatColor.RED + "Es gibt bereits eine Loot-Tabelle mit dem Namen '" + name + "'.");
                             return;
                         }
@@ -178,7 +179,7 @@ public class LootAdminToolbar extends Hotbar {
                         if (answers.length > 2) {
                             maxLoot = Integer.parseInt(answers[2]);
                         }
-                        setLootTable(getLootFactory().createLootTable(name, contents, minLoot, maxLoot));
+//                        setLootTable(getLootFactory().createLootTable(name, contents, minLoot, maxLoot));
                         event.getPlayer().sendMessage(ChatColor.GREEN + "Es wurde erfolgreich eine neue Loot-Tabelle erstellt: " + getLootTableAlias());
                         setLootTableActive(true);
                     } catch (Exception e) {
@@ -188,14 +189,6 @@ public class LootAdminToolbar extends Hotbar {
                 }, "Wie soll die Loot-Tabelle heissen? (z.B.: mobs-default-drops)",
                 "Wie viele Items sollen mindestens droppen?",
                 "Wie viele Items sollen maximal droppen?");
-    }
-
-    private void openEditLootTableMenu(Player player) {
-
-    }
-
-    private void openCreateNewLootTableMenu(Player player) {
-
     }
 
     private void openChooseLootTableMenu(Player player) {
@@ -216,16 +209,8 @@ public class LootAdminToolbar extends Hotbar {
             return;
         }
 
-        Conversations.askYesNo(event.getPlayer(), result -> {
-                    lootFactory.deleteLootObject(lootObject, result);
-                    if (result) {
-                        event.getPlayer().sendMessage(ChatColor.GREEN + "Die Loot-Tabelle und alle dazugehörigen Loot-Objekte wurden entfernt.");
-                    } else {
-                        event.getPlayer().sendMessage(ChatColor.GREEN + "Das Loot-Objekt wurde erfolgreich entfernt.");
-                    }
-                },
-                "Möchtest du die dazugehörige Loot-Tabelle ebenfalls löschen?",
-                ChatColor.RED + "Alle anderen Loot-Kisten mit dieser Loot-Tabelle werden ebenfalls gelöscht.");
+        lootObjectStorage.deleteLootObject(lootObject);
+        event.getPlayer().sendMessage(ChatColor.GREEN + "Das Loot-Objekt wurde erfolgreich entfernt.");
     }
 
     private void placeLootChest(BlockPlaceEvent event) {
@@ -244,18 +229,24 @@ public class LootAdminToolbar extends Hotbar {
         LootHost lootHost = getLootHostManager().getLootHost(block);
 
         if (lootHost == null) {
-            player.sendMessage(ChatColor.RED + "Der Block ist keine gültiger Loot-Host.");
+            player.sendMessage(ChatColor.RED + "Der Block ist kein gültiger Loot-Host.");
             return false;
         }
 
+        if (getLootObjectStorage().isLootObject(block.getLocation())) {
+            player.sendMessage(ChatColor.RED + "Der Block ist bereits ein Loot-Objekt. Bitte lösche es erst um ein neues zu erstellen.");
+            return false;
+        }
 
         LootObject lootObject = getLootFactory().createLootObject(block, getLootTable());
-        player.sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt: " + ChatColor.GOLD + lootObject.toString());
+        player.sendMessage(ChatColor.GREEN + "Loot Objekt wurde erfolgreich erstellt. " + ChatColor.GOLD);
 
         Conversations.startConversation(player, RaidCraft.getComponent(LootPlugin.class).config.createLootObjectConversation, CreateLootObjectConversation.class)
                 .ifPresent(conversation -> {
                     conversation.setLootObject(lootObject);
                     conversation.setLootTable(lootTable);
+                    conversation.setLastConfig(lastLootObject);
+                    conversation.setOnEnd(object -> this.lastLootObject = object);
                 });
 
         return true;

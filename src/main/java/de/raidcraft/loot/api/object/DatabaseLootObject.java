@@ -1,11 +1,10 @@
 package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.RDS;
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.api.table.LootTable;
-import de.raidcraft.loot.loottables.DatabaseLootTable;
 import de.raidcraft.loot.tables.TLootObject;
-import de.raidcraft.loot.tables.TLootTable;
 import io.ebean.EbeanServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,7 +12,7 @@ import org.bukkit.block.Block;
 
 public class DatabaseLootObject extends AbstractLootObject {
 
-    public DatabaseLootObject(Block block, LootTable table) {
+    public DatabaseLootObject(Block block, RDSTable table) {
         setHostLocation(block.getLocation());
         setLootTable(table);
     }
@@ -25,7 +24,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         setEnabled(dbEntry.isEnabled());
         setInfinite(dbEntry.isInfinite());
         setPublicLootObject(dbEntry.isPublicLootObject());
-        setLootTable(new DatabaseLootTable(dbEntry.getLootTable()));
+        RDS.getTable(dbEntry.getLootTable()).ifPresent(this::setLootTable);
     }
 
     @Override
@@ -44,9 +43,9 @@ public class DatabaseLootObject extends AbstractLootObject {
         lootObject.setY(getHostLocation().getBlockY());
         lootObject.setZ(getHostLocation().getBlockZ());
 
-        LootTable lootTable = getLootTable();
+        RDSTable lootTable = getLootTable();
         if (lootTable != null) {
-            lootObject.setLootTable(database.find(TLootTable.class, lootTable.getId()));
+            lootTable.getId().ifPresent(lootObject::setLootTable);
         }
 
         database.save(lootObject);

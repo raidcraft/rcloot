@@ -3,6 +3,7 @@ package de.raidcraft.loot.api.object;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.loot.LootPlugin;
+import de.raidcraft.loot.loothost.LootHost;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.util.ChestDispenserUtil;
 import org.bukkit.Location;
@@ -32,6 +33,12 @@ public class LootObjectStorage implements Component {
         removeLootObjectHost(lootObject.getHostLocation());
     }
 
+    public void deleteLootObject(LootObject object) {
+        if (object == null) return;
+        unregisterLootObject(object);
+        object.delete();
+    }
+
     public void registerLootObject(LootObject lootObject) {
 
         Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(lootObject.getHostLocation().getBlock());
@@ -54,6 +61,10 @@ public class LootObjectStorage implements Component {
         }
 
         return lootObject;
+    }
+
+    public boolean isLootObject(Location location) {
+        return getLootObject(location) != null;
     }
 
     private void addLootObjectHost(Location hostLocation, LootObject lootObject) {

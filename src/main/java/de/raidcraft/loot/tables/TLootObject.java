@@ -1,5 +1,6 @@
 package de.raidcraft.loot.tables;
 
+import io.ebean.annotation.DbDefault;
 import io.ebean.annotation.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,9 +17,9 @@ public class TLootObject {
 
     @Id
     private int id;
-    @ManyToOne
     @NotNull
-    private TLootTable lootTable;
+    @DbDefault("")
+    private String lootTable;
     @NotNull
     private String world;
     @NotNull

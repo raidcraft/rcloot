@@ -1,5 +1,6 @@
 package de.raidcraft.loot.api.object;
 
+import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.api.table.LootTable;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -24,9 +25,9 @@ public interface LootObject {
 
     abstract boolean isEnabled();
 
-    abstract LootTable getLootTable();
+    abstract RDSTable getLootTable();
 
-    public void assignLootTable(LootTable lootTable);
+    public void assignLootTable(RDSTable lootTable);
 
     abstract Location getHostLocation();
 

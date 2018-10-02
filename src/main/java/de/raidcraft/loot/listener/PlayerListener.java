@@ -89,26 +89,14 @@ public class PlayerListener implements Listener {
         if (lootObject.isPublicLootObject()) {
             loot = lootObject.loot(entity.getUniqueId());
             if (loot.size() > 0) {
-                event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+                event.getInventory().setContents(loot.toArray(new ItemStack[0]));
             }
             return;
         }
 
         // lock loot object
         inventoryLocks.put(entity.getUniqueId(), lootObject);
-        boolean admin = false;
-        if (adminMode.contains(entity.getUniqueId())) {
-            admin = true;
-            LootChat.info((Player) entity, "Du befindest dich im Admin-Modus!");
-            // fill loot object with all table entries
-            List<LootTableEntry> entries = lootObject.getLootTable().getEntries();
-            loot = new ArrayList<>();
-            for (LootTableEntry entry : entries) {
-                loot.add(entry.getItem());
-            }
-        } else {
-            loot = lootObject.loot(entity.getUniqueId());
-        }
+        loot = lootObject.loot(entity.getUniqueId());
         // set loot
         event.getInventory().clear();
 
@@ -117,7 +105,7 @@ public class PlayerListener implements Listener {
             loot = loot.subList(0, event.getInventory().getSize());
         }
 
-        event.getInventory().setContents(loot.toArray(new ItemStack[loot.size()]));
+        event.getInventory().setContents(loot.toArray(new ItemStack[0]));
     }
 
     @EventHandler

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="rc_loot_objects" pkName="pk_rc_loot_objects">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="loot_table" type="varchar" defaultValue="''" notnull="true"/>
+            <column name="world" type="varchar" notnull="true"/>
+            <column name="x" type="integer" notnull="true"/>
+            <column name="y" type="integer" notnull="true"/>
+            <column name="z" type="integer" notnull="true"/>
+            <column name="enabled" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="cooldown" type="integer" notnull="true"/>
+            <column name="infinite" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="public_loot_object" type="boolean" defaultValue="false" notnull="true"/>
+        </createTable>
+        <createTable name="rc_loot_players" pkName="pk_rc_loot_players">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player_id" type="uuid" notnull="true"/>
+            <column name="loot_object_id" type="integer" notnull="true" references="rc_loot_objects.id" foreignKeyName="fk_rc_loot_players_loot_object_id" foreignKeyIndex="ix_rc_loot_players_loot_object_id"/>
+            <column name="created" type="timestamp" notnull="true"/>
+        </createTable>
+    </changeSet>
+</migration>

@@ -116,10 +116,6 @@ public class LootPlugin extends BasePlugin implements Component {
     public List<Class<?>> getDatabaseClasses() {
 
         List<Class<?>> tables = new ArrayList<>();
-        tables.add(TLootTable.class);
-        tables.add(TLootTableEntry.class);
-        tables.add(TLootTableQuality.class);
-        tables.add(TLootTableAlias.class);
         tables.add(TLootObject.class);
         tables.add(TLootPlayer.class);
         return tables;

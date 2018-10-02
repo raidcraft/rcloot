@@ -1,6 +1,9 @@
 package de.raidcraft.loot.api.object;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.RDSObject;
+import de.raidcraft.api.random.RDSTable;
+import de.raidcraft.api.random.objects.ItemLootObject;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.api.table.LootTable;
 import de.raidcraft.loot.api.table.LootTableEntry;
@@ -21,7 +24,7 @@ public abstract class AbstractLootObject implements LootObject {
 
     @Setter(AccessLevel.PROTECTED)
     private int id = -1;
-    private LootTable lootTable;
+    private RDSTable lootTable;
     private Location hostLocation;
     private long created;
     private boolean enabled = true;
@@ -30,7 +33,7 @@ public abstract class AbstractLootObject implements LootObject {
     private boolean infinite = false;
 
     @Override
-    public void assignLootTable(LootTable lootTable) {
+    public void assignLootTable(RDSTable lootTable) {
 
         this.lootTable = lootTable;
     }
@@ -90,9 +93,9 @@ public abstract class AbstractLootObject implements LootObject {
         List<ItemStack> loot = new ArrayList<>();
         // player not yet looted
         if (canLoot(player)) {
-            for (LootTableEntry entry : getLootTable().loot()) {
-                loot.add(entry.getItem().clone());
-            }
+            getLootTable().loot().stream()
+                    .filter(object -> object instanceof ItemLootObject)
+                    .forEach(object -> loot.add(((ItemLootObject) object).getItemStack()));
 
             // remember loot
             EbeanServer database = RaidCraft.getDatabase(LootPlugin.class);

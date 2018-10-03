@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <addColumn tableName="rc_loot_objects">
+            <column name="destroyable" type="boolean" defaultValue="false" notnull="true"/>
+            <column name="destroyed" type="timestamp"/>
+            <column name="material" type="varchar"/>
+        </addColumn>
+    </changeSet>
+</migration>

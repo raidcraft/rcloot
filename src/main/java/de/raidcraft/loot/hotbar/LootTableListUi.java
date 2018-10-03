@@ -1,17 +1,14 @@
 package de.raidcraft.loot.hotbar;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.random.NamedRDSTable;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootTableManager;
-import de.raidcraft.loot.api.table.LootTable;
 import fr.zcraft.zlib.components.gui.ExplorerGui;
 import fr.zcraft.zlib.components.gui.GuiAction;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTableListUi extends ExplorerGui<RDSTable> {

@@ -1,36 +1,59 @@
-package de.raidcraft.loot.api.object;
+package de.raidcraft.loot.lootobjects;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.api.random.objects.ItemLootObject;
+import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.api.table.LootTable;
-import de.raidcraft.loot.api.table.LootTableEntry;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
+import de.raidcraft.loot.util.ChestDispenserUtil;
 import io.ebean.EbeanServer;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Data
+@EqualsAndHashCode(of = {"id", "hostLocation", "otherHostLocation"})
 public abstract class AbstractLootObject implements LootObject {
 
     @Setter(AccessLevel.PROTECTED)
-    private int id = -1;
+    private long id = -1;
     private RDSTable lootTable;
     private Location hostLocation;
+    private Location otherHostLocation;
+    private Material material;
     private long created;
     private boolean enabled = true;
     private int cooldown = -1;
     private boolean publicLootObject = false;
     private boolean infinite = false;
+    private boolean destroyable = false;
+    private Instant destroyed = null;
+
+    @Override
+    public void setHostLocation(Location hostLocation) {
+
+        Block otherChestBlock = ChestDispenserUtil.getOtherChestBlock(hostLocation.getBlock());
+        if (otherChestBlock != null) setOtherHostLocation(otherChestBlock.getLocation());
+        this.hostLocation = hostLocation;
+    }
+
+    @Override
+    public boolean isDoubleChest() {
+        return getOtherHostLocation() != null;
+    }
 
     @Override
     public void assignLootTable(RDSTable lootTable) {
@@ -105,6 +128,48 @@ public abstract class AbstractLootObject implements LootObject {
             database.save(lootPlayer);
         }
         return loot;
+    }
+
+    @Override
+    public void destroy(boolean dropLoot) {
+        if (!isDestroyable()) return;
+
+        getHostLocation().getBlock().setType(Material.AIR);
+        if (isDoubleChest()) getOtherHostLocation().getBlock().setType(Material.AIR);
+        setDestroyed(Instant.now());
+        save();
+
+        if (dropLoot) {
+            List<ItemStack> loot = loot(LootFactory.ANY);
+            loot.forEach(itemStack -> getHostLocation().getWorld().dropItemNaturally(getHostLocation(), itemStack));
+        }
+    }
+
+    @Override
+    public void destroy() {
+        this.destroy(true);
+    }
+
+    @Override
+    public boolean respawn(boolean force) {
+
+        if (!isDestroyable() || getDestroyed() == null) return false;
+        if (getMaterial() == null) {
+            RaidCraft.LOGGER.warning("Cannot respawn Loot-Object (ID: " + getId() + "): invalid or null material!");
+            return false;
+        }
+        if (force || getDestroyed().plusSeconds(getCooldown()).isBefore(Instant.now())) {
+            getHostLocation().getBlock().setType(getMaterial());
+            setDestroyed(null);
+            save();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean respawn() {
+        return respawn(false);
     }
 
     private Optional<TLootPlayer> getLastLooter() {

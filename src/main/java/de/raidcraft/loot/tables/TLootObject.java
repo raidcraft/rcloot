@@ -1,22 +1,25 @@
 package de.raidcraft.loot.tables;
 
+import de.raidcraft.api.ebean.BaseModel;
 import io.ebean.annotation.DbDefault;
 import io.ebean.annotation.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.block.Block;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "rc_loot_objects")
 @Data
-@EqualsAndHashCode(of = "id")
-public class TLootObject {
+@EqualsAndHashCode(callSuper = true)
+public class TLootObject extends BaseModel {
 
-    @Id
-    private int id;
+    public static final LootObjectFinder find = new LootObjectFinder();
+
     @NotNull
     @DbDefault("")
     private String lootTable;
@@ -31,10 +34,11 @@ public class TLootObject {
     private boolean enabled = true;
     private int cooldown = 0;
     private boolean infinite = false;
-    /**
-     * Public means all players share the same cooldown and loot.
-     */
     private boolean publicLootObject = false;
+    @DbDefault("false")
+    private boolean destroyable = false;
+    private Instant destroyed = null;
+    private String material = null;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "loot_object_id")

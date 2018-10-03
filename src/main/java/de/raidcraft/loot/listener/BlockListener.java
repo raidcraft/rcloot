@@ -3,8 +3,9 @@ package de.raidcraft.loot.listener;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.api.object.LootObject;
+import de.raidcraft.loot.lootobjects.LootObject;
 import de.raidcraft.loot.util.LootChat;
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,18 +22,22 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Author: Philip
  * Date: 18.10.12 - 06:26
  * Description:
  */
+@Data
 public class BlockListener implements Listener {
+
+    private final LootPlugin plugin;
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation()) != null) {
+        if (getPlugin().getLootObjectManager().getLootObject(event.getBlock()).isPresent()) {
             event.setCancelled(true);
             LootChat.warn(event.getPlayer(), "Loot Objekte können nicht zerstört werden!");
         }
@@ -43,7 +48,7 @@ public class BlockListener implements Listener {
 
         Map<Block, Material> lootBlocks = new HashMap<>();
         for (Block block : event.blockList()) {
-            if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(block.getLocation()) != null) {
+            if (getPlugin().getLootObjectManager().getLootObject(block).isPresent()) {
                 lootBlocks.put(block, block.getType());
             }
         }
@@ -56,25 +61,22 @@ public class BlockListener implements Listener {
     @EventHandler
     public void onDispense(BlockDispenseEvent event) {
 
-        if (RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation()) == null) {
-            return;
-        }
+        RaidCraft.getComponent(LootPlugin.class).getLootObjectManager().getLootObject(event.getBlock().getLocation()).ifPresent(object -> {
+            List<ItemStack> loot = object.loot(LootFactory.ANY);
+            if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
 
-        LootObject lootObject = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage().getLootObject(event.getBlock().getLocation());
-        List<ItemStack> loot = lootObject.loot(LootFactory.ANY);
-        if (loot.size() == 0) loot.add(new ItemStack(Material.DIRT, 1));    // force add item if database error occurred
-
-        Inventory inventory;
-        if (event.getBlock().getState() instanceof Dispenser) {
-            inventory = ((Dispenser) event.getBlock().getState()).getInventory();
-        } else {
-            inventory = ((Dropper) event.getBlock().getState()).getInventory();
-        }
-
-        loot.stream().forEach(l -> {
-            if (event.getItem().getType().name().equals(l.getType().name())) {
-                inventory.addItem(event.getItem());
+            Inventory inventory;
+            if (event.getBlock().getState() instanceof Dispenser) {
+                inventory = ((Dispenser) event.getBlock().getState()).getInventory();
+            } else {
+                inventory = ((Dropper) event.getBlock().getState()).getInventory();
             }
+
+            loot.forEach(l -> {
+                if (event.getItem().getType().name().equals(l.getType().name())) {
+                    inventory.addItem(event.getItem());
+                }
+            });
         });
     }
 

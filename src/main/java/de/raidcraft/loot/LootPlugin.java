@@ -1,24 +1,21 @@
 package de.raidcraft.loot;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.config.Comment;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.random.RDS;
-import de.raidcraft.loot.api.object.LootObjectStorage;
 import de.raidcraft.loot.commands.LootCommands;
 import de.raidcraft.loot.hotbar.CreateLootObjectConversation;
 import de.raidcraft.loot.listener.BlockListener;
 import de.raidcraft.loot.listener.InventoryListener;
 import de.raidcraft.loot.listener.PlayerListener;
-import de.raidcraft.loot.loothost.LootHostManager;
-import de.raidcraft.loot.loothost.hosts.ChestHost;
-import de.raidcraft.loot.loothost.hosts.DispenserHost;
-import de.raidcraft.loot.loothost.hosts.DropperHost;
-import de.raidcraft.loot.loothost.hosts.TrappedChestHost;
 import de.raidcraft.loot.loottables.LevelDependantLootTable;
-import de.raidcraft.loot.tables.*;
+import de.raidcraft.loot.tables.TLootObject;
+import de.raidcraft.loot.tables.TLootPlayer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -38,52 +35,40 @@ public class LootPlugin extends BasePlugin implements Component {
     @Getter
     private LootFactory lootFactory;
     @Getter
-    private LootObjectStorage lootObjectStorage;
+    private LootObjectManager lootObjectManager;
     @Getter
     private LootTableManager lootTableManager;
-    @Getter
-    private LootHostManager lootHostManager;
     @Getter
     private ToolbarManager toolbarManager;
 
     @Override
     public void enable() {
 
-        loadConfig();
+        config = configure(new LocalConfiguration(this));
 
         registerCommands(LootCommands.class);
-        registerEvents(new PlayerListener());
-        registerEvents(new BlockListener());
+        registerEvents(new PlayerListener(this));
+        registerEvents(new BlockListener(this));
         registerEvents(new InventoryListener(this));
 
-        lootObjectStorage = new LootObjectStorage();
+        lootObjectManager = new LootObjectManager(this);
         lootFactory = new LootFactory(this);
         lootTableManager = new LootTableManager(this);
-        lootHostManager = new LootHostManager(this);
-
-        // register all default hosts
-        lootHostManager.registerLootHost(new ChestHost());
-        lootHostManager.registerLootHost(new TrappedChestHost());
-        lootHostManager.registerLootHost(new DropperHost());
-        lootHostManager.registerLootHost(new DispenserHost());
 
         RDS.registerObject(new LevelDependantLootTable.Factory());
 
-        // register auto chest placer
-        //        new AutomaticPlacer();
-
-        //        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-        //            @Override
-        //            public void run() {
-        //                AutomaticPlacer.INST.resume();
-        //            }
-        //        }, 10*20);
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            long count = getLootObjectManager().respawnDestroyedLootObjects(false);
+            if (count > 0) {
+                getLogger().info("Respawned " + count + " Loot-Objects.");
+            }
+        }, config.respawnIntervalInTicks);
     }
 
     @Override
     public void loadDependencyConfigs() {
         lootTableManager.load();
-        lootObjectStorage.reload();
+        lootObjectManager.reload();
 
         Conversations.registerConversationType("create-loot-object", CreateLootObjectConversation.class);
 
@@ -96,15 +81,13 @@ public class LootPlugin extends BasePlugin implements Component {
     @Override
     public void disable() {
 
-        //        AutomaticPlacer.INST.save();
     }
 
     @Override
     public void reload() {
 
-        loadConfig();
         getLootTableManager().reload();
-        getLootObjectStorage().reload();
+        this.getLootObjectManager().reload();
     }
 
     public boolean hasHotbarSupport() {
@@ -121,15 +104,13 @@ public class LootPlugin extends BasePlugin implements Component {
         return tables;
     }
 
-    public void loadConfig() {
-
-        config = configure(new LocalConfiguration(this));
-    }
-
     public class LocalConfiguration extends ConfigurationBase<LootPlugin> {
 
         @Setting("conversations.create-loot-object")
         public String createLootObjectConversation = "plugins.create-loot-object";
+        @Setting("respawn-interval")
+        @Comment("Interval of respawn task for loot-objects in ticks. 100 = 5s")
+        public long respawnIntervalInTicks = 100;
 
         public LocalConfiguration(LootPlugin plugin) {
 

@@ -10,9 +10,7 @@ import de.raidcraft.api.conversations.host.ConversationHost;
 import de.raidcraft.api.conversations.stage.Stage;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.conversations.conversations.PlayerConversation;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.table.LootTable;
-import de.raidcraft.util.ConfigUtil;
+import de.raidcraft.loot.lootobjects.LootObject;
 import de.raidcraft.util.TimeUtil;
 import lombok.Data;
 import org.bukkit.ChatColor;
@@ -37,24 +35,26 @@ public class CreateLootObjectConversation extends PlayerConversation {
         if (lootObject == null || lootTable == null) return false;
 
 
-        InputAnswer inputAnswer = new InputAnswer("Cooldown in Sekunden (-1 für keinen Cooldown)")
+        InputAnswer inputAnswer = new InputAnswer("Cooldown (Respawnzeit für zerstörbare Objekte) in Sekunden (-1 für keinen Cooldown/Respawn).")
                 .setInputListener(input -> lootObject.setCooldown(Integer.parseInt(input)));
         inputAnswer.addAction(Action.endConversation(ConversationEndReason.ENDED));
-        Stage cooldownStage = Conversations.createStage(this, "Was für einen Cooldown soll das Loot-Objekt haben?",
+        Stage cooldownStage = Conversations.createStage(this, "Was für einen Cooldown/Respawn soll das Loot-Objekt haben?",
                 inputAnswer
         );
 
         setCurrentStage(Conversations.createStage(this, "Welche Art von Loot-Objekt möchtest du erstellen?",
-                Answer.of("Öffentlich - Alle Spieler teilen sich den Loot.", (type, config) -> lootObject.setPublicLootObject(true), Action.changeStage(cooldownStage)),
+                Answer.of("Öffentlich - Alle Spieler teilen sich den Loot, Cooldown, etc..", (type, config) -> lootObject.setPublicLootObject(true), Action.changeStage(cooldownStage)),
                 Answer.of("Privat - Jeder Spieler kann unabhängig looten.", (type, config) -> lootObject.setPublicLootObject(false), Action.changeStage(cooldownStage)),
                 Answer.of("Unendlich - Jeder kann unendlich oft daraus looten.", (type, config) -> lootObject.setInfinite(true), Action.changeStage(cooldownStage)),
+                Answer.of("Zerstörbar - Der Block wird nach dem Looten zerstört.", (type, config) -> lootObject.setDestroyable(true), Action.changeStage(cooldownStage)),
                 Answer.of("Standard Werte übernehmen: einmalig für jeden Spieler lootbar.", (type, config) -> lootObject.toString(), Action.endConversation(ConversationEndReason.ENDED)),
                 lastConfig != null ? Answer.of("Konfiguration des letzten Loot-Objekts übernehmen. "
-                        + (lastConfig.isPublicLootObject() ? ChatColor.GREEN + "Öffentlich" : ChatColor.DARK_PURPLE + "Privat")
+                        + (lastConfig.isPublicLootObject() ? (lastConfig.isDestroyable() ? ChatColor.RED + "Zerstörbar" : ChatColor.GREEN + "Öffentlich") : ChatColor.DARK_PURPLE + "Privat")
                         + ChatColor.GOLD + " - "
-                        + (lastConfig.isInfinite() ? ChatColor.AQUA + "Unendlich" : "")
+                        + (lastConfig.isInfinite() ? ChatColor.AQUA + "Unendlich" : ChatColor.AQUA + "Endlich")
                         + ChatColor.GOLD + " - "
-                        + ChatColor.GRAY + "Cooldown: " + TimeUtil.getFormattedTime(lastConfig.getCooldown()), (type, config) -> {
+                        + ChatColor.GRAY + (lastConfig.isDestroyable() ? "Respawnzeit: " : "Cooldown: ") + TimeUtil.getFormattedTime(lastConfig.getCooldown()), (type, config) -> {
+                    lootObject.setDestroyable(lastConfig.isDestroyable());
                     lootObject.setCooldown(lastConfig.getCooldown());
                     lootObject.setInfinite(lastConfig.isInfinite());
                     lootObject.setPublicLootObject(lastConfig.isPublicLootObject());

@@ -1,26 +1,30 @@
 package de.raidcraft.loot.listener;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.loot.LootFactory;
 import de.raidcraft.loot.LootPlugin;
-import de.raidcraft.loot.SettingStorage;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.object.LootObjectStorage;
-import de.raidcraft.loot.api.table.LootTableEntry;
-import de.raidcraft.loot.commands.LootTableCreation;
-import de.raidcraft.loot.loothost.LootHost;
+import de.raidcraft.loot.lootobjects.LootObject;
 import de.raidcraft.loot.util.LootChat;
+import de.raidcraft.skills.util.ItemUtil;
+import de.raidcraft.util.BlockUtil;
+import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.ItemUtils;
+import lombok.Data;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -30,13 +34,11 @@ import java.util.*;
  * Date: 18.10.12 - 06:25
  * Description:
  */
+@Data
 public class PlayerListener implements Listener {
 
-    public static Map<UUID, SettingStorage> createMode = new HashMap<>();
-    public static Map<UUID, LootTableCreation> createLootTable = new HashMap<>();
-    public static List<UUID> editorMode = new ArrayList<>();
-    public static List<UUID> adminMode = new ArrayList<>();
-    private Map<UUID, LootObject> inventoryLocks = new HashMap<>();
+    private final Map<UUID, LootObject> inventoryLocks = new HashMap<>();
+    private final LootPlugin plugin;
 
     /*
      * Prevent inventory open if inventory holder is loot object
@@ -44,50 +46,34 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
 
-        LootHost lootHost = RaidCraft.getComponent(LootPlugin.class).getLootHostManager().getLootHost(event.getInventory());
-        if (lootHost == null) return;
+        if (!(event.getPlayer() instanceof Player)) return;
 
-        Block block = lootHost.getBlock(event.getInventory());
-        if (block == null) return;
+        Optional<LootObject> optionalLootObject = getPlugin().getLootObjectManager().getLootObject(event.getInventory());
 
-        LootObjectStorage lootObjectStorage = RaidCraft.getComponent(LootPlugin.class).getLootObjectStorage();
-        LootObject lootObject = lootObjectStorage.getLootObject(block.getLocation());
-        if (lootObject == null) {
-            return;
-        }
+        if (!optionalLootObject.isPresent()) return;
 
-        HumanEntity entity = event.getPlayer();
+        Player player = (Player) event.getPlayer();
 
-        if (!(entity instanceof Player)) {
-            return;
-        }
-
-        if (entity.getGameMode() == GameMode.SPECTATOR || entity.getGameMode() == GameMode.CREATIVE) {
-            if (!adminMode.contains(entity.getUniqueId())) {
-                LootChat.warn((Player) entity, "Du kannst in diesem Gamemode keine Lootkisten öffnen.");
-                event.setCancelled(true);
-                return;
-            }
-        }
-
-        if (!lootHost.canBeOpened() && !entity.hasPermission("loot.admin")) {
-            LootChat.warn((Player) entity, "Du hast keine Rechte um Loot-Dispenser zu öffnen!");
+        if (player.getGameMode() == GameMode.SPECTATOR || player.getGameMode() == GameMode.CREATIVE) {
+            LootChat.warn(player, "Du kannst in diesem Gamemode keine Lootkisten öffnen.");
             event.setCancelled(true);
             return;
         }
 
         List<ItemStack> loot;
 
+        LootObject lootObject = optionalLootObject.get();
+
         // check if locked
         if (inventoryLocks.containsValue(lootObject)) {
-            LootChat.warn((Player) entity, "Du musst kurz warten bis ein anderer Spieler fertig gelootet hat!");
+            LootChat.warn(player, "Du musst kurz warten bis ein anderer Spieler fertig gelootet hat!");
             event.setCancelled(true);
             return;
         }
 
         // fill public loot chest if cooldown over
         if (lootObject.isPublicLootObject()) {
-            loot = lootObject.loot(entity.getUniqueId());
+            loot = lootObject.loot(player.getUniqueId());
             if (loot.size() > 0) {
                 event.getInventory().setContents(loot.toArray(new ItemStack[0]));
             }
@@ -95,8 +81,8 @@ public class PlayerListener implements Listener {
         }
 
         // lock loot object
-        inventoryLocks.put(entity.getUniqueId(), lootObject);
-        loot = lootObject.loot(entity.getUniqueId());
+        inventoryLocks.put(player.getUniqueId(), lootObject);
+        loot = lootObject.loot(player.getUniqueId());
         // set loot
         event.getInventory().clear();
 
@@ -116,13 +102,10 @@ public class PlayerListener implements Listener {
             inventoryLocks.remove(event.getPlayer().getUniqueId());
 
             // drop not cleared items if loot object isn't infinite
-            if (!adminMode.contains(event.getPlayer().getUniqueId())) {
-
-                if (!lootObject.isInfinite() || lootObject.getCooldown() > 0) {
-                    for (ItemStack itemStack : event.getInventory().getContents()) {
-                        if (itemStack != null && itemStack.getType() != Material.AIR) {
-                            event.getPlayer().getLocation().getWorld().dropItem(event.getPlayer().getLocation(), itemStack);
-                        }
+            if (!lootObject.isInfinite() || lootObject.getCooldown() > 0) {
+                for (ItemStack itemStack : event.getInventory().getContents()) {
+                    if (itemStack != null && itemStack.getType() != Material.AIR) {
+                        event.getPlayer().getLocation().getWorld().dropItemNaturally(event.getPlayer().getLocation(), itemStack);
                     }
                 }
             }
@@ -142,13 +125,31 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerQuiet(PlayerQuitEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
 
-        if (inventoryLocks.containsKey(event.getPlayer().getUniqueId())) {
-            inventoryLocks.remove(event.getPlayer().getUniqueId());
-        }
-        editorMode.remove(event.getPlayer().getUniqueId());
-        adminMode.remove(event.getPlayer().getUniqueId());
-        createMode.remove(event.getPlayer().getUniqueId());
+        // let the methods above handle all inventory interactions
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (event.getClickedBlock().getState() instanceof Container) return;
+
+        getPlugin().getLootObjectManager().getLootObject(event.getClickedBlock()).ifPresent(object -> {
+            event.setCancelled(true);
+
+            if (object.isDestroyable()) {
+                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
+                object.destroy();
+            } else {
+                if (event.getAction() == Action.LEFT_CLICK_BLOCK) return;
+                String name = CustomItemUtil.encodeItemId((int) object.getId()) + ChatColor.GOLD + ItemUtils.getFriendlyName(event.getClickedBlock().getType());
+                Inventory inventory = Bukkit.createInventory(event.getPlayer(), InventoryType.CHEST, name);
+                inventory.setContents(object.loot(event.getPlayer().getUniqueId()).toArray(new ItemStack[0]));
+                event.getPlayer().openInventory(inventory);
+            }
+        });
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+
+        inventoryLocks.remove(event.getPlayer().getUniqueId());
     }
 }

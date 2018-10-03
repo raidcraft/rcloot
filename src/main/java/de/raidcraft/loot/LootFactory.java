@@ -3,9 +3,9 @@ package de.raidcraft.loot;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.random.RDSTable;
-import de.raidcraft.loot.api.object.DatabaseLootObject;
-import de.raidcraft.loot.api.object.LootObject;
-import de.raidcraft.loot.api.object.LootObjectStorage;
+import de.raidcraft.loot.lootobjects.DatabaseLootObject;
+import de.raidcraft.loot.lootobjects.LootObject;
+import de.raidcraft.loot.tables.TLootObject;
 import org.bukkit.block.Block;
 
 import java.util.Objects;
@@ -22,22 +22,12 @@ public class LootFactory implements Component {
     public final static UUID AutomaticPlacerSurface = UUID.fromString("000000ef-b1a0-4173-9775-e5c1352a0cf9");
     public final static UUID AutomaticPlacerCave = UUID.fromString("0000008f-00ae-4368-bb33-b6c965a1f3a3");
 
-    private LootObjectStorage lootObjectStorage;
     private LootPlugin plugin;
 
     public LootFactory(LootPlugin plugin) {
 
         this.plugin = plugin;
-        RaidCraft.registerComponent(LootFactory.class, this
-        );
-        lootObjectStorage = plugin.getLootObjectStorage();
-    }
-
-    public void deleteLootObject(LootObject lootObject) {
-
-        lootObject.delete();
-
-        lootObjectStorage.unregisterLootObject(lootObject);
+        RaidCraft.registerComponent(LootFactory.class, this);
     }
 
     public LootObject createLootObject(Block block, RDSTable table) {
@@ -45,14 +35,15 @@ public class LootFactory implements Component {
         Objects.requireNonNull(table);
 
         DatabaseLootObject object = new DatabaseLootObject(block, table);
-        object.setHostLocation(block.getLocation());
 
         object.save();
 
-        // register loot object in cache
-        lootObjectStorage.registerLootObject(object);
-
         return object;
+    }
+
+    public LootObject createLootObject(TLootObject entry) {
+        if (entry == null) return null;
+        return new DatabaseLootObject(entry);
     }
 
     public String getObjectInfo(LootObject lootObject) {

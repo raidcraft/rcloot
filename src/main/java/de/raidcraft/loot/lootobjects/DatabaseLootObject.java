@@ -28,7 +28,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         setPublicLootObject(dbEntry.isPublicLootObject() || dbEntry.isDestroyable());
         setDestroyable(dbEntry.isDestroyable());
         setDestroyed(dbEntry.getDestroyed());
-        setMaterial(Material.getMaterial(dbEntry.getMaterial()));
+        setMaterial(Material.matchMaterial(dbEntry.getMaterial()));
         RDS.getTable(dbEntry.getLootTable()).ifPresent(this::setLootTable);
     }
 

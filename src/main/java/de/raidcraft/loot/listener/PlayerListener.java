@@ -128,7 +128,7 @@ public class PlayerListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
 
         // let the methods above handle all inventory interactions
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
         if (event.getClickedBlock().getState() instanceof Container) return;
 
         getPlugin().getLootObjectManager().getLootObject(event.getClickedBlock()).ifPresent(object -> {

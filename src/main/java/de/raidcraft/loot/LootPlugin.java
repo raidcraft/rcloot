@@ -57,12 +57,12 @@ public class LootPlugin extends BasePlugin implements Component {
 
         RDS.registerObject(new LevelDependantLootTable.Factory());
 
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
             long count = getLootObjectManager().respawnDestroyedLootObjects(false);
             if (count > 0) {
                 getLogger().info("Respawned " + count + " Loot-Objects.");
             }
-        }, config.respawnIntervalInTicks);
+        }, config.respawnIntervalInTicks, config.respawnIntervalInTicks);
     }
 
     @Override

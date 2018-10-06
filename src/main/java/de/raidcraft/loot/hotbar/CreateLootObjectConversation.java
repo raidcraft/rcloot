@@ -37,10 +37,11 @@ public class CreateLootObjectConversation extends PlayerConversation {
 
         InputAnswer inputAnswer = new InputAnswer("Cooldown (Respawnzeit für zerstörbare Objekte) in Sekunden (-1 für keinen Cooldown/Respawn).")
                 .setInputListener(input -> lootObject.setCooldown(Integer.parseInt(input)));
-        inputAnswer.addAction(Action.endConversation(ConversationEndReason.ENDED));
         Stage cooldownStage = Conversations.createStage(this, "Was für einen Cooldown/Respawn soll das Loot-Objekt haben?",
                 inputAnswer
         );
+        inputAnswer.addActionToAnswer(Action.endConversation(ConversationEndReason.ENDED));
+        addStage(cooldownStage.getTemplate());
 
         setCurrentStage(Conversations.createStage(this, "Welche Art von Loot-Objekt möchtest du erstellen?",
                 Answer.of("Öffentlich - Alle Spieler teilen sich den Loot, Cooldown, etc..", (type, config) -> lootObject.setPublicLootObject(true), Action.changeStage(cooldownStage)),

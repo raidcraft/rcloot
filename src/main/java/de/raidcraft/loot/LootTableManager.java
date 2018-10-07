@@ -49,10 +49,7 @@ public class LootTableManager implements Component {
                 }
                 RDSTable table = (RDSTable) rdsObject;
                 RDS.registerTable(plugin, id, table, config);
-                ConfigurationSection args = config.getConfigurationSection("args");
-                if (args != null) {
-                    queuedTables.add(new QueuedTable(table, args));
-                }
+                queuedTables.add(new QueuedTable(table, config));
             }
         });
         // initiate the loading process for all tables after they were loaded

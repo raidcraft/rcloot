@@ -65,7 +65,7 @@ public abstract class AbstractLootObject implements LootObject {
     public boolean canLoot(UUID player) {
         if (isInfinite()) return !isOnCooldown(player);
         if (isPublicLootObject()) return !hasLooted();
-        return !hasLooted(player) && !isOnCooldown(player);
+        return (getCooldown() < 1 && !hasLooted(player)) || (getCooldown() > 0 && !isOnCooldown(player));
     }
 
 
@@ -76,17 +76,18 @@ public abstract class AbstractLootObject implements LootObject {
         if (isPublicLootObject()) {
             return getLastLooter().map(TLootPlayer::getCreated)
                     .map(this::getCooldownEndTime)
-                    .map(timestamp -> timestamp.after(new Timestamp(System.currentTimeMillis())))
+                    .map(timestamp -> timestamp.isAfter(Instant.now()))
                     .orElse(false);
         }
 
         return RaidCraft.getDatabase(LootPlugin.class).find(TLootPlayer.class)
                 .where().eq("player_id", player)
+                .and().eq("loot_object_id", getId())
                 .orderBy("created desc").findList()
                 .stream().findFirst()
                 .map(TLootPlayer::getCreated)
                 .map(this::getCooldownEndTime)
-                .map(timestamp -> timestamp.after(new Timestamp(System.currentTimeMillis())))
+                .map(timestamp -> timestamp.isAfter(Instant.now()))
                 .orElse(false);
     }
 
@@ -175,18 +176,20 @@ public abstract class AbstractLootObject implements LootObject {
     private Optional<TLootPlayer> getLastLooter() {
 
         return RaidCraft.getDatabase(LootPlugin.class).find(TLootPlayer.class)
+                .where().eq("loot_object_id", getId())
                 .orderBy("created desc").findList()
                 .stream().findFirst();
     }
 
-    private Timestamp getCooldownEndTime(Timestamp timestamp) {
+    /**
+     * Gets the cooldown end time of the loot-object based on the provided last loot-time.
+     *
+     * @param timestamp the object was last looted
+     * @return last-looted plus cooldown time
+     */
+    private Instant getCooldownEndTime(Timestamp timestamp) {
 
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.setTimeInMillis(timestamp.getTime());
-        calendar.add(Calendar.SECOND, getCooldown());
-
-        return new Timestamp(calendar.getTime().getTime());
+        return timestamp.toInstant().plusSeconds(getCooldown());
     }
 
     @Override

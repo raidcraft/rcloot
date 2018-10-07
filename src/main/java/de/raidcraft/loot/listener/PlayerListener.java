@@ -139,9 +139,8 @@ public class PlayerListener implements Listener {
                 object.destroy();
             } else {
                 if (event.getAction() == Action.LEFT_CLICK_BLOCK) return;
-                String name = CustomItemUtil.encodeItemId((int) object.getId()) + ChatColor.GOLD + ItemUtils.getFriendlyName(event.getClickedBlock().getType());
+                String name = CustomItemUtil.encodeItemId((int) object.getId()) + ChatColor.WHITE + ItemUtils.getFriendlyName(event.getClickedBlock().getType());
                 Inventory inventory = Bukkit.createInventory(event.getPlayer(), InventoryType.CHEST, name);
-                inventory.setContents(object.loot(event.getPlayer().getUniqueId()).toArray(new ItemStack[0]));
                 event.getPlayer().openInventory(inventory);
             }
         });

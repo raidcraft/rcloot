@@ -60,37 +60,33 @@ In einer Loot-Tabelle werden die oben genannten Loot-Typen zusammengefasst und W
 # Der count der Tabelle die am höchsten definiert ist zählt.
 # Sobald diese Anzahl an Items erreicht ist wird nicht weiter gelootet.
 count: 1
-# Unter der args Sektion sind die Custom Argumente des Loot-Objekts.
-args:
-  # Die entries Sektion kann weitere Loot-Tabellen und Objekte enthalten.
-  entries:
-    # Der Name muss eindeutig sein innerhalb der Config,
-    # spielt aber keine weitere Rolle.
-    trash:
-      # Für alle Loot-Objekt Typen, siehe die Tabelle oben.
-      type: level-dependent-items
-      # Gewichtung dass etwas aus dieser Tabelle droppt.
-      probability: 33
-      # Wie viele Items maximal hier droppen.
-      count: 1
-      # Custom Config des level-dependent-items Objekts
-      args:
-        lower-diff: 3
-        upper-diff: 2
-        types:
-        - TRASH
-        qualities:
-        - COMMON
-    quest-item:
-      type: item
-      probability: 33
-      count: 1
-      item: rc1337
-    event-table:
-      # referenziert eine weitere Loot-Tabelle
-      type: table
-      probability: 33
-      count: 1
-      args:
-        name: "../events/eastereggs"
+# Die entries Sektion kann weitere Loot-Tabellen und Objekte enthalten.
+entries:
+  # Der Name muss eindeutig sein innerhalb der Config,
+  # spielt aber keine weitere Rolle.
+  trash:
+    # Für alle Loot-Objekt Typen, siehe die Tabelle oben.
+    type: level-dependent-items
+    # Gewichtung dass etwas aus dieser Tabelle droppt.
+    probability: 33
+    # Wie viele Items maximal hier droppen.
+    count: 1
+    # Custom Config des level-dependent-items Objekts
+    lower-diff: 3
+    upper-diff: 2
+    types:
+      - TRASH
+    qualities:
+      - COMMON
+  quest-item:
+    type: item
+    probability: 33
+    count: 1
+    item: rc1337
+  event-table:
+    # referenziert eine weitere Loot-Tabelle
+    type: table
+    probability: 33
+    count: 1
+    name: "../events/eastereggs"
 ```

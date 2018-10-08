@@ -13,6 +13,7 @@ import de.raidcraft.loot.LootObjectManager;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.LootTableManager;
 import de.raidcraft.loot.lootobjects.LootObject;
+import de.raidcraft.loot.util.LootChat;
 import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import lombok.Data;
@@ -53,14 +54,14 @@ public class LootAdminToolbar extends Hotbar {
                                 + getLootTableAlias()
                                 : ChatColor.RED + "Keine Loot-Tabelle ausgewählt!")
                         .lore(ChatColor.GOLD + "Auswählen: " + ChatColor.GRAY + "Loot-Tabelle des Ziels auswählen",
-                                ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Loot-Tabelle " + ChatColor.RED + "deaktivieren",
-                                ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Loot-Tabelle " + ChatColor.GREEN + "aktivieren",
+                                ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Loot-Tabelle des Ziels auswählen",
+                                ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Information über die Loot-Tabelle des Ziels anzeigen.",
                                 ChatColor.GOLD + "Inventar Links Klick: " + ChatColor.GRAY + "Andere Loot-Tabelle auswählen")
                         .item())
                 .setOnSelect(this::selectTargetAsLootTable)
                 .setOnInventoryLeftClick(this::openChooseLootTableMenu)
-                .setOnRightClickInteract(player -> setLootTableActive(true))
-                .setOnLeftClickInteract(player -> setLootTableActive(false))
+                .setOnRightClickInteract(this::showInformation)
+                .setOnLeftClickInteract(this::selectTargetAsLootTable)
         );
 
         addHotbarSlot(new ActionHotbarSlot(
@@ -68,12 +69,11 @@ public class LootAdminToolbar extends Hotbar {
                         .title(ChatColor.BLUE + "Loot-Tabelle auf Kiste anwenden")
                         .lore(ChatColor.GOLD + "Auswählen: " + ChatColor.GRAY + "Block in Loot-Objekt umwandeln.",
                                 ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Block in Loot-Objekt umwandeln.",
-                                ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Neue Loot-Kiste mit aktiver Loot-Tabelle setzen")
+                                ChatColor.GOLD + "Rechtsklick: " + ChatColor.GRAY + "Block in Loot-Objekt mit den letzten Einstellungen umwandeln.")
                         .item())
-                .setOnSelect(this::convertChestToLootChest)
-                .setOnLeftClickInteract(this::converChestToLootObject)
-                .setCancelBlockPlacement(true)
-                .setOnPlayerPlaceBlock(this::placeLootChest)
+                .setOnSelect(this::convertToLootObject)
+                .setOnLeftClickInteract(this::convertToLootObject)
+                .setOnRightClickInteract(this::convertToLootObjectWithLastSettings)
         );
 
         addHotbarSlot(new ActionHotbarSlot(
@@ -128,6 +128,27 @@ public class LootAdminToolbar extends Hotbar {
         setLootTable(lootTable);
     }
 
+    private void showInformation(PlayerInteractEvent event) {
+
+        Optional<LootObject> lootObject = getLootObjectManager().getLootObject(event.getClickedBlock());
+        if (!lootObject.isPresent()) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Der Block ist kein Loot-Objekt.");
+            return;
+        }
+
+        lootObject.ifPresent(object -> event.getPlayer().sendMessage(ChatColor.GRAY + object.toString()));
+    }
+
+    private void selectTargetAsLootTable(PlayerInteractEvent event) {
+        RDSTable lootTable = getLootTable(event.getClickedBlock());
+        if (lootTable == null) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Das Ziel ist kein Loot Objekt und kann nicht ausgewählt werden.");
+            return;
+        }
+
+        setLootTable(lootTable);
+    }
+
     private RDSTable getLootTable(Block targetBlock) {
 
         return this.getLootObjectManager()
@@ -141,14 +162,32 @@ public class LootAdminToolbar extends Hotbar {
         Gui.open(player, new LootTableListUi(this));
     }
 
-    private void converChestToLootObject(PlayerInteractEvent event) {
+    private void convertToLootObject(PlayerInteractEvent event) {
         event.setCancelled(true);
         createLootChest(event.getPlayer(), event.getClickedBlock());
     }
 
-    private void convertChestToLootChest(Player player) {
+    private void convertToLootObject(Player player) {
 
         getTargetBlock(player).ifPresent(block -> createLootChest(player, block));
+    }
+
+    private void convertToLootObjectWithLastSettings(PlayerInteractEvent event) {
+
+        if (getLastLootObject() == null) {
+            event.getPlayer().sendMessage(ChatColor.RED + "Kein letztes Loot-Objekt gefunden. Bitte konfiguriere erst ein Loot-Objekt mit dem Wizard.");
+            return;
+        }
+
+        LootObject lootObject = getLootFactory().createLootObject(event.getClickedBlock(), getLootTable());
+        lootObject.setEnabled(lastLootObject.isEnabled());
+        lootObject.setPublicLootObject(lastLootObject.isPublicLootObject());
+        lootObject.setDestroyable(lastLootObject.isDestroyable());
+        lootObject.setInfinite(lastLootObject.isInfinite());
+        lootObject.setCooldown(lastLootObject.getCooldown());
+        lootObject.save();
+
+        event.getPlayer().sendMessage(ChatColor.GREEN + "Loot-Objekt wurde erfolgreich erstellt: " + lootObject.toString());
     }
 
     private void deleteNearbyLootObjects(Player player) {

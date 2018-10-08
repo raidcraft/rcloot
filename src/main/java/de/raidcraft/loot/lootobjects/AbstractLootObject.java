@@ -8,11 +8,13 @@ import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
 import de.raidcraft.loot.util.ChestDispenserUtil;
+import de.raidcraft.util.TimeUtil;
 import io.ebean.EbeanServer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -194,15 +196,18 @@ public abstract class AbstractLootObject implements LootObject {
 
     @Override
     public String toString() {
-        return "AbstractLootObject{" +
-                "id=" + id +
-                ", lootTable=" + lootTable +
-                ", hostLocation=" + hostLocation +
-                ", created=" + created +
-                ", enabled=" + enabled +
-                ", cooldown=" + cooldown +
-                ", publicLootObject=" + publicLootObject +
-                ", infinite=" + infinite +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GOLD + "LootObject[").append(ChatColor.AQUA).append(getMaterial().name()).append(ChatColor.GOLD + "]")
+                .append(" (" + ChatColor.BLUE + "ID: ").append(getId()).append(ChatColor.GOLD + ")")
+                .append("\n");
+        getLootTable().getId().ifPresent(id -> sb.append(ChatColor.DARK_GRAY).append("Loot-Table: ").append(id).append("\n"));
+        sb.append(ChatColor.DARK_GRAY).append("Created: ").append(new Timestamp(created).toString()).append("\n");
+        sb.append(ChatColor.DARK_GRAY).append("Enabled: ").append(isEnabled()).append("\n");
+        sb.append(ChatColor.DARK_GRAY).append("Public: ").append(isPublicLootObject()).append("\n");
+        sb.append(ChatColor.DARK_GRAY).append("Infinite: ").append(isInfinite()).append("\n");
+        sb.append(ChatColor.DARK_GRAY).append("Destroyable: ").append(isDestroyable()).append("\n");
+        sb.append(ChatColor.DARK_GRAY).append("Cooldown: ").append(TimeUtil.getFormattedTime(getCooldown())).append("\n");
+
+        return sb.toString();
     }
 }

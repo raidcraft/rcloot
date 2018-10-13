@@ -1,8 +1,10 @@
 package de.raidcraft.loot;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.NamedRDSTable;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
@@ -22,40 +24,20 @@ public class LootTableManager implements Component {
 
     private final LootPlugin plugin;
     private final Map<String, Map<Integer, RDSTable>> levelDependantTables = new CaseInsensitiveMap<>();
-    private final List<QueuedTable> queuedTables = new ArrayList<>();
 
     protected LootTableManager(LootPlugin plugin) {
 
         this.plugin = plugin;
         RaidCraft.registerComponent(LootTableManager.class, this);
+        Quests.registerQuestLoader(new LootTableConfigLoader(plugin, "loot"));
     }
 
     public void load() {
 
         // lets test the new loot table loading system
-        ConfigUtil.loadRecursiveConfigs(plugin, "loot-tables", new ConfigLoader(plugin) {
-            @Override
-            public void loadConfig(String id, ConfigurationSection config) {
-                Optional<RDSObject> object = RDS.createObject(config.getString("type", "table"), config, false);
-                if (!object.isPresent()) {
-                    plugin.getLogger().warning("Could not find loot table with type: "
-                            + config.getString("type", "table") + " in " + ConfigUtil.getFileName(config));
-                    return;
-                }
-                RDSObject rdsObject = object.get();
-                if (!(rdsObject instanceof RDSTable)) {
-                    plugin.getLogger().warning(ConfigUtil.getFileName(config) + " is not a loot table!");
-                    return;
-                }
-                RDSTable table = (RDSTable) rdsObject;
-                RDS.registerTable(plugin, id, table, config);
-                queuedTables.add(new QueuedTable(table, config));
-            }
-        });
-        // initiate the loading process for all tables after they were loaded
-        // tables can reference other tables so this needs to happen after loading all files
-        queuedTables.forEach(QueuedTable::load);
-        queuedTables.clear();
+        LootTableConfigLoader configLoader = new LootTableConfigLoader(plugin);
+        ConfigUtil.loadRecursiveConfigs(plugin, "loot-tables", configLoader);
+        configLoader.onLoadingComplete();
     }
 
     public void reload() {
@@ -105,5 +87,44 @@ public class LootTableManager implements Component {
 
     public Collection<RDSTable> getTables() {
         return RDS.getLootTables();
+    }
+
+    public class LootTableConfigLoader extends ConfigLoader {
+
+        private final List<QueuedTable> queuedTables = new ArrayList<>();
+
+        public LootTableConfigLoader(BasePlugin plugin) {
+            super(plugin);
+        }
+
+        public LootTableConfigLoader(BasePlugin plugin, String suffix) {
+            super(plugin, suffix);
+        }
+
+        @Override
+        public void loadConfig(String id, ConfigurationSection config) {
+            Optional<RDSObject> object = RDS.createObject(config.getString("type", "table"), config, false);
+            if (!object.isPresent()) {
+                plugin.getLogger().warning("Could not find loot table with type: "
+                        + config.getString("type", "table") + " in " + ConfigUtil.getFileName(config));
+                return;
+            }
+            RDSObject rdsObject = object.get();
+            if (!(rdsObject instanceof RDSTable)) {
+                plugin.getLogger().warning(ConfigUtil.getFileName(config) + " is not a loot table!");
+                return;
+            }
+            RDSTable table = (RDSTable) rdsObject;
+            RDS.registerTable(plugin, id, table, config);
+            queuedTables.add(new QueuedTable(table, config));
+        }
+
+        @Override
+        public void onLoadingComplete() {
+            // initiate the loading process for all tables after they were loaded
+            // tables can reference other tables so this needs to happen after loading all files
+            queuedTables.forEach(QueuedTable::load);
+            queuedTables.clear();
+        }
     }
 }

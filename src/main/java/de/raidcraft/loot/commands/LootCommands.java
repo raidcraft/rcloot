@@ -107,7 +107,7 @@ public class LootCommands {
             int count = 0;
             Collection<RDSObject> result = new ArrayList<>();
             for (int i = 0; i < 1000; i++) {
-                result = table.loot();
+                result = table.loot((Player) sender);
                 if (!result.isEmpty()) {
                     count = i;
                     break;

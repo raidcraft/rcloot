@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -119,7 +120,7 @@ public abstract class AbstractLootObject implements LootObject {
         List<ItemStack> loot = new ArrayList<>();
         // player not yet looted
         if (canLoot(player)) {
-            getLootTable().loot().stream()
+            getLootTable().loot(Bukkit.getPlayer(player)).stream()
                     .filter(object -> object instanceof ItemLootObject)
                     .forEach(object -> loot.add(((ItemLootObject) object).getItemStack()));
 

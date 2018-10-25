@@ -42,18 +42,36 @@
             <artifactId>raidcraft-api</artifactId>
             <version>1.12-0.7-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.robingrether.idisguise</groupId>
+                    <artifactId>idisguise-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.faldoria</groupId>
             <artifactId>items</artifactId>
             <version>1.12-0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.robingrether.idisguise</groupId>
+                    <artifactId>idisguise-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.faldoria</groupId>
             <artifactId>combatbar</artifactId>
             <version>1.12-0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>de.robingrether.idisguise</groupId>
+                    <artifactId>idisguise-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

@@ -106,7 +106,7 @@ public class LootCommands {
             }
             int count = 0;
             Collection<RDSObject> result = new ArrayList<>();
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < plugin.config.lootTableSimulationCount; i++) {
                 result = table.loot((Player) sender);
                 if (!result.isEmpty()) {
                     count = i;
@@ -115,7 +115,7 @@ public class LootCommands {
             }
 
             if (result.isEmpty()) {
-                throw new CommandException("Could not get a valid result after 1000 iterations! Is the loot table configured correctly?");
+                throw new CommandException("Could not get a valid result after 100 iterations! Is the loot table configured correctly?");
             }
 
             Inventory inventory = Bukkit.createInventory((Player) sender, 54);

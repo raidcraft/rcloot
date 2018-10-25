@@ -111,6 +111,9 @@ public class LootPlugin extends BasePlugin implements Component {
         @Setting("respawn-interval")
         @Comment("Interval of respawn task for loot-objects in ticks. 100 = 5s")
         public long respawnIntervalInTicks = 100;
+        @Setting("simulation-command-count")
+        @Comment("Defines how often a loot table should be looted if nothing drops.")
+        public int lootTableSimulationCount = 10;
 
         public LocalConfiguration(LootPlugin plugin) {
 

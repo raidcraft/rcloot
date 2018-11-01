@@ -1,6 +1,9 @@
 package de.raidcraft.loot.tables;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.ebean.BaseModel;
+import de.raidcraft.loot.LootPlugin;
+import io.ebean.EbeanServer;
 import io.ebean.annotation.DbDefault;
 import io.ebean.annotation.NotNull;
 import lombok.Data;
@@ -52,5 +55,10 @@ public class TLootObject extends BaseModel {
         setX(block.getX());
         setY(block.getY());
         setZ(block.getZ());
+    }
+
+    @Override
+    protected EbeanServer database() {
+        return RaidCraft.getDatabase(LootPlugin.class);
     }
 }

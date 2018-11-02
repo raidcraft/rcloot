@@ -1,12 +1,12 @@
 image: maven:latest
 
 dependencies:
-   - repository: tof/plugins/raidcraft/raidcraft-api
-      on: master
-   - repository: tof/plugins/raidcraft/rcitems
-      on: master
-   - repository: tof/plugins/raidcraft/combatbar
-      on: master
+    - repository: tof/plugins/raidcraft/raidcraft-api
+    on: master
+    - repository: tof/plugins/raidcraft/rcitems
+    on: master
+    - repository: tof/plugins/raidcraft/combatbar
+    on: master
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"

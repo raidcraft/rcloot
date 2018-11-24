@@ -1,12 +1,15 @@
 package de.raidcraft.loot.util;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Author: Philip
@@ -26,7 +29,10 @@ public class WorldGuardManager {
     public List<String> getLocatedRegions(Location location) {
 
         List<String> regions = new ArrayList<>();
-        for (ProtectedRegion region : worldGuard.getRegionManager(location.getWorld()).getApplicableRegions(location)) {
+        Optional<ApplicableRegionSet> worldGuardRegions = LocationUtil.getWorldGuardRegions(location);
+        if (!worldGuardRegions.isPresent()) return regions;
+
+        for (ProtectedRegion region : worldGuardRegions.get().getRegions()) {
             regions.add(region.getId());
         }
         return regions;

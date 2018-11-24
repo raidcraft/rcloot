@@ -65,7 +65,7 @@ public class LootAdminToolbar extends Hotbar {
         );
 
         addHotbarSlot(new ActionHotbarSlot(
-                new ItemStackBuilder(Material.BOOK_AND_QUILL)
+                new ItemStackBuilder(Material.WRITTEN_BOOK)
                         .title(ChatColor.BLUE + "Loot-Tabelle auf Kiste anwenden")
                         .lore(ChatColor.GOLD + "Auswählen: " + ChatColor.GRAY + "Block in Loot-Objekt umwandeln.",
                                 ChatColor.GOLD + "Linksklick: " + ChatColor.GRAY + "Block in Loot-Objekt umwandeln.",

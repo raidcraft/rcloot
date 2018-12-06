@@ -42,6 +42,8 @@ public class TLootObject extends BaseModel {
     private boolean destroyable = false;
     private Instant destroyed = null;
     private String material = null;
+    @Column(length = 2048)
+    private String blockData = null;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "loot_object_id")
@@ -55,6 +57,8 @@ public class TLootObject extends BaseModel {
         setX(block.getX());
         setY(block.getY());
         setZ(block.getZ());
+        setMaterial(block.getType().name());
+        setBlockData(block.getBlockData().getAsString());
     }
 
     @Override

@@ -16,6 +16,7 @@ public class DatabaseLootObject extends AbstractLootObject {
     public DatabaseLootObject(Block block, RDSTable table) {
         setHostLocation(block.getLocation());
         setMaterial(block.getType());
+        setBlockData(block.getBlockData());
         setLootTable(table);
     }
 
@@ -29,6 +30,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         setDestroyable(dbEntry.isDestroyable());
         setDestroyed(dbEntry.getDestroyed());
         setMaterial(Material.matchMaterial(dbEntry.getMaterial()));
+        setBlockData(Bukkit.createBlockData(dbEntry.getBlockData()));
         RDS.getTable(dbEntry.getLootTable()).ifPresent(this::setLootTable);
     }
 
@@ -46,6 +48,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         lootObject.setDestroyable(isDestroyable());
         lootObject.setDestroyed(getDestroyed());
         lootObject.setMaterial(getMaterial().name());
+        if (getBlockData() != null) lootObject.setBlockData(getBlockData().getAsString());
         lootObject.setWorld(getHostLocation().getWorld().getName());
         lootObject.setX(getHostLocation().getBlockX());
         lootObject.setY(getHostLocation().getBlockY());

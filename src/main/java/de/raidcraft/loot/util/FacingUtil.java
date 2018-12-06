@@ -12,23 +12,7 @@ public class FacingUtil {
 
     public static BlockFace getBlockFace(Block block) {
 
-        int face = block.getData() & 0x7;
-
-        switch (face) {
-            case 0:
-                return BlockFace.DOWN;
-            case 1:
-                return BlockFace.UP;
-            case 2:
-                return BlockFace.NORTH;
-            case 3:
-                return BlockFace.SOUTH;
-            case 4:
-                return BlockFace.WEST;
-            case 5:
-                return BlockFace.EAST;
-        }
-        return BlockFace.DOWN;
+        return block.getFace(block);
     }
 
     /* stolen by BKCommonLib */

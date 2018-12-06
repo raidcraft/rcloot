@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
@@ -37,6 +38,7 @@ public abstract class AbstractLootObject implements LootObject {
     private Location hostLocation;
     private Location otherHostLocation;
     private Material material;
+    private BlockData blockData;
     private long created;
     private boolean enabled = true;
     private int cooldown = -1;
@@ -164,6 +166,7 @@ public abstract class AbstractLootObject implements LootObject {
         }
         if (force || getDestroyed().plusSeconds(getCooldown()).isBefore(Instant.now())) {
             getHostLocation().getBlock().setType(getMaterial());
+            getHostLocation().getBlock().setBlockData(getBlockData());
             setDestroyed(null);
             save();
             return true;

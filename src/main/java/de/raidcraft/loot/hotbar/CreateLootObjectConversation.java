@@ -13,12 +13,14 @@ import de.raidcraft.conversations.conversations.PlayerConversation;
 import de.raidcraft.loot.lootobjects.LootObject;
 import de.raidcraft.util.TimeUtil;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.function.Consumer;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class CreateLootObjectConversation extends PlayerConversation {
 
     private RDSTable lootTable;

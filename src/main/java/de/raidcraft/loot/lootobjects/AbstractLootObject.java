@@ -153,8 +153,8 @@ public abstract class AbstractLootObject implements LootObject {
             if (!getBlockData().isPresent()) {
                 setBlockData(getHostLocation().getBlock().getBlockData());
             }
-            if (!getExtraData().isPresent() && getHostLocation().getBlock() instanceof Skull) {
-                Skull skull = (Skull) getHostLocation().getBlock();
+            if (!getExtraData().isPresent() && getHostLocation().getBlock().getState() instanceof Skull) {
+                Skull skull = (Skull) getHostLocation().getBlock().getState();
                 setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer().serialize()));
             }
         }
@@ -186,8 +186,10 @@ public abstract class AbstractLootObject implements LootObject {
             getHostLocation().getBlock().setType(getMaterial());
             getBlockData().ifPresent(data -> getHostLocation().getBlock().setBlockData(data));
             getExtraData().ifPresent(extraData -> {
-                if (getHostLocation().getBlock() instanceof Skull) {
-                    ((Skull) getHostLocation().getBlock()).setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
+                if (getHostLocation().getBlock().getState() instanceof Skull) {
+                    Skull skull = (Skull) getHostLocation().getBlock().getState();
+                    skull.setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
+                    skull.update(true);
                 }
             });
             setDestroyed(null);

@@ -155,7 +155,7 @@ public abstract class AbstractLootObject implements LootObject {
             }
             if (!getExtraData().isPresent() && getHostLocation().getBlock().getState() instanceof Skull) {
                 Skull skull = (Skull) getHostLocation().getBlock().getState();
-                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer().serialize()));
+                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer()));
             }
         }
         getHostLocation().getBlock().setType(Material.AIR);

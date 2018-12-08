@@ -44,6 +44,8 @@ public class TLootObject extends BaseModel {
     private String material = null;
     @Column(length = 2048)
     private String blockData = null;
+    @Column(length = 2048)
+    private String extraData = null;
 
     @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "loot_object_id")

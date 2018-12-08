@@ -8,17 +8,16 @@ import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
 import de.raidcraft.loot.util.ChestDispenserUtil;
+import de.raidcraft.util.SerializationUtil;
 import de.raidcraft.util.TimeUtil;
 import io.ebean.EbeanServer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,6 +38,7 @@ public abstract class AbstractLootObject implements LootObject {
     private Location otherHostLocation;
     private Material material;
     private BlockData blockData;
+    private String extraData;
     private long created;
     private boolean enabled = true;
     private int cooldown = -1;
@@ -62,6 +62,10 @@ public abstract class AbstractLootObject implements LootObject {
 
     public Optional<BlockData> getBlockData() {
         return Optional.ofNullable(this.blockData);
+    }
+
+    public Optional<String> getExtraData() {
+        return Optional.ofNullable(this.extraData);
     }
 
     @Override
@@ -149,6 +153,10 @@ public abstract class AbstractLootObject implements LootObject {
             if (!getBlockData().isPresent()) {
                 setBlockData(getHostLocation().getBlock().getBlockData());
             }
+            if (!getExtraData().isPresent() && getHostLocation().getBlock() instanceof Skull) {
+                Skull skull = (Skull) getHostLocation().getBlock();
+                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer().serialize()));
+            }
         }
         getHostLocation().getBlock().setType(Material.AIR);
         if (isDoubleChest()) getOtherHostLocation().getBlock().setType(Material.AIR);
@@ -177,6 +185,11 @@ public abstract class AbstractLootObject implements LootObject {
         if (force || getDestroyed().plusSeconds(getCooldown()).isBefore(Instant.now())) {
             getHostLocation().getBlock().setType(getMaterial());
             getBlockData().ifPresent(data -> getHostLocation().getBlock().setBlockData(data));
+            getExtraData().ifPresent(extraData -> {
+                if (getHostLocation().getBlock() instanceof Skull) {
+                    ((Skull) getHostLocation().getBlock()).setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
+                }
+            });
             setDestroyed(null);
             save();
             return true;

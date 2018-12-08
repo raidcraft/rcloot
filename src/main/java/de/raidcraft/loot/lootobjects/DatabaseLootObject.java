@@ -34,6 +34,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         setDestroyed(dbEntry.getDestroyed());
         setMaterial(Material.matchMaterial(dbEntry.getMaterial()));
         if (dbEntry.getBlockData() != null) setBlockData(Bukkit.createBlockData(dbEntry.getBlockData()));
+        if (dbEntry.getExtraData() != null) setExtraData(dbEntry.getExtraData());
         RDS.getTable(dbEntry.getLootTable()).ifPresent(this::setLootTable);
     }
 
@@ -49,6 +50,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         lootObject.setDestroyed(getDestroyed());
         lootObject.setMaterial(getMaterial().name());
         getBlockData().ifPresent(blockData -> lootObject.setBlockData(blockData.getAsString()));
+        getExtraData().ifPresent(lootObject::setExtraData);
         lootObject.setWorld(getHostLocation().getWorld().getName());
         lootObject.setX(getHostLocation().getBlockX());
         lootObject.setY(getHostLocation().getBlockY());

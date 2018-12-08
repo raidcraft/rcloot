@@ -60,6 +60,10 @@ public abstract class AbstractLootObject implements LootObject {
         return getOtherHostLocation() != null;
     }
 
+    public Optional<BlockData> getBlockData() {
+        return Optional.ofNullable(this.blockData);
+    }
+
     @Override
     public void assignLootTable(RDSTable lootTable) {
 
@@ -140,6 +144,12 @@ public abstract class AbstractLootObject implements LootObject {
     public void destroy(boolean dropLoot) {
         if (!isDestroyable()) return;
 
+        if (getHostLocation().getBlock().getType() != Material.AIR) {
+            setMaterial(getHostLocation().getBlock().getType());
+            if (!getBlockData().isPresent()) {
+                setBlockData(getHostLocation().getBlock().getBlockData());
+            }
+        }
         getHostLocation().getBlock().setType(Material.AIR);
         if (isDoubleChest()) getOtherHostLocation().getBlock().setType(Material.AIR);
         setDestroyed(Instant.now());
@@ -166,7 +176,7 @@ public abstract class AbstractLootObject implements LootObject {
         }
         if (force || getDestroyed().plusSeconds(getCooldown()).isBefore(Instant.now())) {
             getHostLocation().getBlock().setType(getMaterial());
-            getHostLocation().getBlock().setBlockData(getBlockData());
+            getBlockData().ifPresent(data -> getHostLocation().getBlock().setBlockData(data));
             setDestroyed(null);
             save();
             return true;

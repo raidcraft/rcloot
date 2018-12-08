@@ -5,11 +5,14 @@ import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.tables.TLootObject;
+import de.raidcraft.skills.api.hero.Option;
 import io.ebean.EbeanServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+
+import java.util.Optional;
 
 public class DatabaseLootObject extends AbstractLootObject {
 
@@ -30,17 +33,14 @@ public class DatabaseLootObject extends AbstractLootObject {
         setDestroyable(dbEntry.isDestroyable());
         setDestroyed(dbEntry.getDestroyed());
         setMaterial(Material.matchMaterial(dbEntry.getMaterial()));
-        setBlockData(Bukkit.createBlockData(dbEntry.getBlockData()));
+        if (dbEntry.getBlockData() != null) setBlockData(Bukkit.createBlockData(dbEntry.getBlockData()));
         RDS.getTable(dbEntry.getLootTable()).ifPresent(this::setLootTable);
     }
 
     @Override
     public void save() {
         EbeanServer database = RaidCraft.getDatabase(LootPlugin.class);
-        TLootObject lootObject = database.find(TLootObject.class, getId());
-        if (lootObject == null) {
-            lootObject = new TLootObject();
-        }
+        final TLootObject lootObject = Optional.ofNullable(database.find(TLootObject.class, getId())).orElse(new TLootObject());
         lootObject.setCooldown(getCooldown());
         lootObject.setEnabled(isEnabled());
         lootObject.setInfinite(isInfinite());
@@ -48,7 +48,7 @@ public class DatabaseLootObject extends AbstractLootObject {
         lootObject.setDestroyable(isDestroyable());
         lootObject.setDestroyed(getDestroyed());
         lootObject.setMaterial(getMaterial().name());
-        if (getBlockData() != null) lootObject.setBlockData(getBlockData().getAsString());
+        getBlockData().ifPresent(blockData -> lootObject.setBlockData(blockData.getAsString()));
         lootObject.setWorld(getHostLocation().getWorld().getName());
         lootObject.setX(getHostLocation().getBlockX());
         lootObject.setY(getHostLocation().getBlockY());

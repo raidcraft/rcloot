@@ -153,9 +153,10 @@ public abstract class AbstractLootObject implements LootObject {
             if (!getBlockData().isPresent()) {
                 setBlockData(getHostLocation().getBlock().getBlockData());
             }
-            if (!getExtraData().isPresent() && getHostLocation().getBlock().getState() instanceof Skull) {
-                Skull skull = (Skull) getHostLocation().getBlock().getState();
-                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer()));
+            if (!getExtraData().isPresent()) {
+                setExtraData(getHostLocation().getBlock().getState().getBlockData().getAsString());
+//                Skull skull = (Skull) getHostLocation().getBlock().getState();
+//                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer()));
             }
         }
         getHostLocation().getBlock().setType(Material.AIR);
@@ -186,11 +187,13 @@ public abstract class AbstractLootObject implements LootObject {
             getHostLocation().getBlock().setType(getMaterial());
             getBlockData().ifPresent(data -> getHostLocation().getBlock().setBlockData(data));
             getExtraData().ifPresent(extraData -> {
-                if (getHostLocation().getBlock().getState() instanceof Skull) {
-                    Skull skull = (Skull) getHostLocation().getBlock().getState();
-                    skull.setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
-                    skull.update(true);
-                }
+                getHostLocation().getBlock().getState().setBlockData(Bukkit.createBlockData(extraData));
+//                if (getHostLocation().getBlock().getState() instanceof Skull) {
+//                    Skull skull = (Skull) getHostLocation().getBlock().getState();
+//                    getHostLocation().getBlock().getState().getBlockData()
+//                    skull.setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
+//                    skull.update(true);
+//                }
             });
             setDestroyed(null);
             save();

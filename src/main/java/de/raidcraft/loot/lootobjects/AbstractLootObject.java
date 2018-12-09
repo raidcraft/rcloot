@@ -1,6 +1,7 @@
 package de.raidcraft.loot.lootobjects;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.Skull;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.api.random.objects.ItemLootObject;
 import de.raidcraft.loot.LootFactory;
@@ -8,7 +9,6 @@ import de.raidcraft.loot.LootPlugin;
 import de.raidcraft.loot.tables.TLootObject;
 import de.raidcraft.loot.tables.TLootPlayer;
 import de.raidcraft.loot.util.ChestDispenserUtil;
-import de.raidcraft.util.SerializationUtil;
 import de.raidcraft.util.TimeUtil;
 import io.ebean.EbeanServer;
 import lombok.AccessLevel;
@@ -17,15 +17,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Data
 @EqualsAndHashCode(of = {"id", "hostLocation", "otherHostLocation"})
@@ -154,9 +151,7 @@ public abstract class AbstractLootObject implements LootObject {
                 setBlockData(getHostLocation().getBlock().getBlockData());
             }
             if (!getExtraData().isPresent()) {
-                setExtraData(getHostLocation().getBlock().getState().getBlockData().getAsString());
-//                Skull skull = (Skull) getHostLocation().getBlock().getState();
-//                setExtraData(SerializationUtil.toByteStream(skull.getOwningPlayer()));
+                    Skull.serializeSkull(getHostLocation().getBlock()).ifPresent(this::setExtraData);
             }
         }
         getHostLocation().getBlock().setType(Material.AIR);
@@ -186,15 +181,7 @@ public abstract class AbstractLootObject implements LootObject {
         if (force || getDestroyed().plusSeconds(getCooldown()).isBefore(Instant.now())) {
             getHostLocation().getBlock().setType(getMaterial());
             getBlockData().ifPresent(data -> getHostLocation().getBlock().setBlockData(data));
-            getExtraData().ifPresent(extraData -> {
-                getHostLocation().getBlock().getState().setBlockData(Bukkit.createBlockData(extraData));
-//                if (getHostLocation().getBlock().getState() instanceof Skull) {
-//                    Skull skull = (Skull) getHostLocation().getBlock().getState();
-//                    getHostLocation().getBlock().getState().getBlockData()
-//                    skull.setOwningPlayer((OfflinePlayer) SerializationUtil.fromByteStream(extraData));
-//                    skull.update(true);
-//                }
-            });
+            getExtraData().ifPresent(extraData -> Skull.applySerializedSkull(getHostLocation().getBlock(), extraData));
             setDestroyed(null);
             save();
             return true;

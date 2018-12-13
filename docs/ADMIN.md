@@ -55,6 +55,18 @@ Die `probability` Angabe in Loot-Tabellen ist keine Prozent Angabe sondern gibt 
 In einer Loot-Tabelle werden die oben genannten Loot-Typen zusammengefasst und Wahrscheinlichkeiten definiert. Die Loot-Tabelle wird dann einem [Custom Mob]((https://git.faldoria.de/tof/plugins/raidcraft/rcmobs)), Kiste oder anderem [Loot Host](#loot-hosts) zugewiesen.
 
 ```yml
+# Optionale Metadaten die im Loot Admin Menü angezeigt werden.
+# Macht es Quest Scriptern und Entwicklern leichter Loot-Tabellen auszuwählen.
+# Alle Daten sind optional und müssen nicht angegeben werden.
+meta:
+  # Ein prägnanter Name für die Loot-Tabelle,
+  # z.B. Äpfel Ankanor
+  name: 'Optionaler Anzeige Name'
+  # Eine kurze Beschreibung wozu die Loot-Tabelle dienen soll,
+  # z.B. "Äpfel die bei Bäumen in Ankanor liegen oder dran hängen."
+  desc: 'Beschreibung der Loot-Tabelle'
+  # Das Icon im Loot Admin Menü.
+  icon: 'minecraft:apple'
 # Kann weggelassen werden da es der default ist.
 # type: table
 # Der count der Tabelle die am höchsten definiert ist zählt.

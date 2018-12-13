@@ -174,6 +174,7 @@ public abstract class AbstractLootObject implements LootObject {
     public boolean respawn(boolean force) {
 
         if (!isDestroyable() || getDestroyed() == null) return false;
+        if (isPublicLootObject() && hasLooted()) return false;
         if (getMaterial() == null) {
             RaidCraft.LOGGER.warning("Cannot respawn Loot-Object (ID: " + getId() + "): invalid or null material!");
             return false;

@@ -120,6 +120,11 @@ public class LootTableManager implements Component {
         }
 
         @Override
+        public void unloadConfig(String id) {
+            RDS.unregisterTable(plugin, id);
+        }
+
+        @Override
         public void onLoadingComplete() {
             // initiate the loading process for all tables after they were loaded
             // tables can reference other tables so this needs to happen after loading all files

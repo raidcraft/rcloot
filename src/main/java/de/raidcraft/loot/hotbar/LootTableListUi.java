@@ -1,6 +1,7 @@
 package de.raidcraft.loot.hotbar;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.LootTableManager;
 import fr.zcraft.zlib.components.gui.ExplorerGui;
@@ -37,10 +38,16 @@ public class LootTableListUi extends ExplorerGui<RDSTable> {
 
     @Override
     protected ItemStack getViewItem(RDSTable table) {
-        return new ItemStackBuilder(Material.PAPER)
-                .title(getName(table))
-                .lore(ChatColor.GRAY + "Rechtsklick: wählt die Loot-Tabelle aus.")
-                .item();
+        return RDS.getLootTableMeta(table.getId().orElse(null))
+            .map(meta -> new ItemStackBuilder(meta.getIcon().orElse(Material.PAPER))
+                .title(meta.getName().orElse(getName(table)))
+                .lore(ChatColor.GRAY + meta.getDescription().orElse(""),
+                        ChatColor.GRAY + "Rechtsklick: wählt die Loot-Tabelle aus.")
+                .item())
+            .orElseGet(() -> new ItemStackBuilder(Material.PAPER)
+                        .title(getName(table))
+                        .lore(ChatColor.GRAY + "Rechtsklick: wählt die Loot-Tabelle aus.")
+                        .item());
     }
 
     @Override

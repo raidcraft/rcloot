@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -131,6 +132,7 @@ public class LootObjectManager implements Component {
                 .and().isNotNull("destroyed")
                 .findList()
                 .stream().map(tLootObject -> getPlugin().getLootFactory().createLootObject(tLootObject))
+                .filter(Objects::nonNull)
                 .map(object -> object.respawn(ignoreCooldown))
                 .filter(aBoolean -> aBoolean)
                 .count();
@@ -143,6 +145,7 @@ public class LootObjectManager implements Component {
                 .and().isNotNull("destroyed")
                 .findList()
                 .stream().map(tLootObject -> getPlugin().getLootFactory().createLootObject(tLootObject))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 }

@@ -6,6 +6,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.lootobjects.DatabaseLootObject;
 import de.raidcraft.loot.tables.TLootObject;
+import de.raidcraft.util.LocationUtil;
 import org.bukkit.block.Block;
 
 import java.util.Objects;
@@ -47,6 +48,10 @@ public class LootFactory implements Component {
 
     public LootObject createLootObject(TLootObject entry) {
         if (entry == null) return null;
+        if (LocationUtil.getCaseInsensitiveWorld(entry.getWorld()) == null) {
+            return null;
+        }
+
         return new DatabaseLootObject(entry);
     }
 

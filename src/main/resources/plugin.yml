@@ -1,9 +1,0 @@
-name: RCLoot
-main: de.raidcraft.loot.LootPlugin
-version: ${project.version}#${build.number}
-author: Strasse36
-website: www.raid-craft.de
-depend: [RaidCraft-API]
-softdepend: [RCCombatBar]
-database: true
-api-version: 1.13

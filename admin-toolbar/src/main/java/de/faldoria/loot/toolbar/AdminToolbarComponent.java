@@ -9,6 +9,7 @@ import de.raidcraft.api.components.ComponentInformation;
 import de.raidcraft.api.components.Depend;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.combatbar.HotbarManager;
+import de.raidcraft.loot.LootPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -44,6 +45,12 @@ public class AdminToolbarComponent extends BukkitComponent {
     }
 
     public class LootAdminCommand {
+
+        private final LootPlugin plugin;
+
+        public LootAdminCommand(LootPlugin plugin) {
+            this.plugin = plugin;
+        }
 
         @Command(
                 aliases = {"loottoolbar", "lootadmintoolbar", "lat"},

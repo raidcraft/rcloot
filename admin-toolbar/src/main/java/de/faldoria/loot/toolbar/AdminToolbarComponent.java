@@ -35,37 +35,12 @@ public class AdminToolbarComponent extends BukkitComponent {
             Conversations.registerConversationType("create-loot-object", CreateLootObjectConversation.class);
             this.toolbarManager = new ToolbarManager(getPlugin(), RaidCraft.getComponent(HotbarManager.class));
             this.toolbarManager.load();
-            registerCommands(LootAdminCommand.class);
+            registerCommands(LootAdminToolbarCommands.class);
         }
     }
 
-    private boolean hasHotbarSupport() {
+    public boolean hasHotbarSupport() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("RCCombatBar");
         return plugin != null && plugin.isEnabled();
-    }
-
-    public class LootAdminCommand {
-
-        private final LootPlugin plugin;
-
-        public LootAdminCommand(LootPlugin plugin) {
-            this.plugin = plugin;
-        }
-
-        @Command(
-                aliases = {"loottoolbar", "lootadmintoolbar", "lat"},
-                desc = "Toggles the loot admin toolbar on and off."
-        )
-        @CommandPermissions("loot.mode.admin")
-        public void toggleToolbar(CommandSender sender, CommandContext args) {
-            if (!(sender instanceof Player)) return;
-            Player player = (Player) sender;
-
-            if (hasHotbarSupport()) {
-                getToolbarManager().toggleLootToolbar(player);
-            } else {
-                sender.sendMessage(ChatColor.RED + "Hotbar Support nicht aktiviert. Bitte installiere das RCCombatBar Plugin.");
-            }
-        }
     }
 }

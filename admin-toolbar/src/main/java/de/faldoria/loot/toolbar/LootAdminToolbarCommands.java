@@ -2,9 +2,8 @@ package de.faldoria.loot.toolbar;
 
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
-import de.raidcraft.RaidCraft;
-import de.raidcraft.loot.LootPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,8 +12,8 @@ public class LootAdminToolbarCommands {
 
     private final AdminToolbarComponent component;
 
-    public LootAdminToolbarCommands(LootPlugin plugin) {
-        this.component = RaidCraft.getComponent(AdminToolbarComponent.class);
+    public LootAdminToolbarCommands(AdminToolbarComponent component) {
+        this.component = component;
     }
 
     @Command(
@@ -23,6 +22,7 @@ public class LootAdminToolbarCommands {
     )
     @CommandPermissions("loot.mode.admin")
     public void toggleToolbar(CommandContext args, CommandSender sender) {
+
         if (!(sender instanceof Player)) return;
         Player player = (Player) sender;
 

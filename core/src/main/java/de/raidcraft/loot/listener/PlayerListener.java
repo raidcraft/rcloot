@@ -132,10 +132,8 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
 
             if (object.isDestroyable()) {
-                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) return;
                 object.destroy();
             } else {
-                if (event.getAction() == Action.LEFT_CLICK_BLOCK) return;
                 String name = CustomItemUtil.encodeItemId((int) object.getId()) + ChatColor.WHITE + ItemUtils.getFriendlyName(event.getClickedBlock().getType());
                 Inventory inventory = Bukkit.createInventory(event.getPlayer(), InventoryType.CHEST, name);
                 event.getPlayer().openInventory(inventory);

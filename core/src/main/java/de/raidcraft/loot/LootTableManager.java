@@ -4,13 +4,13 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.api.random.RDSTable;
 import de.raidcraft.loot.loottables.QueuedTable;
 import de.raidcraft.util.ConfigUtil;
-import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +61,7 @@ public class LootTableManager implements Component {
         }
 
         @Override
-        public void loadConfig(String id, ConfigurationSection config) {
+        public void loadConfig(String id, ConfigurationBase config) {
             Optional<RDSObject> object = RDS.createObject(config.getString("type", "table"), config, false);
             if (!object.isPresent()) {
                 plugin.getLogger().warning("Could not find loot table with type: "
